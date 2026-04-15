@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TheMadArchivist (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "TheMadArchivist (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

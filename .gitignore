@@ -1,27 +1,61 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+## Build artifacts
+bin/
+obj/
+Generated Files/
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
+## Visual Studio
+.vs/
+*.user
 *.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+*.userosscache
+*.sln.docstates
 
-# Secrets
-Secrets.txt
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+## Windows App SDK / WinUI 3
+# MSIX packaging outputs
+AppPackages/
+BundleArtifacts/
+*.msix
+*.msixbundle
+*.appx
+*.appxbundle
+*.appxupload
+
+# Packaging project intermediate files
+*_Package/
+*_Package.appxrecipe
+
+## Logs
+*.log
+
+## Temporary files
+*.tmp
+*.temp
+
+## IDE / tooling
+# Rider / ReSharper
+.idea/
+*.DotSettings.user
+
+# VS Code
+.vscode/
+
+## OS-specific
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS (if repo is shared cross‑platform)
+.DS_Store
+
+## Other
+# Local test data
+*.db
+*.sqlite
