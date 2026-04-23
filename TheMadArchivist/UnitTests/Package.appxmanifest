@@ -9,14 +9,14 @@
   IgnorableNamespaces="uap rescap systemai">
 
   <Identity
-    Name="a69b97c0-33a4-406f-8432-bd1d4fef6385"
+    Name="4500642b-0fd1-499c-8283-f8ac9ce88473"
     Publisher="CN=Trevy"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="a69b97c0-33a4-406f-8432-bd1d4fef6385" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="4500642b-0fd1-499c-8283-f8ac9ce88473" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>TheMadArchivist</DisplayName>
+    <DisplayName>UnitTests</DisplayName>
     <PublisherDisplayName>Trevy</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -35,8 +35,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="TheMadArchivist"
-        Description="TheMadArchivist"
+        DisplayName="UnitTests"
+        Description="UnitTests"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
