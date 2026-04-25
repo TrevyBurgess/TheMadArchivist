@@ -1,0 +1,40 @@
+<UserControl
+    x:Class="TheMadArchivist.Views.Controls.FolderContentsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:TheMadArchivist.Converters"
+    xmlns:models="using:TheMadArchivist.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:IsFolderToSymbolConverter x:Key="IsFolderToSymbolConverter" />
+    </UserControl.Resources>
+
+    <Grid x:Name="RootGrid">
+        <ListView
+            x:Name="FolderContentsListView"
+            ItemsSource="{x:Bind Entries, Mode=OneWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:FileSystemEntry">
+                    <Grid
+                        x:Name="FileSystemEntryRow"
+                        ColumnDefinitions="Auto,*"
+                        Padding="8,4">
+                        <SymbolIcon
+                            x:Name="EntryIcon"
+                            Symbol="{Binding IsFolder, Converter={StaticResource IsFolderToSymbolConverter}}"
+                            VerticalAlignment="Center" />
+                        <TextBlock
+                            x:Name="EntryNameText"
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            Text="{x:Bind Name, Mode=OneWay}"
+                            VerticalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</UserControl>

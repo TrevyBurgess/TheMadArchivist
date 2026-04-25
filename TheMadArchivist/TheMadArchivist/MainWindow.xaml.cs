@@ -1,17 +1,6 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using TheMadArchivist.Views.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,6 +15,43 @@ namespace TheMadArchivist
         public MainWindow()
         {
             InitializeComponent();
+
+            MainFrame.Navigated += MainFrame_OnNavigated;
+            UpdateNavigationButtons();
+
+            MainFrame.Navigate(typeof(HomePage));
+        }
+
+        private void MainFrame_OnNavigated(object sender, NavigationEventArgs e)
+        {
+            UpdateNavigationButtons();
+        }
+
+        private void UpdateNavigationButtons()
+        {
+            BackCommandButton.IsEnabled = MainFrame.CanGoBack;
+            ForwardCommandButton.IsEnabled = MainFrame.CanGoForward;
+        }
+
+        private void BackCommandButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (MainFrame.CanGoBack)
+            {
+                MainFrame.GoBack();
+            }
+        }
+
+        private void ForwardCommandButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (MainFrame.CanGoForward)
+            {
+                MainFrame.GoForward();
+            }
+        }
+
+        private void SettingsCommandButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(typeof(SettingsPage));
         }
     }
 }

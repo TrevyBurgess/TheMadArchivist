@@ -1,0 +1,38 @@
+<UserControl
+    x:Class="TheMadArchivist.Views.Controls.FolderTreeViewControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:TheMadArchivist.Converters"
+    xmlns:models="using:TheMadArchivist.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:IsFolderToSymbolConverter x:Key="IsFolderToSymbolConverter" />
+    </UserControl.Resources>
+
+    <Grid x:Name="RootGrid">
+        <TreeView
+            x:Name="FolderTreeView"
+            ItemsSource="{x:Bind RootNodes, Mode=OneWay}"
+            Expanding="FolderTreeView_OnExpanding">
+            <TreeView.ItemTemplate>
+                <DataTemplate x:DataType="models:FileSystemTreeNode">
+                    <TreeViewItem
+                        x:Name="FileSystemTreeViewItem"
+                        ItemsSource="{x:Bind Children, Mode=OneWay}">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <SymbolIcon
+                                x:Name="NodeIcon"
+                                Symbol="{Binding IsFolder, Converter={StaticResource IsFolderToSymbolConverter}}" />
+                            <TextBlock
+                                x:Name="NodeNameText"
+                                Text="{x:Bind Name, Mode=OneWay}" />
+                        </StackPanel>
+                    </TreeViewItem>
+                </DataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </Grid>
+</UserControl>
