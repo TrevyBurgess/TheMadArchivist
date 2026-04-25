@@ -15,6 +15,8 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using TheMadArchivist.Services;
+using TheMadArchivist.Utilities;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,6 +29,8 @@ namespace TheMadArchivist
     public partial class App : Application
     {
         private Window? _window;
+
+        public static Window? MainWindowInstance { get; private set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -44,6 +48,14 @@ namespace TheMadArchivist
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             _window = new MainWindow();
+            MainWindowInstance = _window;
+
+            if (_window.Content is FrameworkElement rootElement)
+            {
+                var themeSettings = new ThemeSettingsService(new LocalAppSettingsStore());
+                AppThemeManager.ApplyDarkMode(rootElement, themeSettings.IsDarkModeEnabled());
+            }
+
             _window.Activate();
         }
     }

@@ -13,7 +13,46 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid>
+    <Grid x:Name="RootLayoutGrid" RowDefinitions="Auto,Auto,*">
 
+        <MenuBar x:Name="TopMenuBar" Grid.Row="0">
+            <MenuBarItem x:Name="FileMenuBarItem" Title="File">
+                <MenuFlyoutItem x:Name="FileNewMenuItem" Text="New" />
+                <MenuFlyoutItem x:Name="FileOpenMenuItem" Text="Open" />
+                <MenuFlyoutSeparator x:Name="FileSeparator1" />
+                <MenuFlyoutItem x:Name="FileExitMenuItem" Text="Exit" />
+            </MenuBarItem>
+
+            <MenuBarItem x:Name="EditMenuBarItem" Title="Edit">
+                <MenuFlyoutItem x:Name="EditCutMenuItem" Text="Cut" />
+                <MenuFlyoutItem x:Name="EditCopyMenuItem" Text="Copy" />
+                <MenuFlyoutItem x:Name="EditPasteMenuItem" Text="Paste" />
+            </MenuBarItem>
+
+            <MenuBarItem x:Name="ViewMenuBarItem" Title="View">
+                <MenuFlyoutItem x:Name="ViewRefreshMenuItem" Text="Refresh" />
+            </MenuBarItem>
+
+            <MenuBarItem x:Name="HelpMenuBarItem" Title="Help">
+                <MenuFlyoutItem x:Name="HelpAboutMenuItem" Text="About" />
+            </MenuBarItem>
+        </MenuBar>
+
+        <CommandBar x:Name="TopCommandBar" Grid.Row="1" DefaultLabelPosition="Right">
+            <AppBarButton x:Name="BackCommandButton" Icon="Back" Label="Back" IsEnabled="False" Click="BackCommandButton_OnClick" />
+            <AppBarButton x:Name="ForwardCommandButton" Icon="Forward" Label="Forward" IsEnabled="False" Click="ForwardCommandButton_OnClick" />
+            <AppBarSeparator x:Name="CommandSeparator0" />
+            <AppBarButton x:Name="NewCommandButton" Icon="Add" Label="New" />
+            <AppBarButton x:Name="OpenCommandButton" Icon="OpenFile" Label="Open" />
+            <AppBarSeparator x:Name="CommandSeparator1" />
+            <AppBarButton x:Name="RefreshCommandButton" Icon="Refresh" Label="Refresh" />
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="SettingsCommandButton" Icon="Setting" Label="Settings" Click="SettingsCommandButton_OnClick" />
+                <AppBarButton x:Name="AboutCommandButton" Icon="Help" Label="About" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+
+        <Frame x:Name="MainFrame" Grid.Row="2" />
     </Grid>
 </Window>

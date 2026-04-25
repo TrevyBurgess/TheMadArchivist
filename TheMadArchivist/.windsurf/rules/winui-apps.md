@@ -8,6 +8,11 @@ description: WinUI 3
 - Use C# for business logic
 - Use MVVM pattern
 
+# Project Design
+
+- Use Lists for collections
+- Use ObservableCollection for dynamic collections
+
 # Project Structure
 
 - Place all controls in the Controls folder

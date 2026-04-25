@@ -10,7 +10,9 @@
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <WinUIDSKReferences>false</WinUIDSKReferences>
-    <EnableMsixTooling>true</EnableMsixTooling>
+    <EnableMsixTooling>false</EnableMsixTooling>
+    <GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
+    <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -48,6 +50,10 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260416003" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.2.1" />
     <PackageReference Include="MSTest.TestFramework" Version="4.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TheMadArchivist\TheMadArchivist.csproj" />
   </ItemGroup>
 
   <!-- 
