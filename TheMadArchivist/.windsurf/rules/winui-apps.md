@@ -7,11 +7,16 @@ description: WinUI 3
 - Use XAML for UI design
 - Use C# for business logic
 - Use MVVM pattern
+- Always create a ViewModel for each View.
+- Always create a Model for each View.
 
 # Project Design
 
 - Use Lists for collections
 - Use ObservableCollection for dynamic collections
+
+
+
 
 # Project Structure
 
