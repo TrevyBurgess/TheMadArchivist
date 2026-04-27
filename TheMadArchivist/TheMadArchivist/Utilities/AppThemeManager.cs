@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml;
 
-namespace TheMadArchivist.Utilities;
+namespace CyberFeedForward.TheMadArchivist.Utilities;
 
 public static class AppThemeManager
 {

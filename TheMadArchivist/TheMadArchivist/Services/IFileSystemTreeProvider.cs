@@ -1,7 +1,7 @@
+using CyberFeedForward.TheMadArchivist.Models;
 using System.Collections.ObjectModel;
-using TheMadArchivist.Models;
 
-namespace TheMadArchivist.Services;
+namespace CyberFeedForward.TheMadArchivist.Services;
 
 public interface IFileSystemTreeProvider
 {

@@ -1,4 +1,4 @@
-namespace TheMadArchivist.Services;
+namespace CyberFeedForward.TheMadArchivist.Services;
 
 public sealed class ThemeSettingsService
 {

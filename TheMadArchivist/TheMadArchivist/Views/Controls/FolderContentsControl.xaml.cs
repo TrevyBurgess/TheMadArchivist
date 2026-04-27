@@ -1,13 +1,13 @@
+using CyberFeedForward.TheMadArchivist.Models;
+using CyberFeedForward.TheMadArchivist.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using TheMadArchivist.Models;
-using TheMadArchivist.Services;
 
-namespace TheMadArchivist.Views.Controls;
+namespace CyberFeedForward.TheMadArchivist.Views.Controls;
 
 public sealed partial class FolderContentsControl : UserControl
 {

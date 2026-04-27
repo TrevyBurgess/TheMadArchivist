@@ -1,9 +1,10 @@
 <UserControl
-    x:Class="TheMadArchivist.Views.Controls.FolderTreeViewControl"
+    x:Name="ControlRoot"
+    x:Class="CyberFeedForward.TheMadArchivist.Views.Controls.FolderTreeViewControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="using:TheMadArchivist.Converters"
-    xmlns:models="using:TheMadArchivist.Models"
+    xmlns:converters="using:CyberFeedForward.TheMadArchivist.Converters"
+    xmlns:models="using:CyberFeedForward.TheMadArchivist.Models"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -15,22 +16,23 @@
     <Grid x:Name="RootGrid">
         <TreeView
             x:Name="FolderTreeView"
-            ItemsSource="{x:Bind RootNodes, Mode=OneWay}"
+            ItemsSource="{Binding ElementName=ControlRoot, Path=RootNodes}"
             Expanding="FolderTreeView_OnExpanding">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="ItemsSource" Value="{Binding Children}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <DataTemplate x:DataType="models:FileSystemTreeNode">
-                    <TreeViewItem
-                        x:Name="FileSystemTreeViewItem"
-                        ItemsSource="{x:Bind Children, Mode=OneWay}">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <SymbolIcon
-                                x:Name="NodeIcon"
-                                Symbol="{Binding IsFolder, Converter={StaticResource IsFolderToSymbolConverter}}" />
-                            <TextBlock
-                                x:Name="NodeNameText"
-                                Text="{x:Bind Name, Mode=OneWay}" />
-                        </StackPanel>
-                    </TreeViewItem>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <SymbolIcon
+                            x:Name="NodeIcon"
+                            Symbol="{Binding IsFolder, Converter={StaticResource IsFolderToSymbolConverter}}" />
+                        <TextBlock
+                            x:Name="NodeNameText"
+                            Text="{Binding Name}" />
+                    </StackPanel>
                 </DataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

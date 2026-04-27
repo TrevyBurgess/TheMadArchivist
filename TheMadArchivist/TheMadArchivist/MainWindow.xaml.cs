@@ -1,17 +1,20 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Navigation;
-using TheMadArchivist.Views.Pages;
+using System;
+using CyberFeedForward.TheMadArchivist.Views.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace TheMadArchivist
+namespace CyberFeedForward.TheMadArchivist
 {
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private const string AppTitle = "The Mad Archivist";
+
         public MainWindow()
         {
             InitializeComponent();
@@ -25,6 +28,29 @@ namespace TheMadArchivist
         private void MainFrame_OnNavigated(object sender, NavigationEventArgs e)
         {
             UpdateNavigationButtons();
+            UpdateWindowTitle(e.SourcePageType);
+        }
+
+        private void UpdateWindowTitle(Type? pageType)
+        {
+            var pageTitle = GetPageTitle(pageType);
+            Title = string.IsNullOrWhiteSpace(pageTitle) ? AppTitle : $"{AppTitle} - {pageTitle}";
+        }
+
+        private static string GetPageTitle(Type? pageType)
+        {
+            if (pageType is null)
+            {
+                return string.Empty;
+            }
+
+            var name = pageType.Name;
+            if (name.EndsWith("Page", StringComparison.Ordinal))
+            {
+                name = name[..^4];
+            }
+
+            return name;
         }
 
         private void UpdateNavigationButtons()
@@ -52,6 +78,11 @@ namespace TheMadArchivist
         private void SettingsCommandButton_OnClick(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(typeof(SettingsPage));
+        }
+
+        private void HelpAboutMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(typeof(AboutPage));
         }
     }
 }

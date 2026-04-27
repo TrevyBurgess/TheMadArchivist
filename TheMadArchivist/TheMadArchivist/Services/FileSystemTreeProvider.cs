@@ -1,8 +1,8 @@
+using CyberFeedForward.TheMadArchivist.Models;
 using System.Collections.ObjectModel;
 using System.IO;
-using TheMadArchivist.Models;
 
-namespace TheMadArchivist.Services;
+namespace CyberFeedForward.TheMadArchivist.Services;
 
 public sealed class FileSystemTreeProvider : IFileSystemTreeProvider
 {

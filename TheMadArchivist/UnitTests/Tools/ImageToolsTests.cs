@@ -14,7 +14,7 @@ public sealed class ImageToolsTests
     {
         try
         {
-            global::Tools.ImageTools.ToIcon("");
+            global::CyberFeedForward.TheMadArchivist.AppTools.ImageTools.ToIcon("");
             Assert.Fail("Expected ArgumentException was not thrown.");
         }
         catch (ArgumentException)
@@ -27,7 +27,7 @@ public sealed class ImageToolsTests
     {
         try
         {
-            global::Tools.ImageTools.ToIcon("C:\\this-file-should-not-exist-12345.png");
+            global::CyberFeedForward.TheMadArchivist.AppTools.ImageTools.ToIcon("C:\\this-file-should-not-exist-12345.png");
             Assert.Fail("Expected FileNotFoundException was not thrown.");
         }
         catch (FileNotFoundException)
@@ -49,11 +49,11 @@ public sealed class ImageToolsTests
                 bmp.Save(tempPath, ImageFormat.Png);
             }
 
-            using var icon = global::Tools.ImageTools.ToIcon(tempPath);
+            using var icon = global::CyberFeedForward.TheMadArchivist.AppTools.ImageTools.ToIcon(tempPath);
 
             Assert.IsNotNull(icon);
-            Assert.IsTrue(icon.Width > 0);
-            Assert.IsTrue(icon.Height > 0);
+            Assert.IsGreaterThan(0, icon.Width);
+            Assert.IsGreaterThan(0, icon.Height);
         }
         finally
         {

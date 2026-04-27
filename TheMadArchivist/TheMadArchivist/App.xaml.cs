@@ -15,13 +15,13 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using TheMadArchivist.Services;
-using TheMadArchivist.Utilities;
+using CyberFeedForward.TheMadArchivist.Utilities;
+using CyberFeedForward.TheMadArchivist.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace TheMadArchivist
+namespace CyberFeedForward.TheMadArchivist
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.

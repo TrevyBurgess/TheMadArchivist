@@ -1,5 +1,5 @@
+using CyberFeedForward.TheMadArchivist.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TheMadArchivist.ViewModels;
 
 namespace UnitTests.ViewModels;
 
