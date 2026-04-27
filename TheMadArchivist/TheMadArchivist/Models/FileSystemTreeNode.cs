@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace TheMadArchivist.Models;
+namespace CyberFeedForward.TheMadArchivist.Models;
 
 public sealed class FileSystemTreeNode
 {

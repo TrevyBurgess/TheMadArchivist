@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Window
-    x:Class="TheMadArchivist.MainWindow"
+    x:Class="CyberFeedForward.TheMadArchivist.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TheMadArchivist"
+    xmlns:local="using:CyberFeedForward.TheMadArchivist"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -34,11 +34,11 @@
             </MenuBarItem>
 
             <MenuBarItem x:Name="HelpMenuBarItem" Title="Help">
-                <MenuFlyoutItem x:Name="HelpAboutMenuItem" Text="About" />
+                <MenuFlyoutItem x:Name="HelpAboutMenuItem" Text="About" Click="HelpAboutMenuItem_OnClick" />
             </MenuBarItem>
         </MenuBar>
 
-        <CommandBar x:Name="TopCommandBar" Grid.Row="1" DefaultLabelPosition="Right">
+        <CommandBar x:Name="TopCommandBar" Grid.Row="1" DefaultLabelPosition="Right" >
             <AppBarButton x:Name="BackCommandButton" Icon="Back" Label="Back" IsEnabled="False" Click="BackCommandButton_OnClick" />
             <AppBarButton x:Name="ForwardCommandButton" Icon="Forward" Label="Forward" IsEnabled="False" Click="ForwardCommandButton_OnClick" />
             <AppBarSeparator x:Name="CommandSeparator0" />

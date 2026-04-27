@@ -11,21 +11,21 @@ public sealed class FolderToolsTests
     [TestMethod]
     public void UpdateFolderIcon_WhenIconPathIsEmpty_ReturnsFalse()
     {
-        var result = global::Tools.FolderTools.UpdateFolderIcon(string.Empty, "C:\\");
+        var result = global::CyberFeedForward.TheMadArchivist.AppTools.FolderTools.UpdateFolderIcon(string.Empty, "C:\\");
         Assert.IsFalse(result);
     }
 
     [TestMethod]
     public void UpdateFolderIcon_WhenFolderPathIsEmpty_ReturnsFalse()
     {
-        var result = global::Tools.FolderTools.UpdateFolderIcon("C:\\temp.ico", string.Empty);
+        var result = global::CyberFeedForward.TheMadArchivist.AppTools.FolderTools.UpdateFolderIcon("C:\\temp.ico", string.Empty);
         Assert.IsFalse(result);
     }
 
     [TestMethod]
     public void UpdateFolderIcon_WhenPathsDoNotExist_ReturnsFalse()
     {
-        var result = global::Tools.FolderTools.UpdateFolderIcon("C:\\this-file-should-not-exist-12345.ico", "C:\\this-folder-should-not-exist-12345");
+        var result = global::CyberFeedForward.TheMadArchivist.AppTools.FolderTools.UpdateFolderIcon("C:\\this-file-should-not-exist-12345.ico", "C:\\this-folder-should-not-exist-12345");
         Assert.IsFalse(result);
     }
 
@@ -45,7 +45,7 @@ public sealed class FolderToolsTests
                 icon.Save(fs);
             }
 
-            var result = global::Tools.FolderTools.UpdateFolderIcon(tempIcon, tempFolder);
+            var result = global::CyberFeedForward.TheMadArchivist.AppTools.FolderTools.UpdateFolderIcon(tempIcon, tempFolder);
 
             Assert.IsTrue(result);
             Assert.IsTrue(File.Exists(Path.Combine(tempFolder, "desktop.ini")));

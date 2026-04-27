@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.IO;
 
-namespace Tools;
+namespace CyberFeedForward.TheMadArchivist.AppTools;
 
 public static class FileTools
 {

@@ -1,6 +1,6 @@
 using Windows.Storage;
 
-namespace TheMadArchivist.Services;
+namespace CyberFeedForward.TheMadArchivist.Services;
 
 public sealed class LocalAppSettingsStore : IAppSettingsStore
 {

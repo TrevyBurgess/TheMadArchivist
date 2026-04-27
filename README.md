@@ -2,9 +2,9 @@
 
 Desktop application for managing your files
 
-
 # Commands
 
+- Update the title to show app title and page in the form "App name - Page name"
 
 ## Controls
 
@@ -25,9 +25,10 @@ Desktop application for managing your files
 
 ## Library - FolderTools
 
-- Add a method in Tools.Archiving.ca called MapDrive. Given a folder path, a drive letter, and a nama, it will create a mapped drive. Return error code if operation fails.
-- Add a method in Tools.Archiving.ca called UnmapDrive. Given a drive letter, un map the drive. Return a status flag.
-- Add a method in Tools.Archiving.ca called UnmapDrive.
+- Add a method in Tools.FolderTools.ca called MapDrive. Given a folder path, a drive letter, and a nama, it will create a mapped drive. Return error code if operation fails.
+- Add a method in Tools.FolderTools.ca called UnmapDrive. Given a drive letter, un map the drive. Return a status flag.
+- Add a method in Tools.FolderTools.ca called UpdateFolderIcon. It will take a path to an Icon file and a folder path. When called, update the folder icon with the supplied icon
+- 
 
 ## Library - FileTools
 
@@ -37,7 +38,9 @@ Desktop application for managing your files
 
 - Add a method in Tools.ImageTools.ca called ToIcon. Given the path to an image, create a windows icon. The method will return this icon
 
+## Help - About
 
+- Add an about page to the app. Navigate to it when a user presses the About menu command
 
 
 

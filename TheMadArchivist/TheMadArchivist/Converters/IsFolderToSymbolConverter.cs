@@ -2,9 +2,9 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Controls;
 using System;
 
-namespace TheMadArchivist.Converters;
+namespace CyberFeedForward.TheMadArchivist.Converters;
 
-public sealed class IsFolderToSymbolConverter : IValueConverter
+public sealed partial class IsFolderToSymbolConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {

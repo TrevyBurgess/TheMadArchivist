@@ -1,10 +1,11 @@
+using CyberFeedForward.TheMadArchivist.Services;
+using CyberFeedForward.TheMadArchivist.Utilities;
 using Microsoft.UI.Xaml;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using TheMadArchivist.Services;
-using TheMadArchivist.Utilities;
+using CyberFeedForward.TheMadArchivist;
 
-namespace TheMadArchivist.ViewModels;
+namespace CyberFeedForward.TheMadArchivist.ViewModels;
 
 public sealed class SettingsPageViewModel : INotifyPropertyChanged
 {
