@@ -14,7 +14,7 @@ description: WinUI 3
 
 - Use Lists for collections
 - Use ObservableCollection for dynamic collections
-
+- Follow Microsoft's official documentation for best practices
 
 
 

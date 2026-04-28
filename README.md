@@ -1,8 +1,23 @@
 # The Mad Archivist
 
-Desktop application for managing your files
+Desktop application for managing your archives
 
-# Commands
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Vibe-code Commands
 
 - Update the title to show app title and page in the form "App name - Page name"
 
@@ -25,14 +40,22 @@ Desktop application for managing your files
 
 ## Library - FolderTools
 
-- Add a method in Tools.FolderTools.ca called MapDrive. Given a folder path, a drive letter, and a nama, it will create a mapped drive. Return error code if operation fails.
-- Add a method in Tools.FolderTools.ca called UnmapDrive. Given a drive letter, un map the drive. Return a status flag.
-- Add a method in Tools.FolderTools.ca called UpdateFolderIcon. It will take a path to an Icon file and a folder path. When called, update the folder icon with the supplied icon
+- Add a method in AppTools.FolderTools.cs called MapDrive. Given a folder path, a drive letter, and a nama, it will create a mapped drive. Return error code if operation fails.
+- Add a method in AppTools.FolderTools.cs called UnmapDrive. Given a drive letter, un map the drive. Return a status flag.
+- Add a method in AppTools.FolderTools.cs called UpdateFolderIcon. It will take a path to an Icon file and a folder path. When called, update the folder icon with the supplied icon
 - 
 
 ## Library - FileTools
 
-- Add a method in Tools.FileTools.ca called SaveIcon. Given an Icon, and a file path, save the icon to file
+- Add a method in AppTools.FileTools.cs called SaveIcon. Given an Icon, and a file path, save the icon to file
+- Add a method to AppTools.FileTools.cs called IsIdentical. Given 2 file paths, check if the files contents are the same. Optimize method for speed.
+
+## Library - EncryptionTools
+
+- Add a method to AppTools.EncryptionTools.cs called EncryptFile. It will encrypt a file specified by an input file path and save it to a specified location
+- Add a method to AppTools.EncryptionTools.cs called DecryptFile. It will decrypt a file specified by an input file path and save it to a specified location
+
+
 
 ## Library - ImageTools
 
@@ -44,3 +67,4 @@ Desktop application for managing your files
 
 
 
+EncryptionTools

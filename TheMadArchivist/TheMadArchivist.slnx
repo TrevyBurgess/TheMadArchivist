@@ -4,17 +4,21 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Project Path="AppTools/AppTools.csproj" Id="c210ed71-50ce-4455-ad05-73d2ead0e796" />
   <Project Path="TheMadArchivist/TheMadArchivist.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
     <Deploy />
   </Project>
-  <Project Path="Tools/AppTools.csproj" />
   <Project Path="UnitTests/UnitTests.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
-    <Deploy />
+  </Project>
+  <Project Path="WinUITests/WinUITests.csproj">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
   </Project>
 </Solution>
