@@ -1,10 +1,10 @@
 using CyberFeedForward.TheMadArchivist.Services;
+using CyberFeedForward.TheMadArchivist.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.AppContainer;
 using System.Collections.Generic;
-using TheMadArchivist.ViewModels;
 
 namespace UnitTests.ViewModels;
 
@@ -26,17 +26,20 @@ public sealed class SettingsPageViewModelTests
         }
     }
 
-    [UITestMethod]
+    [TestMethod]
     public void IsDarkModeEnabled_WhenSet_UpdatesRootElementTheme()
     {
-        var store = new InMemorySettingsStore();
-        var service = new ThemeSettingsService(store);
-        var root = new Grid();
+        WinUiTestHelper.Run(() =>
+        {
+            var store = new InMemorySettingsStore();
+            var service = new ThemeSettingsService(store);
+            var root = new Grid();
 
-        var viewModel = new SettingsPageViewModel(service, root);
+            var viewModel = new SettingsPageViewModel(service, root);
 
-        viewModel.IsDarkModeEnabled = true;
+            viewModel.IsDarkModeEnabled = true;
 
-        Assert.AreEqual(ElementTheme.Dark, root.RequestedTheme);
+            Assert.AreEqual(ElementTheme.Dark, root.RequestedTheme);
+        });
     }
 }

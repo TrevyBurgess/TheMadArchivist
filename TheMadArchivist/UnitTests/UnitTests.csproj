@@ -12,6 +12,7 @@
     <UseSystemDrawing>true</UseSystemDrawing>
     <WinUIDSKReferences>false</WinUIDSKReferences>
     <EnableMsixTooling>false</EnableMsixTooling>
+    <WindowsAppSdkDeploymentManagerInitialize>false</WindowsAppSdkDeploymentManagerInitialize>
     <GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
@@ -57,7 +58,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TheMadArchivist\TheMadArchivist.csproj" />
-    <ProjectReference Include="..\Tools\Tools.csproj" />
+    <ProjectReference Include="..\Tools\AppTools.csproj" />
   </ItemGroup>
 
   <!-- 

@@ -54,6 +54,13 @@ public sealed class FolderToolsTests
         {
             if (Directory.Exists(tempFolder))
             {
+                var desktopIniPath = Path.Combine(tempFolder, "desktop.ini");
+                if (File.Exists(desktopIniPath))
+                {
+                    File.SetAttributes(desktopIniPath, FileAttributes.Normal);
+                }
+
+                File.SetAttributes(tempFolder, FileAttributes.Directory);
                 Directory.Delete(tempFolder, recursive: true);
             }
         }
