@@ -9,23 +9,29 @@ namespace UnitTests.Utilities;
 [TestClass]
 public sealed class AppThemeManagerTests
 {
-    [UITestMethod]
+    [TestMethod]
     public void ApplyDarkMode_WhenEnabled_SetsRequestedThemeToDark()
     {
-        var root = new Grid();
+        WinUiTestHelper.Run(() =>
+        {
+            var root = new Grid();
 
-        AppThemeManager.ApplyDarkMode(root, isDarkModeEnabled: true);
+            AppThemeManager.ApplyDarkMode(root, isDarkModeEnabled: true);
 
-        Assert.AreEqual(ElementTheme.Dark, root.RequestedTheme);
+            Assert.AreEqual(ElementTheme.Dark, root.RequestedTheme);
+        });
     }
 
-    [UITestMethod]
+    [TestMethod]
     public void ApplyDarkMode_WhenDisabled_SetsRequestedThemeToLight()
     {
-        var root = new Grid();
+        WinUiTestHelper.Run(() =>
+        {
+            var root = new Grid();
 
-        AppThemeManager.ApplyDarkMode(root, isDarkModeEnabled: false);
+            AppThemeManager.ApplyDarkMode(root, isDarkModeEnabled: false);
 
-        Assert.AreEqual(ElementTheme.Light, root.RequestedTheme);
+            Assert.AreEqual(ElementTheme.Light, root.RequestedTheme);
+        });
     }
 }

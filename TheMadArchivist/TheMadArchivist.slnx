@@ -10,7 +10,7 @@
     <Platform Solution="*|x86" Project="x86" />
     <Deploy />
   </Project>
-  <Project Path="Tools/Tools.csproj" />
+  <Project Path="Tools/AppTools.csproj" />
   <Project Path="UnitTests/UnitTests.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
