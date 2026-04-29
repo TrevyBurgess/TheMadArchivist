@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.IO;
 using CyberFeedForward.TheMadArchivist.Views.Pages;
 using CyberFeedForward.TheMadArchivist.Services;
 
@@ -27,6 +28,8 @@ namespace CyberFeedForward.TheMadArchivist
 
             MainFrame.Navigated += MainFrame_OnNavigated;
             UpdateNavigationButtons();
+
+            FolderContentsControl.FolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             MainFrame.Navigate(typeof(HomePage));
         }
