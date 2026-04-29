@@ -33,9 +33,10 @@ public sealed class SettingsPageViewModelTests
         {
             var store = new InMemorySettingsStore();
             var service = new ThemeSettingsService(store);
+            var commandBarSettings = new CommandBarSettingsService(store);
             var root = new Grid();
 
-            var viewModel = new SettingsPageViewModel(service, root);
+            var viewModel = new SettingsPageViewModel(service, commandBarSettings, root);
 
             viewModel.IsDarkModeEnabled = true;
 

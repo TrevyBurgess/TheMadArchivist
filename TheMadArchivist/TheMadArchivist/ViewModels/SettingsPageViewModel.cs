@@ -10,20 +10,24 @@ namespace CyberFeedForward.TheMadArchivist.ViewModels;
 public sealed class SettingsPageViewModel : INotifyPropertyChanged
 {
     private readonly ThemeSettingsService _themeSettingsService;
+    private readonly CommandBarSettingsService _commandBarSettingsService;
     private readonly FrameworkElement? _themeRootElement;
     private bool _isDarkModeEnabled;
+    private bool _isCommandBarOnLeft;
 
     public SettingsPageViewModel()
-        : this(new ThemeSettingsService(new LocalAppSettingsStore()), App.MainWindowInstance?.Content as FrameworkElement)
+        : this(new ThemeSettingsService(new LocalAppSettingsStore()), new CommandBarSettingsService(new LocalAppSettingsStore()), App.MainWindowInstance?.Content as FrameworkElement)
     {
     }
 
-    public SettingsPageViewModel(ThemeSettingsService themeSettingsService, FrameworkElement? themeRootElement)
+    public SettingsPageViewModel(ThemeSettingsService themeSettingsService, CommandBarSettingsService commandBarSettingsService, FrameworkElement? themeRootElement)
     {
         _themeSettingsService = themeSettingsService;
+        _commandBarSettingsService = commandBarSettingsService;
         _themeRootElement = themeRootElement;
 
         _isDarkModeEnabled = _themeSettingsService.IsDarkModeEnabled();
+        _isCommandBarOnLeft = _commandBarSettingsService.IsCommandBarOnLeft();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -46,6 +50,28 @@ public sealed class SettingsPageViewModel : INotifyPropertyChanged
             if (_themeRootElement is not null)
             {
                 AppThemeManager.ApplyDarkMode(_themeRootElement, value);
+            }
+        }
+    }
+
+    public bool IsCommandBarOnLeft
+    {
+        get => _isCommandBarOnLeft;
+        set
+        {
+            if (_isCommandBarOnLeft == value)
+            {
+                return;
+            }
+
+            _isCommandBarOnLeft = value;
+            OnPropertyChanged();
+
+            _commandBarSettingsService.SetCommandBarOnLeft(value);
+
+            if (App.MainWindowInstance is MainWindow mainWindow)
+            {
+                mainWindow.SetCommandBarOnLeft(value);
             }
         }
     }

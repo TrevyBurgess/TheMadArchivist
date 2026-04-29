@@ -1,7 +1,9 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using CyberFeedForward.TheMadArchivist.Views.Pages;
+using CyberFeedForward.TheMadArchivist.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -14,10 +16,14 @@ namespace CyberFeedForward.TheMadArchivist
     public sealed partial class MainWindow : Window
     {
         private const string AppTitle = "The Mad Archivist";
+        private readonly CommandBarSettingsService _commandBarSettings;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            _commandBarSettings = new CommandBarSettingsService(new LocalAppSettingsStore());
+            SetCommandBarOnLeft(_commandBarSettings.IsCommandBarOnLeft());
 
             MainFrame.Navigated += MainFrame_OnNavigated;
             UpdateNavigationButtons();
@@ -29,6 +35,31 @@ namespace CyberFeedForward.TheMadArchivist
         {
             UpdateNavigationButtons();
             UpdateWindowTitle(e.SourcePageType);
+            SetCommandBarOnLeft(_commandBarSettings.IsCommandBarOnLeft());
+        }
+
+        public void SetCommandBarOnLeft(bool onLeft)
+        {
+            MainCommandBar.SetValue(Grid.ColumnProperty, onLeft ? 0 : 2);
+        }
+
+        public void SetStatusText(string? text)
+        {
+            if (DispatcherQueue.HasThreadAccess)
+            {
+                StatusBarText.Text = string.IsNullOrWhiteSpace(text) ? "Ready" : text;
+                return;
+            }
+
+            _ = DispatcherQueue.TryEnqueue(() =>
+            {
+                StatusBarText.Text = string.IsNullOrWhiteSpace(text) ? "Ready" : text;
+            });
+        }
+
+        public void ClearStatusText()
+        {
+            SetStatusText(null);
         }
 
         private void UpdateWindowTitle(Type? pageType)

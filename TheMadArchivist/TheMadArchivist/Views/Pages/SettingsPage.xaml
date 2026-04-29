@@ -29,6 +29,11 @@
                 x:Name="DarkModeToggleSwitch"
                 Header="Dark mode"
                 IsOn="{Binding IsDarkModeEnabled, Mode=TwoWay}" />
+
+            <ToggleSwitch
+                x:Name="CommandBarLeftToggleSwitch"
+                Header="Command bar on left"
+                IsOn="{Binding IsCommandBarOnLeft, Mode=TwoWay}" />
         </StackPanel>
     </Grid>
 </Page>

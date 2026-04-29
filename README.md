@@ -4,19 +4,6 @@ Desktop application for managing your archives
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Vibe-code Commands
 
 - Update the title to show app title and page in the form "App name - Page name"
@@ -25,13 +12,27 @@ Desktop application for managing your archives
 
 - Create a user control. It will display a list of files and folders, given a folder path place it in the appropriate location
 - Create a user control. Given a folder path, it will display a tree view of child files and folders
+- Add a status bar at the bottom of the app
+
+
+## Toolbars
+
+- Rename TopCommandBar to MainCommandBar
+
+- Add a new toolbar called File. Make it dockable
+
+
 
 ## Layout
 
 - Add Home page
 - Add a MenuBar at the top of the app
 - Add a CommandBar at the top of the app, below the MenuBar
+- Move the CommandBar to the left. Add a toggle to the settings to allow the user to move between left and right.
+
 - Add back and forward Navigation buttons to the command bar, to navigate to visited pages
+
+
 
 ## Settings
 
@@ -61,10 +62,13 @@ Desktop application for managing your archives
 
 - Add a method in Tools.ImageTools.ca called ToIcon. Given the path to an image, create a windows icon. The method will return this icon
 
+## Main Page
+
+
+
 ## Help - About
 
 - Add an about page to the app. Navigate to it when a user presses the About menu command
 
 
 
-EncryptionTools

@@ -56,5 +56,4 @@ namespace CyberFeedForward.TheMadArchivist.AppTools.InternalTools
 
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
     }
-
 }
