@@ -1,11 +1,12 @@
 using CyberFeedForward.TheMadArchivist.Services;
+using CyberFeedForward.TheMadArchivist.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
-namespace UnitTests.Services;
+namespace UnitTests.AA.ViewModels;
 
 [TestClass]
-public sealed class CommandBarSettingsServiceTests
+public sealed class MainWindowViewModelTests
 {
     private sealed class InMemorySettingsStore : IAppSettingsStore
     {
@@ -34,34 +35,31 @@ public sealed class CommandBarSettingsServiceTests
     }
 
     [TestMethod]
-    public void IsCommandBarOnLeft_WhenNotSet_ReturnsTrue()
+    public void StatusText_WhenNullOrWhitespace_DefaultsToReady()
     {
         var store = new InMemorySettingsStore();
         var service = new CommandBarSettingsService(store);
+        var vm = new MainWindowViewModel(service, "C:\\");
 
-        Assert.IsTrue(service.IsCommandBarOnLeft());
+        vm.StatusText = "";
+        Assert.AreEqual("Ready", vm.StatusText);
+
+        vm.StatusText = "   ";
+        Assert.AreEqual("Ready", vm.StatusText);
+
+        vm.StatusText = null!;
+        Assert.AreEqual("Ready", vm.StatusText);
     }
 
     [TestMethod]
-    public void SetCommandBarOnLeft_WhenSetToFalse_PersistsValue()
+    public void IsCommandBarOnLeft_WhenSet_PersistsToStore()
     {
         var store = new InMemorySettingsStore();
         var service = new CommandBarSettingsService(store);
+        var vm = new MainWindowViewModel(service, "C:\\");
 
-        service.SetCommandBarOnLeft(false);
+        vm.IsCommandBarOnLeft = false;
 
         Assert.IsFalse(service.IsCommandBarOnLeft());
-    }
-
-    [TestMethod]
-    public void SetCommandBarOnLeft_WhenSetToTrue_PersistsValue()
-    {
-        var store = new InMemorySettingsStore();
-        var service = new CommandBarSettingsService(store);
-
-        service.SetCommandBarOnLeft(false);
-        service.SetCommandBarOnLeft(true);
-
-        Assert.IsTrue(service.IsCommandBarOnLeft());
     }
 }

@@ -13,16 +13,27 @@ public sealed class SettingsPageViewModelTests
 {
     private sealed class InMemorySettingsStore : IAppSettingsStore
     {
-        private readonly Dictionary<string, bool> _values = new();
+        private readonly Dictionary<string, bool> _boolValues = new();
+        private readonly Dictionary<string, int> _intValues = new();
 
         public bool TryGetBool(string key, out bool value)
         {
-            return _values.TryGetValue(key, out value);
+            return _boolValues.TryGetValue(key, out value);
         }
 
         public void SetBool(string key, bool value)
         {
-            _values[key] = value;
+            _boolValues[key] = value;
+        }
+
+        public bool TryGetInt(string key, out int value)
+        {
+            return _intValues.TryGetValue(key, out value);
+        }
+
+        public void SetInt(string key, int value)
+        {
+            _intValues[key] = value;
         }
     }
 
@@ -38,9 +49,27 @@ public sealed class SettingsPageViewModelTests
 
             var viewModel = new SettingsPageViewModel(service, commandBarSettings, root);
 
-            viewModel.IsDarkModeEnabled = true;
+            viewModel.ThemeMode = AppThemeMode.Dark;
 
             Assert.AreEqual(ElementTheme.Dark, root.RequestedTheme);
+        });
+    }
+
+    [TestMethod]
+    public void ThemeMode_WhenSetToSystemDefault_UpdatesRootElementTheme()
+    {
+        WinUiTestHelper.Run(() =>
+        {
+            var store = new InMemorySettingsStore();
+            var service = new ThemeSettingsService(store);
+            var commandBarSettings = new CommandBarSettingsService(store);
+            var root = new Grid();
+
+            var viewModel = new SettingsPageViewModel(service, commandBarSettings, root);
+
+            viewModel.ThemeMode = AppThemeMode.SystemDefault;
+
+            Assert.AreEqual(ElementTheme.Default, root.RequestedTheme);
         });
     }
 }

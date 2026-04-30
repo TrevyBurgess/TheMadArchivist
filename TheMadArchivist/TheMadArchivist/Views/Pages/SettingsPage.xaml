@@ -25,10 +25,14 @@
                 Text="Configure application preferences."
                 Opacity="0.8" />
 
-            <ToggleSwitch
-                x:Name="DarkModeToggleSwitch"
-                Header="Dark mode"
-                IsOn="{Binding IsDarkModeEnabled, Mode=TwoWay}" />
+            <ComboBox
+                x:Name="ThemeModeComboBox"
+                Header="Theme"
+                SelectedIndex="{Binding ThemeModeIndex, Mode=TwoWay}">
+                <ComboBoxItem x:Name="ThemeModeSystemDefaultItem" Content="System default" />
+                <ComboBoxItem x:Name="ThemeModeLightItem" Content="Light" />
+                <ComboBoxItem x:Name="ThemeModeDarkItem" Content="Dark" />
+            </ComboBox>
 
             <ToggleSwitch
                 x:Name="CommandBarLeftToggleSwitch"

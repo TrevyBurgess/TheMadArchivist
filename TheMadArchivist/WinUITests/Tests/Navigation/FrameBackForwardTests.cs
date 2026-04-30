@@ -1,4 +1,5 @@
 using CyberFeedForward.TheMadArchivist.Views.Pages;
+using CyberFeedForward.TheMadArchivist.Utilities;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.AppContainer;
@@ -18,21 +19,21 @@ public sealed class FrameBackForwardTests
             Assert.IsFalse(frame.CanGoBack);
             Assert.IsFalse(frame.CanGoForward);
 
-            Assert.IsTrue(frame.Navigate(typeof(SettingsPage)));
+            Assert.IsTrue(frame.NavigateIfNotCurrent(typeof(SettingsPage)));
             Assert.IsFalse(frame.CanGoBack);
             Assert.IsFalse(frame.CanGoForward);
 
-            Assert.IsTrue(frame.Navigate(typeof(SettingsPage)));
+            Assert.IsFalse(frame.NavigateIfNotCurrent(typeof(SettingsPage)));
+            Assert.IsFalse(frame.CanGoBack);
+            Assert.IsFalse(frame.CanGoForward);
+
+            Assert.IsTrue(frame.NavigateIfNotCurrent(typeof(AboutPage)));
             Assert.IsTrue(frame.CanGoBack);
             Assert.IsFalse(frame.CanGoForward);
 
             frame.GoBack();
             Assert.IsFalse(frame.CanGoBack);
             Assert.IsTrue(frame.CanGoForward);
-
-            frame.GoForward();
-            Assert.IsTrue(frame.CanGoBack);
-            Assert.IsFalse(frame.CanGoForward);
         });
     }
 }

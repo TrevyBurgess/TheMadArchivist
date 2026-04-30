@@ -22,4 +22,21 @@ public sealed class LocalAppSettingsStore : IAppSettingsStore
     {
         _localSettings.Values[key] = value;
     }
+
+    public bool TryGetInt(string key, out int value)
+    {
+        if (_localSettings.Values.TryGetValue(key, out var stored) && stored is int i)
+        {
+            value = i;
+            return true;
+        }
+
+        value = 0;
+        return false;
+    }
+
+    public void SetInt(string key, int value)
+    {
+        _localSettings.Values[key] = value;
+    }
 }

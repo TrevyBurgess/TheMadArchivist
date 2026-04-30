@@ -1,10 +1,16 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using CyberFeedForward.TheMadArchivist.Views.Pages;
 using CyberFeedForward.TheMadArchivist.Services;
+using CyberFeedForward.TheMadArchivist.ViewModels;
+using CyberFeedForward.TheMadArchivist.Utilities;
+using WinRT.Interop;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -18,20 +24,81 @@ namespace CyberFeedForward.TheMadArchivist
     {
         private const string AppTitle = "The Mad Archivist";
         private readonly CommandBarSettingsService _commandBarSettings;
+        private readonly MainWindowViewModel _viewModel;
+        private readonly WindowPlacementSettingsService _windowPlacementSettings;
+        private readonly AppWindow _appWindow;
 
         public MainWindow()
         {
             InitializeComponent();
 
             _commandBarSettings = new CommandBarSettingsService(new LocalAppSettingsStore());
+            _viewModel = new MainWindowViewModel(_commandBarSettings, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            _windowPlacementSettings = new WindowPlacementSettingsService(new LocalAppSettingsStore());
+
+            var hwnd = WindowNative.GetWindowHandle(this);
+            var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            _appWindow = AppWindow.GetFromWindowId(windowId);
+
+            if (Content is FrameworkElement rootElement)
+            {
+                rootElement.DataContext = _viewModel;
+            }
             SetCommandBarOnLeft(_commandBarSettings.IsCommandBarOnLeft());
+
+            RestoreWindowPlacement(windowId);
+            Closed += MainWindow_OnClosed;
 
             MainFrame.Navigated += MainFrame_OnNavigated;
             UpdateNavigationButtons();
 
-            FolderContentsControl.FolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            MainFrame.NavigateIfNotCurrent(typeof(HomePage));
+        }
 
-            MainFrame.Navigate(typeof(HomePage));
+        private void RestoreWindowPlacement(WindowId windowId)
+        {
+            if (!_windowPlacementSettings.TryGetPlacement(out var placement))
+            {
+                return;
+            }
+
+            var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
+            var workArea = displayArea.WorkArea;
+
+            var width = Math.Clamp(placement.Width, 200, workArea.Width);
+            var height = Math.Clamp(placement.Height, 200, workArea.Height);
+
+            var x = placement.X;
+            var y = placement.Y;
+
+            if (x < workArea.X)
+            {
+                x = workArea.X;
+            }
+
+            if (y < workArea.Y)
+            {
+                y = workArea.Y;
+            }
+
+            if (x + width > workArea.X + workArea.Width)
+            {
+                x = workArea.X + workArea.Width - width;
+            }
+
+            if (y + height > workArea.Y + workArea.Height)
+            {
+                y = workArea.Y + workArea.Height - height;
+            }
+
+            _appWindow.MoveAndResize(new Windows.Graphics.RectInt32(x, y, width, height));
+        }
+
+        private void MainWindow_OnClosed(object sender, WindowEventArgs args)
+        {
+            var pos = _appWindow.Position;
+            var size = _appWindow.Size;
+            _windowPlacementSettings.SavePlacement(new WindowPlacement(pos.X, pos.Y, size.Width, size.Height));
         }
 
         private void MainFrame_OnNavigated(object sender, NavigationEventArgs e)
@@ -50,13 +117,13 @@ namespace CyberFeedForward.TheMadArchivist
         {
             if (DispatcherQueue.HasThreadAccess)
             {
-                StatusBarText.Text = string.IsNullOrWhiteSpace(text) ? "Ready" : text;
+                _viewModel.StatusText = string.IsNullOrWhiteSpace(text) ? "Ready" : text;
                 return;
             }
 
             _ = DispatcherQueue.TryEnqueue(() =>
             {
-                StatusBarText.Text = string.IsNullOrWhiteSpace(text) ? "Ready" : text;
+                _viewModel.StatusText = string.IsNullOrWhiteSpace(text) ? "Ready" : text;
             });
         }
 
@@ -111,12 +178,12 @@ namespace CyberFeedForward.TheMadArchivist
 
         private void SettingsCommandButton_OnClick(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(typeof(SettingsPage));
+            MainFrame.NavigateIfNotCurrent(typeof(SettingsPage));
         }
 
         private void HelpAboutMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(typeof(AboutPage));
+            MainFrame.NavigateIfNotCurrent(typeof(AboutPage));
         }
     }
 }
