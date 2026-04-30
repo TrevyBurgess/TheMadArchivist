@@ -19,4 +19,11 @@ public sealed class HomePageViewModelTests
         var vm = new HomePageViewModel();
         Assert.IsFalse(string.IsNullOrWhiteSpace(vm.Description));
     }
+
+    [TestMethod]
+    public void FolderPath_IsNotEmpty()
+    {
+        var vm = new HomePageViewModel();
+        Assert.IsFalse(string.IsNullOrWhiteSpace(vm.FolderPath));
+    }
 }

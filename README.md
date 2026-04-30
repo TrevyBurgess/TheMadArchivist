@@ -13,14 +13,13 @@ Desktop application for managing your archives
 - Create a user control. It will display a list of files and folders, given a folder path place it in the appropriate location
 - Create a user control. Given a folder path, it will display a tree view of child files and folders
 - Add a status bar at the bottom of the app
-
+- Do not add a page to the navigation stack if the current page is the last page pushed onto the stack
 
 ## Toolbars
 
 - Rename TopCommandBar to MainCommandBar
-
 - Add a new toolbar called File. Make it dockable
-
+- Add a Settings button to the right of the menu bar. Use the icon only. Right justify it
 
 
 ## Layout
@@ -31,13 +30,14 @@ Desktop application for managing your archives
 - Move the CommandBar to the left. Add a toggle to the settings to allow the user to move between left and right.
 
 - Add back and forward Navigation buttons to the command bar, to navigate to visited pages
-
-
+- Remember the last position and size of the app when it closes
 
 ## Settings
 
 - Add a page called Settings. Navigate to this page when a user clicks on Settings button
 - Add a toggle to Settings. When on, this will activate dark mode
+- Add System Default as an option for the Dark mode setting
+
 
 ## Library - FolderTools
 

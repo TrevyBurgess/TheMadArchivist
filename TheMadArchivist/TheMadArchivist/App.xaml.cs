@@ -53,7 +53,7 @@ namespace CyberFeedForward.TheMadArchivist
             if (_window.Content is FrameworkElement rootElement)
             {
                 var themeSettings = new ThemeSettingsService(new LocalAppSettingsStore());
-                AppThemeManager.ApplyDarkMode(rootElement, themeSettings.IsDarkModeEnabled());
+                AppThemeManager.ApplyThemeMode(rootElement, themeSettings.GetThemeMode());
             }
 
             _window.Activate();

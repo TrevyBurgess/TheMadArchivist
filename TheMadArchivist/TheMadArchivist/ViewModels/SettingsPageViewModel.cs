@@ -12,7 +12,7 @@ public sealed class SettingsPageViewModel : INotifyPropertyChanged
     private readonly ThemeSettingsService _themeSettingsService;
     private readonly CommandBarSettingsService _commandBarSettingsService;
     private readonly FrameworkElement? _themeRootElement;
-    private bool _isDarkModeEnabled;
+    private AppThemeMode _themeMode;
     private bool _isCommandBarOnLeft;
 
     public SettingsPageViewModel()
@@ -26,32 +26,55 @@ public sealed class SettingsPageViewModel : INotifyPropertyChanged
         _commandBarSettingsService = commandBarSettingsService;
         _themeRootElement = themeRootElement;
 
-        _isDarkModeEnabled = _themeSettingsService.IsDarkModeEnabled();
+        _themeMode = _themeSettingsService.GetThemeMode();
         _isCommandBarOnLeft = _commandBarSettingsService.IsCommandBarOnLeft();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public bool IsDarkModeEnabled
+    public AppThemeMode ThemeMode
     {
-        get => _isDarkModeEnabled;
+        get => _themeMode;
         set
         {
-            if (_isDarkModeEnabled == value)
+            if (_themeMode == value)
             {
                 return;
             }
 
-            _isDarkModeEnabled = value;
+            _themeMode = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(IsDarkModeEnabled));
 
-            _themeSettingsService.SetDarkModeEnabled(value);
+            _themeSettingsService.SetThemeMode(value);
 
             if (_themeRootElement is not null)
             {
-                AppThemeManager.ApplyDarkMode(_themeRootElement, value);
+                AppThemeManager.ApplyThemeMode(_themeRootElement, value);
             }
         }
+    }
+
+    public bool IsDarkModeEnabled
+    {
+        get => ThemeMode == AppThemeMode.Dark;
+        set => ThemeMode = value ? AppThemeMode.Dark : AppThemeMode.Light;
+    }
+
+    public int ThemeModeIndex
+    {
+        get => ThemeMode switch
+        {
+            AppThemeMode.SystemDefault => 0,
+            AppThemeMode.Light => 1,
+            _ => 2,
+        };
+        set => ThemeMode = value switch
+        {
+            1 => AppThemeMode.Light,
+            2 => AppThemeMode.Dark,
+            _ => AppThemeMode.SystemDefault,
+        };
     }
 
     public bool IsCommandBarOnLeft

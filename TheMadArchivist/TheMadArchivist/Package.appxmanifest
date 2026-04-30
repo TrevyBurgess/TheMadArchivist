@@ -18,7 +18,7 @@
   <Properties>
     <DisplayName>Zee Mad Archivist</DisplayName>
     <PublisherDisplayName>CyberFeedForward</PublisherDisplayName>
-    <Logo>Assets\StoreLogo.png</Logo>
+    <Logo>Assets\PackageLogo.png</Logo>
   </Properties>
 
   <Dependencies>
@@ -36,12 +36,17 @@
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
         DisplayName="Zee Mad Archivist"
-        Description="TheMadArchivist"
+        Description="An application for managing your archived documents on Windows"
         BackgroundColor="transparent"
-        Square150x150Logo="Assets\Square150x150Logo.png"
-        Square44x44Logo="Assets\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+        Square150x150Logo="Assets\MediumTitle.png"
+        Square44x44Logo="Assets\AppIcon.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\WideTitle.png"  ShortName="Archivist" Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo"/>
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile >
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:LockScreen BadgeLogo="Assets\BadgeLogo.png" Notification="badgeAndTileText"/>
       </uap:VisualElements>
     </Application>
   </Applications>

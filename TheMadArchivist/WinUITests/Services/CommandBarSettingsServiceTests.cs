@@ -9,16 +9,27 @@ public sealed class CommandBarSettingsServiceTests
 {
     private sealed class InMemorySettingsStore : IAppSettingsStore
     {
-        private readonly Dictionary<string, bool> _values = new();
+        private readonly Dictionary<string, bool> _boolValues = new();
+        private readonly Dictionary<string, int> _intValues = new();
 
         public bool TryGetBool(string key, out bool value)
         {
-            return _values.TryGetValue(key, out value);
+            return _boolValues.TryGetValue(key, out value);
         }
 
         public void SetBool(string key, bool value)
         {
-            _values[key] = value;
+            _boolValues[key] = value;
+        }
+
+        public bool TryGetInt(string key, out int value)
+        {
+            return _intValues.TryGetValue(key, out value);
+        }
+
+        public void SetInt(string key, int value)
+        {
+            _intValues[key] = value;
         }
     }
 

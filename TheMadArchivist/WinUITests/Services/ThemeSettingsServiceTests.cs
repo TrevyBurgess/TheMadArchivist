@@ -9,16 +9,27 @@ public sealed class ThemeSettingsServiceTests
 {
     private sealed class InMemorySettingsStore : IAppSettingsStore
     {
-        private readonly Dictionary<string, bool> _values = new();
+        private readonly Dictionary<string, bool> _boolValues = new();
+        private readonly Dictionary<string, int> _intValues = new();
 
         public bool TryGetBool(string key, out bool value)
         {
-            return _values.TryGetValue(key, out value);
+            return _boolValues.TryGetValue(key, out value);
         }
 
         public void SetBool(string key, bool value)
         {
-            _values[key] = value;
+            _boolValues[key] = value;
+        }
+
+        public bool TryGetInt(string key, out int value)
+        {
+            return _intValues.TryGetValue(key, out value);
+        }
+
+        public void SetInt(string key, int value)
+        {
+            _intValues[key] = value;
         }
     }
 
@@ -28,6 +39,39 @@ public sealed class ThemeSettingsServiceTests
         var store = new InMemorySettingsStore();
         var service = new ThemeSettingsService(store);
 
+        Assert.IsFalse(service.IsDarkModeEnabled());
+    }
+
+    [TestMethod]
+    public void GetThemeMode_WhenNotSet_ReturnsSystemDefault()
+    {
+        var store = new InMemorySettingsStore();
+        var service = new ThemeSettingsService(store);
+
+        Assert.AreEqual(AppThemeMode.SystemDefault, service.GetThemeMode());
+    }
+
+    [TestMethod]
+    public void SetThemeMode_WhenSetToDark_PersistsValue()
+    {
+        var store = new InMemorySettingsStore();
+        var service = new ThemeSettingsService(store);
+
+        service.SetThemeMode(AppThemeMode.Dark);
+
+        Assert.AreEqual(AppThemeMode.Dark, service.GetThemeMode());
+        Assert.IsTrue(service.IsDarkModeEnabled());
+    }
+
+    [TestMethod]
+    public void SetThemeMode_WhenSetToLight_PersistsValue()
+    {
+        var store = new InMemorySettingsStore();
+        var service = new ThemeSettingsService(store);
+
+        service.SetThemeMode(AppThemeMode.Light);
+
+        Assert.AreEqual(AppThemeMode.Light, service.GetThemeMode());
         Assert.IsFalse(service.IsDarkModeEnabled());
     }
 

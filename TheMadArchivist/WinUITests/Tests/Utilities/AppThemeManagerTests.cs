@@ -1,4 +1,5 @@
 using CyberFeedForward.TheMadArchivist.Utilities;
+using CyberFeedForward.TheMadArchivist.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -32,6 +33,19 @@ public sealed class AppThemeManagerTests
             AppThemeManager.ApplyDarkMode(root, isDarkModeEnabled: false);
 
             Assert.AreEqual(ElementTheme.Light, root.RequestedTheme);
+        });
+    }
+
+    [TestMethod]
+    public void ApplyThemeMode_WhenSystemDefault_SetsRequestedThemeToDefault()
+    {
+        WinUiTestHelper.Run(() =>
+        {
+            var root = new Grid();
+
+            AppThemeManager.ApplyThemeMode(root, AppThemeMode.SystemDefault);
+
+            Assert.AreEqual(ElementTheme.Default, root.RequestedTheme);
         });
     }
 }

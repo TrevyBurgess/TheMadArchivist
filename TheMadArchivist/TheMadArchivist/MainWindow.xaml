@@ -13,30 +13,41 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid x:Name="RootLayoutGrid" RowDefinitions="Auto,Auto,*,Auto">
+    <Grid x:Name="RootLayoutGrid" RowDefinitions="Auto,Auto,*,Auto" Background="{ThemeResource AppWindowBackgroundBrush}">
 
-        <MenuBar x:Name="TopMenuBar" Grid.Row="0">
-            <MenuBarItem x:Name="FileMenuBarItem" Title="File">
-                <MenuFlyoutItem x:Name="FileNewMenuItem" Text="New" />
-                <MenuFlyoutItem x:Name="FileOpenMenuItem" Text="Open" />
-                <MenuFlyoutSeparator x:Name="FileSeparator1" />
-                <MenuFlyoutItem x:Name="FileExitMenuItem" Text="Exit" />
-            </MenuBarItem>
+        <Grid x:Name="TopBarGrid" Grid.Row="0" ColumnDefinitions="*,Auto">
+            <MenuBar x:Name="TopMenuBar" Grid.Column="0">
+                <MenuBarItem x:Name="FileMenuBarItem" Title="File">
+                    <MenuFlyoutItem x:Name="FileNewMenuItem" Text="New" />
+                    <MenuFlyoutItem x:Name="FileOpenMenuItem" Text="Open" />
+                    <MenuFlyoutSeparator x:Name="FileSeparator1" />
+                    <MenuFlyoutItem x:Name="FileExitMenuItem" Text="Exit" />
+                </MenuBarItem>
 
-            <MenuBarItem x:Name="EditMenuBarItem" Title="Edit">
-                <MenuFlyoutItem x:Name="EditCutMenuItem" Text="Cut" />
-                <MenuFlyoutItem x:Name="EditCopyMenuItem" Text="Copy" />
-                <MenuFlyoutItem x:Name="EditPasteMenuItem" Text="Paste" />
-            </MenuBarItem>
+                <MenuBarItem x:Name="EditMenuBarItem" Title="Edit">
+                    <MenuFlyoutItem x:Name="EditCutMenuItem" Text="Cut" />
+                    <MenuFlyoutItem x:Name="EditCopyMenuItem" Text="Copy" />
+                    <MenuFlyoutItem x:Name="EditPasteMenuItem" Text="Paste" />
+                </MenuBarItem>
 
-            <MenuBarItem x:Name="ViewMenuBarItem" Title="View">
-                <MenuFlyoutItem x:Name="ViewRefreshMenuItem" Text="Refresh" />
-            </MenuBarItem>
+                <MenuBarItem x:Name="ViewMenuBarItem" Title="View">
+                    <MenuFlyoutItem x:Name="ViewRefreshMenuItem" Text="Refresh" />
+                </MenuBarItem>
 
-            <MenuBarItem x:Name="HelpMenuBarItem" Title="Help">
-                <MenuFlyoutItem x:Name="HelpAboutMenuItem" Text="About" Click="HelpAboutMenuItem_OnClick" />
-            </MenuBarItem>
-        </MenuBar>
+                <MenuBarItem x:Name="HelpMenuBarItem" Title="Help">
+                    <MenuFlyoutItem x:Name="HelpAboutMenuItem" Text="About" Click="HelpAboutMenuItem_OnClick" />
+                </MenuBarItem>
+            </MenuBar>
+
+            <AppBarButton
+                x:Name="TopBarSettingsButton"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Icon="Setting"
+                Click="SettingsCommandButton_OnClick"
+                ToolTipService.ToolTip="Settings" />
+        </Grid>
 
         <Grid x:Name="ContentGrid" Grid.Row="1" ColumnDefinitions="Auto,*,Auto">
             <CommandBar x:Name="MainCommandBar" Grid.Column="0" DefaultLabelPosition="Right">
@@ -57,7 +68,7 @@
         <Frame x:Name="MainFrame" Grid.Row="2" />
 
         <Border x:Name="StatusBar" Grid.Row="3" Padding="12,6" BorderThickness="1,1,1,0" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
-            <TextBlock x:Name="StatusBarText" Text="Ready" Opacity="0.8" />
+            <TextBlock x:Name="StatusBarText" Text="{Binding StatusText}" Opacity="0.8" />
         </Border>
     </Grid>
 </Window>
