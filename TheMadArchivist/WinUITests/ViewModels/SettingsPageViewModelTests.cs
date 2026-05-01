@@ -13,8 +13,8 @@ public sealed class SettingsPageViewModelTests
 {
     private sealed class InMemorySettingsStore : IAppSettingsStore
     {
-        private readonly Dictionary<string, bool> _boolValues = new();
-        private readonly Dictionary<string, int> _intValues = new();
+        private readonly Dictionary<string, bool> _boolValues = [];
+        private readonly Dictionary<string, int> _intValues = [];
 
         public bool TryGetBool(string key, out bool value)
         {
@@ -47,9 +47,10 @@ public sealed class SettingsPageViewModelTests
             var commandBarSettings = new CommandBarSettingsService(store);
             var root = new Grid();
 
-            var viewModel = new SettingsPageViewModel(service, commandBarSettings, root);
-
-            viewModel.ThemeMode = AppThemeMode.Dark;
+            var viewModel = new SettingsPageViewModel(service, commandBarSettings, root)
+            {
+                ThemeMode = AppThemeMode.Dark
+            };
 
             Assert.AreEqual(ElementTheme.Dark, root.RequestedTheme);
         });
@@ -65,9 +66,10 @@ public sealed class SettingsPageViewModelTests
             var commandBarSettings = new CommandBarSettingsService(store);
             var root = new Grid();
 
-            var viewModel = new SettingsPageViewModel(service, commandBarSettings, root);
-
-            viewModel.ThemeMode = AppThemeMode.SystemDefault;
+            var viewModel = new SettingsPageViewModel(service, commandBarSettings, root)
+            {
+                ThemeMode = AppThemeMode.SystemDefault
+            };
 
             Assert.AreEqual(ElementTheme.Default, root.RequestedTheme);
         });

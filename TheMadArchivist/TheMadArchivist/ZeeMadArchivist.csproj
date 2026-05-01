@@ -106,7 +106,8 @@
     <Folder Include="Converters\" />
     <Folder Include="Contracts\" />
     <Folder Include="Services\" />
-    <Folder Include="ViewModels\" />
+    <Folder Include="ViewModels\Controls\" />
+    <Folder Include="ViewModels\Pages\" />
     <Folder Include="Views\Controls\" />
     <Folder Include="Views\Pages\" />
   </ItemGroup>
