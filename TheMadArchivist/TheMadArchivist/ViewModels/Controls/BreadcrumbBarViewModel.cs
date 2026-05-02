@@ -1,0 +1,123 @@
+using CyberFeedForward.TheMadArchivist.Models;
+using CyberFeedForward.TheMadArchivist.Services;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+
+namespace CyberFeedForward.TheMadArchivist.ViewModels.Controls;
+
+public sealed class BreadcrumbBarViewModel : INotifyPropertyChanged
+{
+    private readonly IFileSystemService _fileSystemService;
+    private string? _folderPath;
+
+    public BreadcrumbBarViewModel(IFileSystemService fileSystemService)
+    {
+        _fileSystemService = fileSystemService ?? throw new ArgumentNullException(nameof(fileSystemService));
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public ObservableCollection<BreadcrumbSegmentViewModel> Segments { get; } = [];
+
+    public string? FolderPath
+    {
+        get => _folderPath;
+        set
+        {
+            if (string.Equals(_folderPath, value, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _folderPath = value;
+            OnPropertyChanged();
+            RebuildSegments();
+        }
+    }
+
+    private void RebuildSegments()
+    {
+        Segments.Clear();
+
+        var paths = BuildCumulativePaths(FolderPath);
+        foreach (var p in paths)
+        {
+            var items = GetSubFolderNames(p);
+            Segments.Add(new BreadcrumbSegmentViewModel(p, items));
+        }
+    }
+
+    public static IReadOnlyList<string> BuildCumulativePaths(string? folderPath)
+    {
+        if (string.IsNullOrWhiteSpace(folderPath))
+        {
+            return [];
+        }
+
+        var normalized = folderPath.Trim();
+        normalized = normalized.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+        if (string.IsNullOrWhiteSpace(normalized))
+        {
+            return Array.Empty<string>();
+        }
+
+        var root = Path.GetPathRoot(normalized);
+        if (string.IsNullOrWhiteSpace(root))
+        {
+            return new[] { normalized };
+        }
+
+        root = root.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+        var remainder = normalized[root.Length..].TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var parts = remainder.Length == 0
+            ? Array.Empty<string>()
+            : remainder.Split([Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar], StringSplitOptions.RemoveEmptyEntries);
+
+        var results = new List<string>();
+        var current = root + Path.DirectorySeparatorChar;
+        results.Add(current);
+
+        foreach (var part in parts)
+        {
+            current = Path.Combine(current, part);
+            results.Add(current);
+        }
+
+        return results;
+    }
+
+    private IReadOnlyList<string> GetSubFolderNames(string folderPath)
+    {
+        var entries = _fileSystemService.GetEntries(folderPath);
+        return entries
+            .Where(e => e.IsFolder)
+            .Select(e => e.Name)
+            .Where(n => !string.IsNullOrWhiteSpace(n))
+            .ToList();
+    }
+
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+public sealed class BreadcrumbSegmentViewModel
+{
+    public BreadcrumbSegmentViewModel(string folderPath, IReadOnlyList<string> items)
+    {
+        FolderPath = folderPath;
+        Items = items;
+    }
+
+    public string FolderPath { get; }
+
+    public IReadOnlyList<string> Items { get; }
+}

@@ -1,0 +1,36 @@
+<UserControl
+    x:Name="ControlRoot"
+    x:Class="CyberFeedForward.TheMadArchivist.Views.Controls.BreadcrumbBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CyberFeedForward.TheMadArchivist.Views.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer
+        x:Name="RootScrollViewer"
+        HorizontalScrollMode="Auto"
+        HorizontalScrollBarVisibility="Auto"
+        VerticalScrollMode="Disabled"
+        VerticalScrollBarVisibility="Hidden">
+
+        <ItemsControl
+            x:Name="BreadcrumbItemsControl"
+            ItemsSource="{Binding ElementName=ControlRoot, Path=Segments}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <controls:Breadcrumb
+                        x:Name="SegmentBreadcrumb"
+                        FolderPath="{Binding FolderPath}"
+                        Items="{Binding Items}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</UserControl>
