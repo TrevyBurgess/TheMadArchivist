@@ -10,10 +10,10 @@ using System.Runtime.CompilerServices;
 
 namespace CyberFeedForward.TheMadArchivist.ViewModels.Controls;
 
-public sealed class BreadcrumbBarViewModel : INotifyPropertyChanged
+public sealed partial class BreadcrumbBarViewModel : INotifyPropertyChanged
 {
     private readonly IFileSystemService _fileSystemService;
-    private string? _folderPath;
+    private string? _folderPath = "C:\\\\";
 
     public BreadcrumbBarViewModel(IFileSystemService fileSystemService)
     {
@@ -64,20 +64,20 @@ public sealed class BreadcrumbBarViewModel : INotifyPropertyChanged
 
         if (string.IsNullOrWhiteSpace(normalized))
         {
-            return Array.Empty<string>();
+            return [];
         }
 
         var root = Path.GetPathRoot(normalized);
         if (string.IsNullOrWhiteSpace(root))
         {
-            return new[] { normalized };
+            return [normalized];
         }
 
         root = root.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
         var remainder = normalized[root.Length..].TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         var parts = remainder.Length == 0
-            ? Array.Empty<string>()
+            ? []
             : remainder.Split([Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar], StringSplitOptions.RemoveEmptyEntries);
 
         var results = new List<string>();
@@ -90,17 +90,16 @@ public sealed class BreadcrumbBarViewModel : INotifyPropertyChanged
             results.Add(current);
         }
 
-        return results;
+        return [.. results];
     }
 
     private IReadOnlyList<string> GetSubFolderNames(string folderPath)
     {
         var entries = _fileSystemService.GetEntries(folderPath);
-        return entries
+        return [.. entries
             .Where(e => e.IsFolder)
             .Select(e => e.Name)
-            .Where(n => !string.IsNullOrWhiteSpace(n))
-            .ToList();
+            .Where(n => !string.IsNullOrWhiteSpace(n))];
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

@@ -2,7 +2,7 @@
     x:Class="CyberFeedForward.TheMadArchivist.Views.Pages.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:viewmodels="using:CyberFeedForward.TheMadArchivist.ViewModels"
+    xmlns:viewmodels="using:CyberFeedForward.TheMadArchivist.ViewModels.Pages"
     xmlns:controls="using:CyberFeedForward.TheMadArchivist.Views.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"

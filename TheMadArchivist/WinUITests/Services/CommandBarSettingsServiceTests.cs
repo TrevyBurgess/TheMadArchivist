@@ -11,6 +11,7 @@ public sealed class CommandBarSettingsServiceTests
     {
         private readonly Dictionary<string, bool> _boolValues = new();
         private readonly Dictionary<string, int> _intValues = new();
+        private readonly Dictionary<string, string> _stringValues = new();
 
         public bool TryGetBool(string key, out bool value)
         {
@@ -30,6 +31,16 @@ public sealed class CommandBarSettingsServiceTests
         public void SetInt(string key, int value)
         {
             _intValues[key] = value;
+        }
+
+        public bool TryGetString(string key, out string value)
+        {
+            return _stringValues.TryGetValue(key, out value!);
+        }
+
+        public void SetString(string key, string value)
+        {
+            _stringValues[key] = value;
         }
     }
 
