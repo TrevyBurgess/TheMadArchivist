@@ -8,4 +8,20 @@ public sealed partial class SettingsPage : Page
     {
         InitializeComponent();
     }
+
+    private void AddArchiveButton_OnClick(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        if (DataContext is CyberFeedForward.TheMadArchivist.ViewModels.Pages.SettingsPageViewModel vm)
+        {
+            vm.AddArchive();
+        }
+    }
+
+    private void RemoveArchiveButton_OnClick(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        if (DataContext is CyberFeedForward.TheMadArchivist.ViewModels.Pages.SettingsPageViewModel vm)
+        {
+            vm.RemoveSelectedArchive();
+        }
+    }
 }

@@ -1,4 +1,4 @@
-using CyberFeedForward.TheMadArchivist.ViewModels;
+using CyberFeedForward.TheMadArchivist.ViewModels.Pages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTests.AA.ViewModels;

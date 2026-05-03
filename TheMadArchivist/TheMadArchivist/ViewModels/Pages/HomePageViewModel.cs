@@ -1,4 +1,4 @@
-namespace CyberFeedForward.TheMadArchivist.ViewModels;
+namespace CyberFeedForward.TheMadArchivist.ViewModels.Pages;
 
 public sealed class HomePageViewModel
 {

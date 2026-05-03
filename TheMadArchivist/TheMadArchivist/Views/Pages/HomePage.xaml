@@ -2,7 +2,7 @@
     x:Class="CyberFeedForward.TheMadArchivist.Views.Pages.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:viewmodels="using:CyberFeedForward.TheMadArchivist.ViewModels"
+    xmlns:viewmodels="using:CyberFeedForward.TheMadArchivist.ViewModels.Pages"
     xmlns:controls="using:CyberFeedForward.TheMadArchivist.Views.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,13 +16,27 @@
         x:Name="HomeRootGrid"
         Padding="16"
         DataContext="{StaticResource ViewModel}"
-        ColumnDefinitions="320,*">
+        ColumnDefinitions="320,*"
+        RowDefinitions="Auto,*">
 
-        <Border x:Name="FolderContentsPanel" Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,0,16,0">
+        <Border
+            x:Name="BreadcrumbBarPanel"
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            BorderThickness="0,0,0,1"
+            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+            Padding="0,0,0,12"
+            Margin="0,0,0,12">
+            <controls:BreadcrumbBar
+                x:Name="BreadcrumbBar"
+                FolderPath="{Binding FolderPath}" />
+        </Border>
+
+        <Border x:Name="FolderContentsPanel" Grid.Row="1" Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,0,16,0">
             <controls:FolderContentsControl x:Name="FolderContentsControl" FolderPath="{Binding FolderPath}" />
         </Border>
 
-        <StackPanel x:Name="HomeStackPanel" Grid.Column="1" Spacing="12">
+        <StackPanel x:Name="HomeStackPanel" Grid.Row="1" Grid.Column="1" Spacing="12">
             <TextBlock
                 x:Name="HomeTitleText"
                 Text="{Binding Title}"

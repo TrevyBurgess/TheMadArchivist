@@ -39,4 +39,21 @@ public sealed class LocalAppSettingsStore : IAppSettingsStore
     {
         _localSettings.Values[key] = value;
     }
+
+    public bool TryGetString(string key, out string value)
+    {
+        if (_localSettings.Values.TryGetValue(key, out var stored) && stored is string s)
+        {
+            value = s;
+            return true;
+        }
+
+        value = string.Empty;
+        return false;
+    }
+
+    public void SetString(string key, string value)
+    {
+        _localSettings.Values[key] = value;
+    }
 }

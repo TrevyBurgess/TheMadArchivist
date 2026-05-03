@@ -7,4 +7,7 @@ public interface IAppSettingsStore
 
     bool TryGetInt(string key, out int value);
     void SetInt(string key, int value);
+
+    bool TryGetString(string key, out string value);
+    void SetString(string key, string value);
 }
