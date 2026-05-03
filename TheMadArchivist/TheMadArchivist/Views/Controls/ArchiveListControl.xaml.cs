@@ -120,8 +120,32 @@ public sealed partial class ArchiveListControl : UserControl
             return;
         }
 
-        ViewModel.NewArchivePath = folder.Path;
-        TryAddTypedFolderPathToArchives();
+        var candidatePath = folder.Path;
+        var result = ViewModel.TryAddFolderPath(candidatePath, clearNewArchivePathOnSuccess: false);
+
+        if (App.MainWindowInstance is not CyberFeedForward.TheMadArchivist.MainWindow mainWindow)
+        {
+            return;
+        }
+
+        switch (result)
+        {
+            case ArchiveListControlViewModel.ArchiveAddResult.Added:
+                mainWindow.SetStatusText("Folder Added");
+                break;
+            case ArchiveListControlViewModel.ArchiveAddResult.Duplicate:
+                mainWindow.SetStatusText($"Archive already exists: {candidatePath}");
+                break;
+            case ArchiveListControlViewModel.ArchiveAddResult.NotFound:
+                mainWindow.SetStatusText($"Folder not found: {candidatePath}");
+                break;
+            case ArchiveListControlViewModel.ArchiveAddResult.Error:
+                mainWindow.SetStatusText($"Error adding folder: {candidatePath}");
+                break;
+            case ArchiveListControlViewModel.ArchiveAddResult.Empty:
+            default:
+                break;
+        }
     }
 
     private async void RemoveArchiveItemButton_OnClick(object sender, RoutedEventArgs _)

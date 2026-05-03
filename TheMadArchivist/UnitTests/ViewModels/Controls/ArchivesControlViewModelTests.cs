@@ -96,6 +96,22 @@ public sealed class ArchiveListControlViewModelTests
     }
 
     [TestMethod]
+    public void TryAddFolderPath_WhenClearNewArchivePathOnSuccessFalse_DoesNotChangeNewArchivePath()
+    {
+        var store = new InMemorySettingsStore();
+        var service = new ArchivesSettingsService(store);
+        var vm = new ArchiveListControlViewModel(service, _ => true);
+
+        vm.NewArchivePath = "C:\\Temp\\UserTyped";
+
+        var result = vm.TryAddFolderPath("C:\\Temp\\PickedFolder", clearNewArchivePathOnSuccess: false);
+
+        Assert.AreEqual(ArchiveListControlViewModel.ArchiveAddResult.Added, result);
+        Assert.AreEqual("C:\\Temp\\UserTyped", vm.NewArchivePath);
+        CollectionAssert.Contains(vm.Archives, "C:\\Temp\\PickedFolder");
+    }
+
+    [TestMethod]
     public void RemoveArchive_WhenPresent_Removes()
     {
         var store = new InMemorySettingsStore();

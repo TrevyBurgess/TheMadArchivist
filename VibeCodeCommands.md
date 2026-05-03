@@ -45,6 +45,7 @@ Here are some the vibe code commands I used.
 - Show warning message when user deletes a folder path. If operation successful, add message 'Folder Deleted' to StatusBarText
 - Sort folder paths when a user adds a new folder path to list in ArchiveListControl
 - Disable AddArchiveButton when folder path is empty
+- Do not show path in NewArchivePathTextBox when a folder is selected with the folder selector dialog
 
 ## Layout
 

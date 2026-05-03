@@ -87,7 +87,7 @@ public sealed partial class ArchiveListControlViewModel : INotifyPropertyChanged
         return result == ArchiveAddResult.Added;
     }
 
-    public ArchiveAddResult TryAddFolderPath(string? folderPath)
+    public ArchiveAddResult TryAddFolderPath(string? folderPath, bool clearNewArchivePathOnSuccess = true)
     {
         var next = folderPath?.Trim();
         if (string.IsNullOrWhiteSpace(next))
@@ -113,7 +113,10 @@ public sealed partial class ArchiveListControlViewModel : INotifyPropertyChanged
         }
 
         InsertArchiveSorted(next);
-        NewArchivePath = string.Empty;
+        if (clearNewArchivePathOnSuccess)
+        {
+            NewArchivePath = string.Empty;
+        }
         return ArchiveAddResult.Added;
     }
 
