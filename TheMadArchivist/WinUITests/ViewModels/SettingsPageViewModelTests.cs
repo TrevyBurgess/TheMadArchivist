@@ -56,36 +56,14 @@ public sealed class SettingsPageViewModelTests
             var store = new InMemorySettingsStore();
             var service = new ThemeSettingsService(store);
             var commandBarSettings = new CommandBarSettingsService(store);
-            var archivesSettings = new ArchivesSettingsService(store);
             var root = new Grid();
 
-            var viewModel = new SettingsPageViewModel(service, commandBarSettings, archivesSettings, root)
+            var viewModel = new SettingsPageViewModel(service, commandBarSettings, root)
             {
                 ThemeMode = AppThemeMode.Dark
             };
 
             Assert.AreEqual(ElementTheme.Dark, root.RequestedTheme);
-        });
-    }
-
-    [TestMethod]
-    public void AddArchive_PersistsToStore()
-    {
-        WinUiTestHelper.Run(() =>
-        {
-            var store = new InMemorySettingsStore();
-            var theme = new ThemeSettingsService(store);
-            var commandBarSettings = new CommandBarSettingsService(store);
-            var archivesSettings = new ArchivesSettingsService(store);
-
-            var vm = new SettingsPageViewModel(theme, commandBarSettings, archivesSettings, themeRootElement: null);
-
-            vm.NewArchivePath = "C:\\Temp\\Archive1.zip";
-            vm.AddArchive();
-
-            Assert.AreEqual(1, vm.Archives.Count);
-            Assert.IsTrue(store.TryGetString("Archives.Paths", out var stored));
-            Assert.IsFalse(string.IsNullOrWhiteSpace(stored));
         });
     }
 
@@ -97,10 +75,9 @@ public sealed class SettingsPageViewModelTests
             var store = new InMemorySettingsStore();
             var service = new ThemeSettingsService(store);
             var commandBarSettings = new CommandBarSettingsService(store);
-            var archivesSettings = new ArchivesSettingsService(store);
             var root = new Grid();
 
-            var viewModel = new SettingsPageViewModel(service, commandBarSettings, archivesSettings, root)
+            var viewModel = new SettingsPageViewModel(service, commandBarSettings, root)
             {
                 ThemeMode = AppThemeMode.SystemDefault
             };

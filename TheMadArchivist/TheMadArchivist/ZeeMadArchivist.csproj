@@ -118,9 +118,7 @@
     <Folder Include="Converters\" />
     <Folder Include="Contracts\" />
     <Folder Include="Services\" />
-    <Folder Include="ViewModels\Controls\" />
     <Folder Include="ViewModels\Pages\" />
-    <Folder Include="Views\Controls\" />
     <Folder Include="Views\Pages\" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +164,7 @@
     <GenerateTestArtifacts>False</GenerateTestArtifacts>
     <AppxBundle>Never</AppxBundle>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <PRIResource Remove="AppPackages\**" />

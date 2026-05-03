@@ -10,9 +10,9 @@ public sealed class MainWindowViewModelTests
 {
     private sealed class InMemorySettingsStore : IAppSettingsStore
     {
-        private readonly Dictionary<string, bool> _boolValues = new();
-        private readonly Dictionary<string, int> _intValues = new();
-        private readonly Dictionary<string, string> _stringValues = new();
+        private readonly Dictionary<string, bool> _boolValues = [];
+        private readonly Dictionary<string, int> _intValues = [];
+        private readonly Dictionary<string, string> _stringValues = [];
 
         public bool TryGetBool(string key, out bool value)
         {
@@ -50,9 +50,10 @@ public sealed class MainWindowViewModelTests
     {
         var store = new InMemorySettingsStore();
         var service = new CommandBarSettingsService(store);
-        var vm = new MainWindowViewModel(service, "C:\\");
-
-        vm.StatusText = "";
+        var vm = new MainWindowViewModel(service, "C:\\")
+        {
+            StatusText = ""
+        };
         Assert.AreEqual("Ready", vm.StatusText);
 
         vm.StatusText = "   ";

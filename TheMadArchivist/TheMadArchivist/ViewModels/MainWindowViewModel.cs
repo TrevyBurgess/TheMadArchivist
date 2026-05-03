@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace CyberFeedForward.TheMadArchivist.ViewModels;
 
-public sealed class MainWindowViewModel : INotifyPropertyChanged
+public sealed partial class MainWindowViewModel : INotifyPropertyChanged
 {
     private readonly CommandBarSettingsService _commandBarSettingsService;
     private string _statusText;
@@ -22,10 +22,13 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     public MainWindowViewModel(CommandBarSettingsService commandBarSettingsService, string defaultFolderPath)
     {
         _commandBarSettingsService = commandBarSettingsService;
-
         _statusText = "Ready";
         _isCommandBarOnLeft = _commandBarSettingsService.IsCommandBarOnLeft();
-    }
+
+         DefaultFolderPath = defaultFolderPath;
+   }
+
+    private string DefaultFolderPath { get; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
