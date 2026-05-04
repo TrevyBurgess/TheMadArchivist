@@ -7,22 +7,6 @@ Here are some the vibe code commands I used.
 
 - Update the title to show app title and page in the form "App name - Page name"
 
-## Controls
-
-- Create a user control. It will display a list of files and folders, given a folder path place it in the appropriate location
-- Create a user control. Given a folder path, it will display a tree view of child files and folders
-- Add a status bar at the bottom of the app
-- Do not add a page to the navigation stack if the current page is the last page pushed onto the stack
-
-## Toolbars
-
-- Rename TopCommandBar to MainCommandBar
-- Add a new toolbar called File. Make it dockable
-- Add a Settings button to the right of the menu bar. Use the icon only. Right justify it
-
-## Status Bar
-
-
 ## Controls - Toolbars - Breadcrumb
 
 - Create a user control called Breadcrumb. It will take a folder path and a list of strings. The string will display the folder name and an arrow icon to the right
@@ -47,22 +31,44 @@ Here are some the vibe code commands I used.
 - Disable AddArchiveButton when folder path is empty
 - Do not show path in NewArchivePathTextBox when a folder is selected with the folder selector dialog
 
-## Layout
+## Controls - FolderTreeViewControl
 
-- Add Home page
-- Add a MenuBar at the top of the app
-- Add a CommandBar at the top of the app, below the MenuBar
-- Move the CommandBar to the left. Add a toggle to the settings to allow the user to move between left and right.
 
-- Add back and forward Navigation buttons to the command bar, to navigate to visited pages
-- Remember the last position and size of the app when it closes
 
-## Settings
 
-- Add a page called Settings. Navigate to this page when a user clicks on Settings button
-- Add a toggle to Settings. When on, this will activate dark mode
-- Add System Default as an option for the Dark mode setting
-- Create a viewmodel for SettingsPage
+
+
+
+## Controls
+
+- Create a user control. It will display a list of files and folders, given a folder path place it in the appropriate location
+
+
+
+
+
+
+
+
+
+
+
+
+- Create a user control. Given a folder path, it will display a tree view of child files and folders
+
+
+
+- Add a status bar at the bottom of the app
+
+
+
+
+- Do not add a page to the navigation stack if the current page is the last page pushed onto the stack
+
+
+
+
+
 
 ## Library - FolderTools
 
@@ -84,6 +90,35 @@ Here are some the vibe code commands I used.
 ## Library - ImageTools
 
 - Add a method in Tools.ImageTools.ca called ToIcon. Given the path to an image, create a windows icon. The method will return this icon
+
+
+
+
+## Toolbars
+
+- Rename TopCommandBar to MainCommandBar
+- Add a new toolbar called File. Make it dockable
+- Add a Settings button to the right of the menu bar. Use the icon only. Right justify it
+
+## Status Bar
+
+## Layout
+
+- Add Home page
+- Add a MenuBar at the top of the app
+- Add a CommandBar at the top of the app, below the MenuBar
+- Move the CommandBar to the left. Add a toggle to the settings to allow the user to move between left and right.
+
+- Add back and forward Navigation buttons to the command bar, to navigate to visited pages
+- Remember the last position and size of the app when it closes
+
+## Settings
+
+- Add a page called Settings. Navigate to this page when a user clicks on Settings button
+- Add a toggle to Settings. When on, this will activate dark mode
+- Add System Default as an option for the Dark mode setting
+- Create a viewmodel for SettingsPage
+
 
 ## Main Page
 

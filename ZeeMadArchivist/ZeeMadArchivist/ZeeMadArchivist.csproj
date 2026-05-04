@@ -22,9 +22,17 @@
 
   <ItemGroup>
     <Compile Remove="AppPackages\**" />
+    <Compile Remove="Contracts\**" />
+    <Compile Remove="Helpers\**" />
     <EmbeddedResource Remove="AppPackages\**" />
+    <EmbeddedResource Remove="Contracts\**" />
+    <EmbeddedResource Remove="Helpers\**" />
     <None Remove="AppPackages\**" />
+    <None Remove="Contracts\**" />
+    <None Remove="Helpers\**" />
     <Page Remove="AppPackages\**" />
+    <Page Remove="Contracts\**" />
+    <Page Remove="Helpers\**" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Assets\AppIcon.altform-lightunplated_targetsize-16.png" />
@@ -114,9 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Helpers\" />
     <Folder Include="Converters\" />
-    <Folder Include="Contracts\" />
     <Folder Include="Services\" />
     <Folder Include="ViewModels\Pages\" />
     <Folder Include="Views\Pages\" />
@@ -168,5 +174,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PRIResource Remove="AppPackages\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Helpers\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Contracts\**" />
   </ItemGroup>
 </Project>

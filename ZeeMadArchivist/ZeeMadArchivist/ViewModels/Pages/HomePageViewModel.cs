@@ -1,14 +1,40 @@
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
 namespace CyberFeedForward.TheMadArchivist.ViewModels.Pages;
 
-public sealed class HomePageViewModel
+public sealed class HomePageViewModel : INotifyPropertyChanged
 {
+    private string _folderPath = string.Empty;
+
     public HomePageViewModel()
     {
-        FolderPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+        FolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public string Title => "Home";
     public string Description => "Welcome to The Mad Archivist.";
 
-    public string FolderPath { get; }
+    public string FolderPath
+    {
+        get => _folderPath;
+        set
+        {
+            if (string.Equals(_folderPath, value, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _folderPath = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }
