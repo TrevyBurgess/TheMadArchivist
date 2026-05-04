@@ -13,13 +13,19 @@ public sealed partial class BreadcrumbBar : UserControl
     {
         InitializeComponent();
         _viewModel = new BreadcrumbBarViewModel(new FileSystemService());
-        DataContext = this;
     }
 
     public string? FolderPath
     {
-        get => (string?)GetValue(FolderPathProperty);
-        set => SetValue(FolderPathProperty, value);
+        get
+        {
+            return (string?)GetValue(FolderPathProperty);
+        }
+
+        set
+        {
+            SetValue(FolderPathProperty, value);
+        }
     }
 
     public static readonly DependencyProperty FolderPathProperty =
