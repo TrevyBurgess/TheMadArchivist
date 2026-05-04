@@ -18,7 +18,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\AppTools\AppTools.csproj" />
-		<ProjectReference Include="..\TheMadArchivist\ZeeMadArchivist.csproj" />
+		<ProjectReference Include="..\ZeeMadArchivist\ZeeMadArchivist.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
