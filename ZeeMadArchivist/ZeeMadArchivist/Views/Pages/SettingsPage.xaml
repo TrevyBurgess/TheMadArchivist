@@ -16,31 +16,52 @@
         x:Name="SettingsRootGrid"
         Padding="16"
         DataContext="{StaticResource ViewModel}">
-        <StackPanel x:Name="SettingsStackPanel" Spacing="12">
+        <StackPanel x:Name="SettingsStackPanel" >
             <TextBlock
                 x:Name="SettingsTitleText"
                 Text="Settings"
                 Style="{ThemeResource TitleTextBlockStyle}" />
             <TextBlock
+                Padding="0,12"
                 x:Name="SettingsDescriptionText"
                 Text="Configure application preferences."
                 Opacity="0.8" />
 
-            <ComboBox
-                x:Name="ThemeModeComboBox"
-                Header="Theme"
-                SelectedIndex="{Binding ThemeModeIndex, Mode=TwoWay}">
-                <ComboBoxItem x:Name="ThemeModeSystemDefaultItem" Content="System default" />
-                <ComboBoxItem x:Name="ThemeModeLightItem" Content="Light" />
-                <ComboBoxItem x:Name="ThemeModeDarkItem" Content="Dark" />
-            </ComboBox>
+            <TabView x:Name="SettingsGroups" Margin="-10,12" IsAddTabButtonVisible="False">
+                <TabViewItem x:Name="GeneralSettingsTab" Header="General" IsClosable="False">
+                    <ScrollViewer HorizontalScrollMode="Disabled" Padding="10,20">
+                        <StackPanel x:Name="GeneralSettingsPanel" Spacing="12">
+                            <ComboBox
+                                x:Name="ThemeModeComboBox"
+                                Header="Theme"
+                                SelectedIndex="{Binding ThemeModeIndex, Mode=TwoWay}">
+                                <ComboBoxItem x:Name="ThemeModeSystemDefaultItem" Content="System default" />
+                                <ComboBoxItem x:Name="ThemeModeLightItem" Content="Light" />
+                                <ComboBoxItem x:Name="ThemeModeDarkItem" Content="Dark" />
+                            </ComboBox>
 
-            <ToggleSwitch
-                x:Name="CommandBarLeftToggleSwitch"
-                Header="Command bar on left"
-                IsOn="{Binding IsCommandBarOnLeft, Mode=TwoWay}" />
+                            <ToggleSwitch
+                                x:Name="CommandBarLeftToggleSwitch"
+                                Header="Command bar on left"
+                                IsOn="{Binding IsCommandBarOnLeft, Mode=TwoWay}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabViewItem>
 
-            <controls:ArchiveListControl x:Name="ArchiveListControl" />
+                <TabViewItem x:Name="ArchivesSettingsTab" Header="Archives" IsClosable="False">
+                    <ScrollViewer HorizontalScrollMode="Disabled" Padding="10,20">
+                        <StackPanel x:Name="ArchivesSettingsPanel" Spacing="12">
+                            <controls:ArchiveListControl x:Name="ArchiveListControl" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabViewItem>
+
+                <TabViewItem x:Name="IconsSettingsTab" Header="Icons" IsClosable="False">
+                    <ScrollViewer HorizontalScrollMode="Disabled" Padding="10,20">
+                        <StackPanel x:Name="IconsSettingsPanel" Spacing="12" />
+                    </ScrollViewer>
+                </TabViewItem>
+            </TabView>
         </StackPanel>
     </Grid>
 </Page>

@@ -3,7 +3,9 @@ using CyberFeedForward.TheMadArchivist.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,10 +18,15 @@ public sealed partial class FolderContentsControl : UserControl
     private CancellationTokenSource? _loadCts;
 
     public FolderContentsControl()
+        : this(new FileSystemService())
+    {
+    }
+
+    public FolderContentsControl(IFileSystemService fileSystemService)
     {
         InitializeComponent();
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-        _fileSystemService = new FileSystemService();
+        _fileSystemService = fileSystemService ?? throw new ArgumentNullException(nameof(fileSystemService));
 
         Unloaded += OnUnloaded;
     }
@@ -71,7 +78,10 @@ public sealed partial class FolderContentsControl : UserControl
 
         _ = Task.Run(() =>
         {
-            var items = _fileSystemService.GetEntries(folderPath ?? string.Empty);
+            var items = _fileSystemService
+                .GetEntries(folderPath ?? string.Empty)
+                .Where(e => e.IsFolder)
+                .ToList();
 
             if (ct.IsCancellationRequested)
             {

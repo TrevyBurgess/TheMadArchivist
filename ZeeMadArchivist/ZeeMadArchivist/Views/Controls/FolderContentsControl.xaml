@@ -11,6 +11,8 @@
 
     <UserControl.Resources>
         <converters:IsFolderToSymbolConverter x:Key="IsFolderToSymbolConverter" />
+        <converters:FolderIconBrushConverter x:Key="FolderIconBrushConverter" />
+        <converters:ZeroCountToVisibilityConverter x:Key="ZeroCountToVisibilityConverter" />
     </UserControl.Resources>
 
     <Grid x:Name="RootGrid">
@@ -25,10 +27,28 @@
                         x:Name="FileSystemEntryRow"
                         ColumnDefinitions="Auto,*"
                         Padding="8,4">
-                        <SymbolIcon
-                            x:Name="EntryIcon"
-                            Symbol="{Binding IsFolder, Converter={StaticResource IsFolderToSymbolConverter}}"
-                            VerticalAlignment="Center" />
+                        <Grid
+                            x:Name="EntryIconContainer"
+                            Width="20"
+                            Height="20"
+                            VerticalAlignment="Center">
+                            <FontIcon
+                                x:Name="EntryIconBorder"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="18"
+                                Glyph="&#xE838;"
+                                Foreground="{Binding IsFolder, Converter={StaticResource FolderIconBrushConverter}, ConverterParameter=Border}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                            <FontIcon
+                                x:Name="EntryIconFill"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="16"
+                                Glyph="&#xE838;"
+                                Foreground="{Binding IsFolder, Converter={StaticResource FolderIconBrushConverter}, ConverterParameter=Fill}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Grid>
                         <TextBlock
                             x:Name="EntryNameText"
                             Grid.Column="1"
@@ -39,5 +59,14 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <TextBlock
+            x:Name="EmptyMessageText"
+            Text="&lt;Empty&gt;"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Opacity="0.7"
+            IsHitTestVisible="False"
+            Visibility="{Binding ElementName=ControlRoot, Path=Entries.Count, Converter={StaticResource ZeroCountToVisibilityConverter}}" />
     </Grid>
 </UserControl>

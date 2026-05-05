@@ -38,12 +38,21 @@ Here are some the vibe code commands I used.
 
 ## Controls - FolderContentsControl
 
-- Create a user control. It will display a list of files and folders, given a folder path place it in the appropriate location
+- Create a user control called FolderContentsControl. It will display a list of files and folders, given a folder path place it in the appropriate location
 - Update BreadcrumbBar when clicks on a file in FolderContentsControl
+- Update FolderContentsControl to only show folders
+- Show message '<Empty>' when folder list in FolderContentsControl is empty
+- Color the folder icons in FolderContentsControl folder yellow
+- Fill in the folder icons in FolderContentsControl folder yellow. Make icon border slightly darker
 
-## Controls - FolderTreeViewControl
+## Controls - NamedIconControl
 
-- Create a user control. Given a folder path, it will display a tree view of child files and folders
+- Create a user control called NamedIconControl. It will contain a table with 3 columns. The first column will show Icons. The second will show strings. The third will have an Edit Icon.
+
+
+## Controls - FolderTreeViewControl (Not used yet)
+
+- Create a user control called FolderTreeViewControl. Given a folder path, it will display a tree view of child files and folders
 
 ## Controls - Status Bar
 
@@ -93,13 +102,17 @@ Here are some the vibe code commands I used.
 - Add System Default as an option for the Dark mode setting
 - Create a viewmodel for SettingsPage
 - Highlight FolderContentsDivider whenever the cursor is over it
-
+- Create a Tab panel in SettingsPage called SettingsGroups. Create 3 panels named General, Archives, Icons.
+- Remove the 'Add new tabs' button and 'Close Tab' buttons from SettingsGroups
 
 
 ## Page - Home Page
 
 - Place a divider between FolderContentsPanel and HomeStackPanel. make it movable. 
 - Show a left-right cursor icon when the cursor is over FolderContentsDivider
+- 
+
+
 
 ## Page - About
 
