@@ -102,8 +102,8 @@ public sealed partial class Breadcrumb : UserControl
             flyout.Items.Add(menuItem);
         }
 
-        BreadcrumbButton.Flyout = flyout;
-        flyout.ShowAt(BreadcrumbButton);
+        BreadcrumbArrowButton.Flyout = flyout;
+        flyout.ShowAt(BreadcrumbArrowButton);
     }
 
     private void MenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -124,5 +124,10 @@ public sealed partial class Breadcrumb : UserControl
         }
 
         return Path.Combine(parentFolderPath, childFolderName);
+    }
+
+    private void BreadcrumbTextButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        FolderPathSelected?.Invoke(this, FolderPath);
     }
 }
