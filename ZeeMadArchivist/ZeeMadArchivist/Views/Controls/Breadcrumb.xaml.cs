@@ -14,6 +14,8 @@ public sealed partial class Breadcrumb : UserControl
         InitializeComponent();
     }
 
+    public event EventHandler<string?>? FolderPathSelected;
+
     public string? FolderPath
     {
         get => (string?)GetValue(FolderPathProperty);
@@ -94,9 +96,33 @@ public sealed partial class Breadcrumb : UserControl
         var flyout = new MenuFlyout();
         foreach (var item in items)
         {
-            flyout.Items.Add(new MenuFlyoutItem { Text = item });
+            var menuItem = new MenuFlyoutItem { Text = item };
+            menuItem.Tag = BuildSelectedFolderPath(FolderPath, item);
+            menuItem.Click += MenuItem_OnClick;
+            flyout.Items.Add(menuItem);
         }
 
+        BreadcrumbButton.Flyout = flyout;
         flyout.ShowAt(BreadcrumbButton);
+    }
+
+    private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not MenuFlyoutItem item)
+        {
+            return;
+        }
+
+        FolderPathSelected?.Invoke(this, item.Tag as string);
+    }
+
+    private static string? BuildSelectedFolderPath(string? parentFolderPath, string childFolderName)
+    {
+        if (string.IsNullOrWhiteSpace(parentFolderPath) || string.IsNullOrWhiteSpace(childFolderName))
+        {
+            return null;
+        }
+
+        return Path.Combine(parentFolderPath, childFolderName);
     }
 }

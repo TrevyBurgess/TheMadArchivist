@@ -29,7 +29,7 @@
             Margin="0,0,0,12">
             <controls:BreadcrumbBar
                 x:Name="BreadcrumbBar"
-                FolderPath="{Binding FolderPath}" />
+                FolderPath="{Binding FolderPath, Mode=TwoWay}" />
         </Border>
 
         <Border x:Name="FolderContentsPanel" Grid.Row="1" Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,0,16,0">

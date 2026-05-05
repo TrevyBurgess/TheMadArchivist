@@ -28,6 +28,7 @@
                     <controls:Breadcrumb
                         x:Name="SegmentBreadcrumb"
                         FolderPath="{Binding FolderPath}"
+                        FolderPathSelected="SegmentBreadcrumb_OnFolderPathSelected"
                         Items="{Binding Items}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

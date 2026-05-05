@@ -7,11 +7,14 @@ Here are some the vibe code commands I used.
 
 - Update the title to show app title and page in the form "App name - Page name"
 
-## Controls - Toolbars - Breadcrumb
+## Controls - Breadcrumb, BreadcrumbBar
 
 - Create a user control called Breadcrumb. It will take a folder path and a list of strings. The string will display the folder name and an arrow icon to the right
 - Create a user control called BreadcrumbBar. Given a folder path, it will display each folder in the path using the Breadcrumb control for each folder. For the list of strings, include the sub folders in the folder
 - Add the BreadcrumbBar to the top of HomePage.
+- Cause a property change event to fire when FolderPath in HomePageViewModel gets updated
+- FolderPath in BreadcrumbBar control isn't responding to a file path change in HomePage
+- When a person clicks on a menu item in the BreadcrumbBar, update the file path
 
 ## Controls - ArchiveListControl
 
@@ -31,51 +34,30 @@ Here are some the vibe code commands I used.
 - Disable AddArchiveButton when folder path is empty
 - Do not show path in NewArchivePathTextBox when a folder is selected with the folder selector dialog
 
-## Controls - FolderTreeViewControl
-
-
-
-
-
-
-
-## Controls
+## Controls - FolderContentsControl
 
 - Create a user control. It will display a list of files and folders, given a folder path place it in the appropriate location
 
-
-
-
-
-
-
-
-
-
-
+## Controls - FolderTreeViewControl
 
 - Create a user control. Given a folder path, it will display a tree view of child files and folders
 
-
+## Controls - Status Bar
 
 - Add a status bar at the bottom of the app
 
+## Toolbars
 
-
-
+- Rename TopCommandBar to MainCommandBar
+- Add a new toolbar called File. Make it dockable
+- Add a Settings button to the right of the menu bar. Use the icon only. Right justify it
 - Do not add a page to the navigation stack if the current page is the last page pushed onto the stack
-
-
-
-
-
 
 ## Library - FolderTools
 
 - Add a method in AppTools.FolderTools.cs called MapDrive. Given a folder path, a drive letter, and a nama, it will create a mapped drive. Return error code if operation fails.
 - Add a method in AppTools.FolderTools.cs called UnmapDrive. Given a drive letter, un map the drive. Return a status flag.
 - Add a method in AppTools.FolderTools.cs called UpdateFolderIcon. It will take a path to an Icon file and a folder path. When called, update the folder icon with the supplied icon
-- 
 
 ## Library - FileTools
 
@@ -94,13 +76,6 @@ Here are some the vibe code commands I used.
 
 
 
-## Toolbars
-
-- Rename TopCommandBar to MainCommandBar
-- Add a new toolbar called File. Make it dockable
-- Add a Settings button to the right of the menu bar. Use the icon only. Right justify it
-
-## Status Bar
 
 ## Layout
 
@@ -120,13 +95,13 @@ Here are some the vibe code commands I used.
 - Create a viewmodel for SettingsPage
 
 
-## Main Page
+## Home Page
+
+
 
 
 
 ## Help - About
 
 - Add an about page to the app. Navigate to it when a user presses the About menu command
-
-
 

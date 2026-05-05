@@ -2,6 +2,7 @@ using CyberFeedForward.TheMadArchivist.Services;
 using CyberFeedForward.TheMadArchivist.ViewModels.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using System;
 
 namespace CyberFeedForward.TheMadArchivist.Views.Controls;
 
@@ -41,5 +42,15 @@ public sealed partial class BreadcrumbBar : UserControl
     {
         var control = (BreadcrumbBar)d;
         control._viewModel.FolderPath = (string?)e.NewValue;
+    }
+
+    private void SegmentBreadcrumb_OnFolderPathSelected(object sender, string? selectedFolderPath)
+    {
+        if (string.IsNullOrWhiteSpace(selectedFolderPath))
+        {
+            return;
+        }
+
+        FolderPath = selectedFolderPath;
     }
 }
