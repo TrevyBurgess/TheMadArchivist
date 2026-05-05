@@ -33,7 +33,7 @@
         </Border>
 
         <Border x:Name="FolderContentsPanel" Grid.Row="1" Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,0,16,0">
-            <controls:FolderContentsControl x:Name="FolderContentsControl" FolderPath="{Binding FolderPath}" />
+            <controls:FolderContentsControl x:Name="FolderContentsControl" FolderPath="{Binding FolderPath, Mode=TwoWay}" />
         </Border>
 
         <StackPanel x:Name="HomeStackPanel" Grid.Row="1" Grid.Column="1" Spacing="12">

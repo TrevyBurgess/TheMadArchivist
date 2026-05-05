@@ -46,6 +46,16 @@ public sealed partial class FolderContentsControl : UserControl
             typeof(FolderContentsControl),
             new PropertyMetadata(null, OnFolderPathChanged));
 
+    public void InvokeEntry(FileSystemEntry entry)
+    {
+        if (entry is null || !entry.IsFolder)
+        {
+            return;
+        }
+
+        FolderPath = entry.FullPath;
+    }
+
     private static void OnFolderPathChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var control = (FolderContentsControl)d;
@@ -82,5 +92,13 @@ public sealed partial class FolderContentsControl : UserControl
                 }
             });
         }, ct);
+    }
+
+    private void FolderContentsListView_OnItemClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is FileSystemEntry entry)
+        {
+            InvokeEntry(entry);
+        }
     }
 }

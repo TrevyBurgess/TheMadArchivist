@@ -16,7 +16,9 @@
     <Grid x:Name="RootGrid">
         <ListView
             x:Name="FolderContentsListView"
-            ItemsSource="{Binding ElementName=ControlRoot, Path=Entries}">
+            ItemsSource="{Binding ElementName=ControlRoot, Path=Entries}"
+            IsItemClickEnabled="True"
+            ItemClick="FolderContentsListView_OnItemClick">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:FileSystemEntry">
                     <Grid
