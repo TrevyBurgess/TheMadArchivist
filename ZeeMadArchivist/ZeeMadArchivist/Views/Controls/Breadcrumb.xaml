@@ -7,24 +7,32 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Button
-        x:Name="BreadcrumbButton"
-        Click="BreadcrumbButton_OnClick"
-        Background="Transparent"
-        BorderThickness="0"
-        Padding="4,2">
-        <StackPanel
-            x:Name="BreadcrumbContentPanel"
-            Orientation="Horizontal"
-            Spacing="6">
+    <Grid
+        x:Name="BreadcrumbContentPanel"
+        ColumnDefinitions="*,Auto">
+        <Button
+            x:Name="BreadcrumbTextButton"
+            Click="BreadcrumbTextButton_OnClick"
+            Background="Transparent"
+            BorderThickness="0"
+            Padding="4,2"
+            HorizontalAlignment="Left">
             <TextBlock
                 x:Name="BreadcrumbText"
                 Text="{Binding ElementName=ControlRoot, Path=Text}"
                 VerticalAlignment="Center" />
+        </Button>
+        <Button
+            x:Name="BreadcrumbArrowButton"
+            Grid.Column="1"
+            Click="BreadcrumbButton_OnClick"
+            Background="Transparent"
+            BorderThickness="0"
+            Padding="4,2">
             <SymbolIcon
                 x:Name="BreadcrumbArrowIcon"
                 Symbol="Forward"
                 VerticalAlignment="Center" />
-        </StackPanel>
-    </Button>
+        </Button>
+    </Grid>
 </UserControl>

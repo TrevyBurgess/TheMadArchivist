@@ -25,7 +25,7 @@ public sealed class BreadcrumbMenuSelectionTests
             string? selected = null;
             control.FolderPathSelected += (_, path) => selected = path;
 
-            var breadcrumbButton = (Button)control.FindName("BreadcrumbButton");
+            var breadcrumbButton = (Button)control.FindName("BreadcrumbArrowButton");
 
             var clickMethod = typeof(Breadcrumb).GetMethod(
                 "BreadcrumbButton_OnClick",

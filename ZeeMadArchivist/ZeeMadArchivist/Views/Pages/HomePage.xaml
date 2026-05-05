@@ -16,13 +16,18 @@
         x:Name="HomeRootGrid"
         Padding="16"
         DataContext="{StaticResource ViewModel}"
-        ColumnDefinitions="320,*"
         RowDefinitions="Auto,*">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="FolderContentsColumn" Width="320" MinWidth="200" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
         <Border
             x:Name="BreadcrumbBarPanel"
             Grid.Row="0"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="3"
             BorderThickness="0,0,0,1"
             BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
             Padding="0,0,0,12"
@@ -32,11 +37,24 @@
                 FolderPath="{Binding FolderPath, Mode=TwoWay}" />
         </Border>
 
-        <Border x:Name="FolderContentsPanel" Grid.Row="1" Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,0,16,0">
+        <Border x:Name="FolderContentsPanel" Grid.Row="1" Grid.Column="0" >
             <controls:FolderContentsControl x:Name="FolderContentsControl" FolderPath="{Binding FolderPath, Mode=TwoWay}" />
         </Border>
 
-        <StackPanel x:Name="HomeStackPanel" Grid.Row="1" Grid.Column="1" Spacing="12">
+        <controls:ResizeCursorBorder
+            x:Name="FolderContentsDivider"
+            Grid.Row="1"
+            Grid.Column="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            PointerPressed="FolderContentsDivider_OnPointerPressed"
+            Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+            PointerMoved="FolderContentsDivider_OnPointerMoved"
+            PointerReleased="FolderContentsDivider_OnPointerReleased"
+            PointerCaptureLost="FolderContentsDivider_OnPointerCaptureLost"
+        />
+
+        <StackPanel x:Name="HomeStackPanel" Grid.Row="1" Grid.Column="2" Spacing="12" Margin="10,0,0,0">
             <TextBlock
                 x:Name="HomeTitleText"
                 Text="{Binding Title}"

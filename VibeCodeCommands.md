@@ -15,6 +15,8 @@ Here are some the vibe code commands I used.
 - Cause a property change event to fire when FolderPath in HomePageViewModel gets updated
 - FolderPath in BreadcrumbBar control isn't responding to a file path change in HomePage
 - When a person clicks on a menu item in the BreadcrumbBar, update the file path
+- Only show the folder dropdown list when a user clicks on BreadcrumbArrowIcon.
+- When use clicks on BreadcrumbText, navigate to the specified folder. The exception is the last breadcrumb, since the path is the same.
 
 ## Controls - ArchiveListControl
 
@@ -37,6 +39,7 @@ Here are some the vibe code commands I used.
 ## Controls - FolderContentsControl
 
 - Create a user control. It will display a list of files and folders, given a folder path place it in the appropriate location
+- Update BreadcrumbBar when clicks on a file in FolderContentsControl
 
 ## Controls - FolderTreeViewControl
 
@@ -73,10 +76,6 @@ Here are some the vibe code commands I used.
 
 - Add a method in Tools.ImageTools.ca called ToIcon. Given the path to an image, create a windows icon. The method will return this icon
 
-
-
-
-
 ## Layout
 
 - Add Home page
@@ -87,21 +86,22 @@ Here are some the vibe code commands I used.
 - Add back and forward Navigation buttons to the command bar, to navigate to visited pages
 - Remember the last position and size of the app when it closes
 
-## Settings
+## Page - Settings
 
 - Add a page called Settings. Navigate to this page when a user clicks on Settings button
 - Add a toggle to Settings. When on, this will activate dark mode
 - Add System Default as an option for the Dark mode setting
 - Create a viewmodel for SettingsPage
-
-
-## Home Page
-
+- Highlight FolderContentsDivider whenever the cursor is over it
 
 
 
+## Page - Home Page
 
-## Help - About
+- Place a divider between FolderContentsPanel and HomeStackPanel. make it movable. 
+- Show a left-right cursor icon when the cursor is over FolderContentsDivider
+
+## Page - About
 
 - Add an about page to the app. Navigate to it when a user presses the About menu command
 

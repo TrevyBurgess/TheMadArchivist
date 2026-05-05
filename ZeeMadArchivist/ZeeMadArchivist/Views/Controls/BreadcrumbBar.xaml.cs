@@ -51,6 +51,11 @@ public sealed partial class BreadcrumbBar : UserControl
             return;
         }
 
+        if (string.Equals(selectedFolderPath, FolderPath, StringComparison.Ordinal))
+        {
+            return;
+        }
+
         FolderPath = selectedFolderPath;
     }
 }
