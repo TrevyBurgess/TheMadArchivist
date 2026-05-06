@@ -10,6 +10,7 @@ public sealed partial class NamedIconControl : UserControl
     {
         InitializeComponent();
         ViewModel = new NamedIconControlViewModel();
+        ViewModel.LoadFromProgramData();
     }
 
     public NamedIconControlViewModel ViewModel
@@ -24,4 +25,9 @@ public sealed partial class NamedIconControl : UserControl
             typeof(NamedIconControlViewModel),
             typeof(NamedIconControl),
             new PropertyMetadata(null));
+
+    private void SaveButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.SaveToProgramData();
+    }
 }

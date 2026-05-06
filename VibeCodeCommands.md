@@ -52,10 +52,7 @@ Here are some the vibe code commands I used.
 ## Controls - NamedIconControl
 
 - Create a user control called NamedIconControl. Include a viewmodel
-
-
-
-- Add a table to NamedIconControl. This will be populated from a JSON file. Each row will contain an image from an icon file, and a text box. Below the table will be a save button. The file will be saved to 
+- Add a table to NamedIconControl. This will be populated from a JSON file. Each row will contain an image from an icon file, and a text box. Below the table will be a save button. The file will be saved to ProgramData
 
 
 
