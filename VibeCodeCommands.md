@@ -7,17 +7,6 @@ Here are some the vibe code commands I used.
 
 - Update the title to show app title and page in the form "App name - Page name"
 
-## Controls - Breadcrumb, BreadcrumbBar
-
-- Create a user control called Breadcrumb. It will take a folder path and a list of strings. The string will display the folder name and an arrow icon to the right
-- Create a user control called BreadcrumbBar. Given a folder path, it will display each folder in the path using the Breadcrumb control for each folder. For the list of strings, include the sub folders in the folder
-- Add the BreadcrumbBar to the top of HomePage.
-- Cause a property change event to fire when FolderPath in HomePageViewModel gets updated
-- FolderPath in BreadcrumbBar control isn't responding to a file path change in HomePage
-- When a person clicks on a menu item in the BreadcrumbBar, update the file path
-- Only show the folder dropdown list when a user clicks on BreadcrumbArrowIcon.
-- When use clicks on BreadcrumbText, navigate to the specified folder. The exception is the last breadcrumb, since the path is the same.
-
 ## Controls - ArchiveListControl
 
 - Add a list control in SettingsPage called ArchiveListControl. This control will display a list of file paths. This list will be remembered between sessions.
@@ -36,6 +25,17 @@ Here are some the vibe code commands I used.
 - Disable AddArchiveButton when folder path is empty
 - Do not show path in NewArchivePathTextBox when a folder is selected with the folder selector dialog
 
+## Controls - Breadcrumb, BreadcrumbBar
+
+- Create a user control called Breadcrumb. It will take a folder path and a list of strings. The string will display the folder name and an arrow icon to the right
+- Create a user control called BreadcrumbBar. Given a folder path, it will display each folder in the path using the Breadcrumb control for each folder. For the list of strings, include the sub folders in the folder
+- Add the BreadcrumbBar to the top of HomePage.
+- Cause a property change event to fire when FolderPath in HomePageViewModel gets updated
+- FolderPath in BreadcrumbBar control isn't responding to a file path change in HomePage
+- When a person clicks on a menu item in the BreadcrumbBar, update the file path
+- Only show the folder dropdown list when a user clicks on BreadcrumbArrowIcon.
+- When use clicks on BreadcrumbText, navigate to the specified folder. The exception is the last breadcrumb, since the path is the same.
+
 ## Controls - FolderContentsControl
 
 - Create a user control called FolderContentsControl. It will display a list of files and folders, given a folder path place it in the appropriate location
@@ -45,14 +45,29 @@ Here are some the vibe code commands I used.
 - Color the folder icons in FolderContentsControl folder yellow
 - Fill in the folder icons in FolderContentsControl folder yellow. Make icon border slightly darker
 
-## Controls - NamedIconControl
-
-- Create a user control called NamedIconControl. It will contain a table with 3 columns. The first column will show Icons. The second will show strings. The third will have an Edit Icon.
-
-
 ## Controls - FolderTreeViewControl (Not used yet)
 
 - Create a user control called FolderTreeViewControl. Given a folder path, it will display a tree view of child files and folders
+
+## Controls - NamedIconControl
+
+- Create a user control called NamedIconControl. Include a viewmodel
+
+
+
+- Add a table to NamedIconControl. This will be populated from a JSON file. Each row will contain an image from an icon file, and a text box. Below the table will be a save button. The file will be saved to 
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Controls - Status Bar
 
@@ -104,7 +119,7 @@ Here are some the vibe code commands I used.
 - Highlight FolderContentsDivider whenever the cursor is over it
 - Create a Tab panel in SettingsPage called SettingsGroups. Create 3 panels named General, Archives, Icons.
 - Remove the 'Add new tabs' button and 'Close Tab' buttons from SettingsGroups
-
+- Add NamedIconControl to IconsSettingsTab
 
 ## Page - Home Page
 
@@ -112,9 +127,10 @@ Here are some the vibe code commands I used.
 - Show a left-right cursor icon when the cursor is over FolderContentsDivider
 - 
 
-
-
 ## Page - About
 
 - Add an about page to the app. Navigate to it when a user presses the About menu command
 
+---
+
+[Back](README.md)

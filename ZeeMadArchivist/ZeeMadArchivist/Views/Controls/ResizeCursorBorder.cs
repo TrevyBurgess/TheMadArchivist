@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace CyberFeedForward.TheMadArchivist.Views.Controls;
 
-public sealed class ResizeCursorBorder : UserControl
+public sealed partial class ResizeCursorBorder : UserControl
 {
     private readonly Border _root;
     private Brush? _normalBackground;

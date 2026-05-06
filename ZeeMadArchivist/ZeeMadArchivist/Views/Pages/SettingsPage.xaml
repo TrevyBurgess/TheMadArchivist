@@ -58,7 +58,9 @@
 
                 <TabViewItem x:Name="IconsSettingsTab" Header="Icons" IsClosable="False">
                     <ScrollViewer HorizontalScrollMode="Disabled" Padding="10,20">
-                        <StackPanel x:Name="IconsSettingsPanel" Spacing="12" />
+                        <StackPanel x:Name="IconsSettingsPanel" Spacing="12">
+                            <controls:NamedIconControl x:Name="NamedIconControl" />
+                        </StackPanel>
                     </ScrollViewer>
                 </TabViewItem>
             </TabView>
