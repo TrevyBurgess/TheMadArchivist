@@ -1,4 +1,5 @@
 using CyberFeedForward.TheMadArchivist.Views.Pages;
+using CyberFeedForward.TheMadArchivist.Views.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,6 +29,9 @@ public sealed class SettingsPageLayoutTests
             var iconsTab = (TabViewItem)page.FindName("IconsSettingsTab");
             Assert.IsNotNull(iconsTab);
             Assert.AreEqual("Icons", iconsTab.Header);
+
+            var namedIconControl = (NamedIconControl)page.FindName("NamedIconControl");
+            Assert.IsNotNull(namedIconControl);
 
             Assert.AreEqual(3, tabView.TabItems.Count);
         });
