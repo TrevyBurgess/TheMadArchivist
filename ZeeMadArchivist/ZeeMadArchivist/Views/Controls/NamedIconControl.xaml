@@ -28,6 +28,34 @@
                 TextTrimming="CharacterEllipsis" />
         </Grid>
 
+        <Grid
+            x:Name="CustomIconsPathGrid"
+            ColumnDefinitions="Auto,*,Auto,Auto"
+            ColumnSpacing="8">
+            <TextBlock
+                x:Name="CustomIconsLabel"
+                Text="Custom Icons"
+                VerticalAlignment="Center" />
+            <TextBox
+                x:Name="CustomIconsTextBox"
+                Grid.Column="1"
+                PlaceholderText="Path to CustomIcons folder..."
+                Text="{Binding ElementName=ControlRoot, Path=ViewModel.CustomIconsFolderPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Button
+                x:Name="CustomIconsBrowseButton"
+                Grid.Column="2"
+                ToolTipService.ToolTip="Browse for Custom Icons folder"
+                Click="CustomIconsBrowseButton_OnClick">
+                <SymbolIcon Symbol="Folder" />
+            </Button>
+            <Button
+                x:Name="CustomIconsSaveButton"
+                Grid.Column="3"
+                Content="Save"
+                IsEnabled="{Binding ElementName=ControlRoot, Path=ViewModel.IsCustomIconsPathSaveEnabled}"
+                Click="CustomIconsSaveButton_OnClick" />
+        </Grid>
+
         <ListView
             x:Name="ItemsTable"
             ItemsSource="{Binding ElementName=ControlRoot, Path=ViewModel.Items}"

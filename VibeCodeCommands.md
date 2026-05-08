@@ -53,9 +53,19 @@ Here are some the vibe code commands I used.
 
 - Create a user control called NamedIconControl. Include a viewmodel
 - Add a table to NamedIconControl. This will be populated from a JSON file. Each row will contain an image from an icon file, and a text box. Below the table will be a save button. The file will be saved to ProgramData
+- Add row to the top of NamedIconControl. This row will have a text box called CustomIcons and a save button. By default, CustomIcons will contain a folder path to a sub-folder in Documents called CustomIcons. If the folder doesn't exist, create it, then copy Folder.ico there. 
+- This is above the table, and separate from the table. It will contain a file path to a sub folder in Documents called CustomIcons. Store this path as a setting within the project. If the folder doesn't exist, creaate it.
+
+- Add a button to the right of CustomIconsTextBox. This button will return a folder path for CustomIconsTextBox.
+- Add save button to CustomIconsPathGrid, to the right of CustomIconsBrowseButton. Enable this button when the entered folder path differs from the saved path.
 
 
 
+- Create a sub-folder in ProgramData to store windows icons. Add an icon called Default.ico. 
+
+
+
+- Add a default row of data to ItemsTable. For the icon, add a default file path with a default Image.ico file. 
 
 
 

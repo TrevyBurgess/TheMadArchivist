@@ -1,4 +1,5 @@
 using CyberFeedForward.TheMadArchivist.ViewModels.Controls;
+using CyberFeedForward.TheMadArchivist.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.ComponentModel;
@@ -9,6 +10,48 @@ namespace UnitTests.ViewModels.Controls;
 [TestClass]
 public sealed class NamedIconControlViewModelTests
 {
+    private sealed class FakeAppSettingsStore : IAppSettingsStore
+    {
+        private readonly System.Collections.Generic.Dictionary<string, object?> _values = new(StringComparer.Ordinal);
+
+        public bool TryGetBool(string key, out bool value)
+        {
+            value = false;
+            return false;
+        }
+
+        public void SetBool(string key, bool value)
+        {
+        }
+
+        public bool TryGetInt(string key, out int value)
+        {
+            value = 0;
+            return false;
+        }
+
+        public void SetInt(string key, int value)
+        {
+        }
+
+        public bool TryGetString(string key, out string value)
+        {
+            if (_values.TryGetValue(key, out var stored) && stored is string s)
+            {
+                value = s;
+                return true;
+            }
+
+            value = string.Empty;
+            return false;
+        }
+
+        public void SetString(string key, string value)
+        {
+            _values[key] = value;
+        }
+    }
+
     [TestMethod]
     public void PropertyChanged_HasExpectedHandlerType()
     {
@@ -103,5 +146,53 @@ public sealed class NamedIconControlViewModelTests
         vm.SaveToProgramData();
 
         Assert.AreEqual(Path.Combine(programData, "TheMadArchivist", "NamedIconControl.json"), finalWrittenPath);
+    }
+
+    [TestMethod]
+    public void LoadFromProgramData_DefaultsCustomIconsToDocumentsSubfolder_AndCreatesFolder()
+    {
+        var docs = "C:\\Users\\Test\\Documents";
+        var expected = Path.Combine(docs, "CustomIcons");
+
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        string? createdPath = null;
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            getDocumentsFolder: () => docs,
+            directoryExists: _ => false,
+            createDirectory: p => createdPath = p,
+            fileExists: _ => false);
+
+        vm.LoadFromProgramData();
+
+        Assert.AreEqual(expected, vm.CustomIconsFolderPath);
+        Assert.AreEqual(expected, createdPath);
+    }
+
+    [TestMethod]
+    public void SettingCustomIconsFolderPath_EnablesSave_AndSavePersistsToSettings_AndCreatesFolderIfMissing()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var created = 0;
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => false,
+            createDirectory: _ => created++,
+            fileExists: _ => false);
+
+        vm.CustomIconsFolderPath = "C:\\Temp\\CustomIcons";
+
+        Assert.AreEqual("C:\\Temp\\CustomIcons", vm.CustomIconsFolderPath);
+        Assert.IsTrue(vm.IsCustomIconsPathSaveEnabled);
+
+        vm.SaveCustomIconsFolderPath();
+
+        Assert.AreEqual(1, created);
+        Assert.AreEqual("C:\\Temp\\CustomIcons", settings.GetCustomIconsFolderPath());
+        Assert.IsFalse(vm.IsCustomIconsPathSaveEnabled);
     }
 }
