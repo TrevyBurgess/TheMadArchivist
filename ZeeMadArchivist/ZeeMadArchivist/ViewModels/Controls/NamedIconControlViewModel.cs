@@ -23,6 +23,7 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
     private readonly Action<string> _createDirectory;
     private readonly Action<string, string> _writeAllText;
     private readonly Func<string, bool> _directoryExists;
+    private readonly Func<string, System.Collections.Generic.IEnumerable<string>> _enumerateFiles;
     private readonly Func<string> _getDocumentsFolder;
     private readonly CustomIconsSettingsService _customIconsSettingsService;
     private bool _isSaveEnabled;
@@ -41,6 +42,7 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         Action<string>? createDirectory = null,
         Action<string, string>? writeAllText = null,
         Func<string, bool>? directoryExists = null,
+        Func<string, System.Collections.Generic.IEnumerable<string>>? enumerateFiles = null,
         Func<string>? getDocumentsFolder = null,
         CustomIconsSettingsService? customIconsSettingsService = null)
     {
@@ -50,10 +52,12 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         _createDirectory = createDirectory ?? (p => Directory.CreateDirectory(p));
         _writeAllText = writeAllText ?? File.WriteAllText;
         _directoryExists = directoryExists ?? Directory.Exists;
+        _enumerateFiles = enumerateFiles ?? Directory.EnumerateFiles;
         _getDocumentsFolder = getDocumentsFolder ?? (() => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
         _customIconsSettingsService = customIconsSettingsService ?? CreateDefaultCustomIconsSettingsService();
 
         Items = [];
+        IconList = [];
         Items.CollectionChanged += (_, __) =>
         {
             if (_suppressDirtyTracking)
@@ -123,6 +127,7 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
             _customIconsFolderPath = normalized;
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsCustomIconsPathSaveEnabled));
+            RefreshIconList();
         }
     }
 
@@ -138,6 +143,8 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
     }
 
     public ObservableCollection<NamedIconRowViewModel> Items { get; }
+
+    public ObservableCollection<IconListItemViewModel> IconList { get; }
 
     public bool IsSaveEnabled
     {
@@ -178,6 +185,7 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         _savedCustomIconsFolderPath = normalized;
         _customIconsFolderPath = normalized;
         EnsureCustomIconsFolderExists(_savedCustomIconsFolderPath);
+        RefreshIconList();
         OnPropertyChanged(nameof(CustomIconsFolderPath));
         OnPropertyChanged(nameof(IsCustomIconsPathSaveEnabled));
     }
@@ -190,9 +198,51 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
 
         _customIconsSettingsService.SetCustomIconsFolderPath(_savedCustomIconsFolderPath);
         EnsureCustomIconsFolderExists(_savedCustomIconsFolderPath);
+        RefreshIconList();
 
         OnPropertyChanged(nameof(CustomIconsFolderPath));
         OnPropertyChanged(nameof(IsCustomIconsPathSaveEnabled));
+    }
+
+    private void RefreshIconList()
+    {
+        IconList.Clear();
+
+        var folder = NormalizeCustomIconsFolderPath(CustomIconsFolderPath);
+        if (string.IsNullOrWhiteSpace(folder))
+        {
+            return;
+        }
+
+        try
+        {
+            if (!_directoryExists(folder))
+            {
+                return;
+            }
+        }
+        catch
+        {
+            return;
+        }
+
+        System.Collections.Generic.IEnumerable<string> files;
+        try
+        {
+            files = _enumerateFiles(folder);
+        }
+        catch
+        {
+            return;
+        }
+
+        foreach (var f in files
+            .Where(f => !string.IsNullOrWhiteSpace(f))
+            .Select(f => f.Trim())
+            .OrderBy(f => Path.GetFileName(f), StringComparer.OrdinalIgnoreCase))
+        {
+            IconList.Add(new IconListItemViewModel(f));
+        }
     }
 
     private string NormalizeCustomIconsFolderPath(string? candidate)
@@ -415,6 +465,41 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         public void SetString(string key, string value)
         {
             _values[key] = value;
+        }
+    }
+}
+
+public sealed class IconListItemViewModel
+{
+    public IconListItemViewModel(string filePath)
+    {
+        FilePath = filePath ?? string.Empty;
+        Name = string.IsNullOrWhiteSpace(FilePath)
+            ? string.Empty
+            : Path.GetFileNameWithoutExtension(FilePath);
+    }
+
+    public string FilePath { get; }
+
+    public string Name { get; }
+
+    public BitmapImage? IconImage
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(FilePath))
+            {
+                return null;
+            }
+
+            try
+            {
+                return new BitmapImage(new Uri(FilePath, UriKind.RelativeOrAbsolute));
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

@@ -152,7 +152,7 @@ public sealed class NamedIconControlViewModelTests
     public void LoadFromProgramData_DefaultsCustomIconsToDocumentsSubfolder_AndCreatesFolder()
     {
         var docs = "C:\\Users\\Test\\Documents";
-        var expected = Path.Combine(docs, "CustomIcons");
+        var expected = Path.Combine(docs, "ZeeMadArchivist", "CustomIcons");
 
         var store = new FakeAppSettingsStore();
         var settings = new CustomIconsSettingsService(store);
@@ -194,5 +194,45 @@ public sealed class NamedIconControlViewModelTests
         Assert.AreEqual(1, created);
         Assert.AreEqual("C:\\Temp\\CustomIcons", settings.GetCustomIconsFolderPath());
         Assert.IsFalse(vm.IsCustomIconsPathSaveEnabled);
+    }
+
+    [TestMethod]
+    public void IconList_WhenCustomIconsDirectoryExists_IsPopulatedAndSortedByFileName()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => true,
+            enumerateFiles: _ =>
+            [
+                "C:\\Icons\\b.png",
+                "C:\\Icons\\a.png",
+            ],
+            fileExists: _ => false);
+
+        vm.CustomIconsFolderPath = "C:\\Icons";
+
+        Assert.AreEqual(2, vm.IconList.Count);
+        Assert.AreEqual("a", vm.IconList[0].Name);
+        Assert.AreEqual("b", vm.IconList[1].Name);
+    }
+
+    [TestMethod]
+    public void IconList_WhenCustomIconsDirectoryMissing_IsEmpty()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => false,
+            enumerateFiles: _ => ["C:\\Icons\\a.png"],
+            fileExists: _ => false);
+
+        vm.CustomIconsFolderPath = "C:\\Icons";
+
+        Assert.AreEqual(0, vm.IconList.Count);
     }
 }
