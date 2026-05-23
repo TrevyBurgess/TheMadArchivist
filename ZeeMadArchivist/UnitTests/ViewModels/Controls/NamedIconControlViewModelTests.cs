@@ -182,9 +182,10 @@ public sealed class NamedIconControlViewModelTests
             customIconsSettingsService: settings,
             directoryExists: _ => false,
             createDirectory: _ => created++,
-            fileExists: _ => false);
-
-        vm.CustomIconsFolderPath = "C:\\Temp\\CustomIcons";
+            fileExists: _ => false)
+        {
+            CustomIconsFolderPath = "C:\\Temp\\CustomIcons"
+        };
 
         Assert.AreEqual("C:\\Temp\\CustomIcons", vm.CustomIconsFolderPath);
         Assert.IsTrue(vm.IsCustomIconsPathSaveEnabled);
@@ -210,9 +211,10 @@ public sealed class NamedIconControlViewModelTests
                 "C:\\Icons\\b.png",
                 "C:\\Icons\\a.png",
             ],
-            fileExists: _ => false);
-
-        vm.CustomIconsFolderPath = "C:\\Icons";
+            fileExists: _ => false)
+        {
+            CustomIconsFolderPath = "C:\\Icons"
+        };
 
         Assert.AreEqual(2, vm.IconList.Count);
         Assert.AreEqual("a", vm.IconList[0].Name);
@@ -229,9 +231,10 @@ public sealed class NamedIconControlViewModelTests
             customIconsSettingsService: settings,
             directoryExists: _ => false,
             enumerateFiles: _ => ["C:\\Icons\\a.png"],
-            fileExists: _ => false);
-
-        vm.CustomIconsFolderPath = "C:\\Icons";
+            fileExists: _ => false)
+        {
+            CustomIconsFolderPath = "C:\\Icons"
+        };
 
         Assert.AreEqual(0, vm.IconList.Count);
     }
