@@ -15,7 +15,7 @@ description: WinUI 3
 - Use Lists for collections
 - Use ObservableCollection for dynamic collections
 - Follow Microsoft's official documentation for best practices
-- Use Microsoft diagnostic tools for debugging
+- Follow Microsoft code quality guidelines
 - Address all messages, warnings and errors
 
 # Project Structure
