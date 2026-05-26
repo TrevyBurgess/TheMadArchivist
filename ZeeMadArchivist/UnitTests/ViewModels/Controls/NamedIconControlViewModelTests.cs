@@ -238,4 +238,47 @@ public sealed class NamedIconControlViewModelTests
 
         Assert.AreEqual(0, vm.IconList.Count);
     }
+
+    [TestMethod]
+    public void SettingCustomIconsFolderPath_WhenDirectoryMissing_CreatesDirectory()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var created = 0;
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => false,
+            createDirectory: _ => created++,
+            enumerateFiles: _ => [],
+            fileExists: _ => false);
+
+        vm.CustomIconsFolderPath = "C:\\Icons";
+
+        Assert.AreEqual(1, created);
+    }
+
+    [TestMethod]
+    public void RefreshIcons_WhenDirectoryMissing_CreatesDirectory()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var created = 0;
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => false,
+            createDirectory: _ => created++,
+            enumerateFiles: _ => [],
+            fileExists: _ => false)
+        {
+            CustomIconsFolderPath = "C:\\Icons"
+        };
+
+        Assert.AreEqual(1, created);
+
+        vm.RefreshIcons();
+
+        Assert.AreEqual(2, created);
+    }
 }

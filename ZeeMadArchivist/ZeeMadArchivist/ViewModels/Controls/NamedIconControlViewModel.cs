@@ -161,6 +161,11 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         }
     }
 
+    public void RefreshIcons()
+    {
+        RefreshIconList();
+    }
+
     public void LoadFromProgramData(string? folderName = null, string? fileName = null)
     {
         LoadCustomIconsFolderFromSettings();
@@ -213,6 +218,8 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         {
             return;
         }
+
+        EnsureCustomIconsFolderExists(folder);
 
         try
         {

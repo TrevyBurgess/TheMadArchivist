@@ -65,4 +65,90 @@ public sealed class FolderToolsTests
             }
         }
     }
+
+    [TestMethod]
+    public void LoadDefaultIcons_WhenSourceFolderMissing_ReturnsZero()
+    {
+        var destFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var sourceFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+
+        try
+        {
+            var copied = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.LoadDefaultIcons(destFolder, iconsFolderPath: sourceFolder);
+            Assert.AreEqual(0, copied);
+        }
+        finally
+        {
+            if (Directory.Exists(destFolder))
+            {
+                Directory.Delete(destFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void LoadDefaultIcons_WhenDestinationMissing_CreatesDestinationAndCopiesFiles()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var sourceFolder = Path.Combine(baseFolder, "Icons");
+        var destFolder = Path.Combine(baseFolder, "CustomIcons");
+        Directory.CreateDirectory(sourceFolder);
+
+        var file1 = Path.Combine(sourceFolder, "a.ico");
+        var file2 = Path.Combine(sourceFolder, "b.ico");
+        File.WriteAllBytes(file1, [1, 2, 3]);
+        File.WriteAllBytes(file2, [4, 5, 6]);
+
+        try
+        {
+            var copied = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.LoadDefaultIcons(destFolder, iconsFolderPath: sourceFolder);
+
+            Assert.AreEqual(2, copied);
+            Assert.IsTrue(Directory.Exists(destFolder));
+            Assert.IsTrue(File.Exists(Path.Combine(destFolder, "a.ico")));
+            Assert.IsTrue(File.Exists(Path.Combine(destFolder, "b.ico")));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void LoadDefaultIcons_WhenFileAlreadyExists_SkipsExistingFile()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var sourceFolder = Path.Combine(baseFolder, "Icons");
+        var destFolder = Path.Combine(baseFolder, "CustomIcons");
+        Directory.CreateDirectory(sourceFolder);
+        Directory.CreateDirectory(destFolder);
+
+        var sourceFile1 = Path.Combine(sourceFolder, "a.ico");
+        var sourceFile2 = Path.Combine(sourceFolder, "b.ico");
+        File.WriteAllBytes(sourceFile1, [1, 2, 3]);
+        File.WriteAllBytes(sourceFile2, [4, 5, 6]);
+
+        var existingDest = Path.Combine(destFolder, "a.ico");
+        File.WriteAllBytes(existingDest, [9, 9, 9]);
+
+        try
+        {
+            var copied = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.LoadDefaultIcons(destFolder, iconsFolderPath: sourceFolder);
+
+            Assert.AreEqual(1, copied);
+            CollectionAssert.AreEqual(new byte[] { 9, 9, 9 }, File.ReadAllBytes(existingDest));
+            Assert.IsTrue(File.Exists(Path.Combine(destFolder, "b.ico")));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
 }

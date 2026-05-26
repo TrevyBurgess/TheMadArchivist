@@ -122,6 +122,11 @@ Here are some the vibe code commands I used.
 - Remove the 'Add new tabs' button and 'Close Tab' buttons from SettingsGroups
 - Add NamedIconControl to IconsSettingsTab
 
+## Page - Settings - Icons
+
+- Create a method in FolderTools in AppTools called LoadDefaultIcons. This will copy all icons in the Icons folder to CustomIconsFolderPath
+- Add a button in NamedIconSettings control called LoadDefaultIcons. When clicked, copy call LoadDefaultIcons method
+
 ## Page - Home Page
 
 - Place a divider between FolderContentsPanel and HomeStackPanel. make it movable. 

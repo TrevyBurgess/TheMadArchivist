@@ -1,4 +1,5 @@
 using CyberFeedForward.TheMadArchivist.ViewModels.Controls;
+using CyberFeedForward.TheMadArchivist.AppTools.FileSystem;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -74,5 +75,17 @@ public sealed partial class NamedIconControl : UserControl
     private void CustomIconsSaveButton_OnClick(object sender, RoutedEventArgs e)
     {
         ViewModel?.SaveCustomIconsFolderPath();
+    }
+
+    private void LoadDefaultIconsButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
+        FolderTools.LoadDefaultIcons(ViewModel.CustomIconsFolderPath);
+
+        ViewModel.RefreshIcons();
     }
 }

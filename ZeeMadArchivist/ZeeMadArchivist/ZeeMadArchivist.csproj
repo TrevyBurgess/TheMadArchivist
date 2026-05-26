@@ -22,15 +22,20 @@
 
   <ItemGroup>
     <Compile Remove="AppPackages\**" />
+    <Compile Remove="Assets\Images\**" />
     <Compile Remove="Contracts\**" />
     <Compile Remove="Helpers\**" />
+    <Content Remove="Assets\Images\**" />
     <EmbeddedResource Remove="AppPackages\**" />
+    <EmbeddedResource Remove="Assets\Images\**" />
     <EmbeddedResource Remove="Contracts\**" />
     <EmbeddedResource Remove="Helpers\**" />
     <None Remove="AppPackages\**" />
+    <None Remove="Assets\Images\**" />
     <None Remove="Contracts\**" />
     <None Remove="Helpers\**" />
     <Page Remove="AppPackages\**" />
+    <Page Remove="Assets\Images\**" />
     <Page Remove="Contracts\**" />
     <Page Remove="Helpers\**" />
   </ItemGroup>
@@ -121,7 +126,6 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260416003" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\Images\" />
     <Folder Include="Models\" />
     <Folder Include="Converters\" />
     <Folder Include="Services\" />
@@ -130,6 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AppTools\AppTools.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\AppTools\Icons\**\*.*" TargetPath="Icons\%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -181,5 +190,8 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="Contracts\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Assets\Images\**" />
   </ItemGroup>
 </Project>

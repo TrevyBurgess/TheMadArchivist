@@ -12,6 +12,113 @@ namespace CyberFeedForward.TheMadArchivist.AppTools.FileSystem
 {
     public static class FolderTools
     {
+        public static int LoadDefaultIcons(string customIconsFolderPath, string? iconsFolderPath = null)
+        {
+            if (string.IsNullOrWhiteSpace(customIconsFolderPath))
+            {
+                return 0;
+            }
+
+            var sourceFolder = iconsFolderPath;
+            if (string.IsNullOrWhiteSpace(sourceFolder))
+            {
+                var baseDirectory = AppContext.BaseDirectory;
+
+                sourceFolder = Path.Combine(baseDirectory, "Icons");
+                if (!Directory.Exists(sourceFolder))
+                {
+                    sourceFolder = Path.Combine(baseDirectory, "AppTools", "Icons");
+                }
+
+                if (!Directory.Exists(sourceFolder))
+                {
+                    sourceFolder = Path.Combine(baseDirectory, "AppX", "Icons");
+                    if (!Directory.Exists(sourceFolder))
+                    {
+                        sourceFolder = Path.Combine(baseDirectory, "AppX", "AppTools", "Icons");
+                    }
+                }
+
+                if (!Directory.Exists(sourceFolder))
+                {
+                    var assemblyFolder = Path.GetDirectoryName(typeof(FolderTools).Assembly.Location);
+                    if (!string.IsNullOrWhiteSpace(assemblyFolder))
+                    {
+                        sourceFolder = Path.Combine(assemblyFolder, "Icons");
+                        if (!Directory.Exists(sourceFolder))
+                        {
+                            sourceFolder = Path.Combine(assemblyFolder, "AppTools", "Icons");
+                        }
+
+                        if (!Directory.Exists(sourceFolder))
+                        {
+                            sourceFolder = Path.Combine(assemblyFolder, "AppX", "Icons");
+                            if (!Directory.Exists(sourceFolder))
+                            {
+                                sourceFolder = Path.Combine(assemblyFolder, "AppX", "AppTools", "Icons");
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(sourceFolder) || !Directory.Exists(sourceFolder))
+            {
+                return 0;
+            }
+
+            try
+            {
+                Directory.CreateDirectory(customIconsFolderPath);
+            }
+            catch
+            {
+                return 0;
+            }
+
+            var copied = 0;
+            System.Collections.Generic.IEnumerable<string> files;
+            try
+            {
+                files = Directory.EnumerateFiles(sourceFolder);
+            }
+            catch
+            {
+                return 0;
+            }
+
+            foreach (var sourceFile in files)
+            {
+                if (string.IsNullOrWhiteSpace(sourceFile))
+                {
+                    continue;
+                }
+
+                var fileName = Path.GetFileName(sourceFile);
+                if (string.IsNullOrWhiteSpace(fileName))
+                {
+                    continue;
+                }
+
+                var destFile = Path.Combine(customIconsFolderPath, fileName);
+                try
+                {
+                    if (File.Exists(destFile))
+                    {
+                        continue;
+                    }
+
+                    File.Copy(sourceFile, destFile, overwrite: false);
+                    copied++;
+                }
+                catch
+                {
+                }
+            }
+
+            return copied;
+        }
+
         public static bool UpdateFolderIcon(string iconFilePath, string folderPath)
         {
             if (string.IsNullOrWhiteSpace(iconFilePath) || string.IsNullOrWhiteSpace(folderPath))
