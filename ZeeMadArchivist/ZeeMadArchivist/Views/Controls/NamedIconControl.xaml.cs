@@ -31,11 +31,6 @@ public sealed partial class NamedIconControl : UserControl
             typeof(NamedIconControl),
             new PropertyMetadata(null));
 
-    private void SaveButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        ViewModel?.SaveToProgramData();
-    }
-
     private async void CustomIconsBrowseButton_OnClick(object sender, RoutedEventArgs e)
     {
         var picker = new FolderPicker();

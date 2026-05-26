@@ -12,23 +12,6 @@
         Spacing="12">
 
         <Grid
-            x:Name="HeaderGrid"
-            ColumnDefinitions="Auto,*"
-            ColumnSpacing="8">
-            <SymbolIcon
-                x:Name="NamedIcon"
-                Symbol="{Binding ElementName=NamedIconSettings, Path=ViewModel.IconSymbol}"
-                VerticalAlignment="Center" />
-
-            <TextBlock
-                x:Name="NamedText"
-                Grid.Column="1"
-                Text="{Binding ElementName=NamedIconSettings, Path=ViewModel.Name}"
-                VerticalAlignment="Center"
-                TextTrimming="CharacterEllipsis" />
-        </Grid>
-
-        <Grid
             x:Name="CustomIconsPathGrid"
             ColumnDefinitions="Auto,*,Auto,Auto"
             ColumnSpacing="8">
@@ -78,52 +61,14 @@
                             Height="20"
                             VerticalAlignment="Center"
                             Source="{Binding IconImage}" />
-                        <TextBlock
+                        <TextBox
                             x:Name="IconListRowName"
                             Grid.Column="1"
-                            Text="{Binding Name}"
-                            VerticalAlignment="Center"
-                            TextTrimming="CharacterEllipsis" />
+                            Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            VerticalAlignment="Center" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
-        <ListView
-            x:Name="ItemsTable"
-            ItemsSource="{Binding ElementName=NamedIconSettings, Path=ViewModel.Items}"
-            MinHeight="160">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid
-                        x:Name="TableRowGrid"
-                        ColumnDefinitions="Auto,*"
-                        ColumnSpacing="8">
-                        <Image
-                            x:Name="RowIconImage"
-                            Width="20"
-                            Height="20"
-                            VerticalAlignment="Center"
-                            Source="{Binding IconImage}"
-                        />
-
-                        <TextBox
-                            Background="AliceBlue"
-                            x:Name="RowTextBox"
-                            Grid.Column="1"
-                            Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            VerticalAlignment="Center"
-                        />
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <Button
-            x:Name="SaveButton"
-            Content="Save"
-            HorizontalAlignment="Left"
-            IsEnabled="{Binding ElementName=NamedIconSettings, Path=ViewModel.IsSaveEnabled}"
-            Click="SaveButton_OnClick" />
     </StackPanel>
 </UserControl>

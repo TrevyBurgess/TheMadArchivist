@@ -476,19 +476,37 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
     }
 }
 
-public sealed class IconListItemViewModel
+public sealed class IconListItemViewModel : INotifyPropertyChanged
 {
+    private string _name = string.Empty;
+
     public IconListItemViewModel(string filePath)
     {
         FilePath = filePath ?? string.Empty;
-        Name = string.IsNullOrWhiteSpace(FilePath)
+        _name = string.IsNullOrWhiteSpace(FilePath)
             ? string.Empty
             : Path.GetFileNameWithoutExtension(FilePath);
     }
 
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     public string FilePath { get; }
 
-    public string Name { get; }
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            var next = value ?? string.Empty;
+            if (string.Equals(_name, next, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _name = next;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+        }
+    }
 
     public BitmapImage? IconImage
     {
