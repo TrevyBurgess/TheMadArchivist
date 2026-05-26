@@ -12,6 +12,100 @@ namespace CyberFeedForward.TheMadArchivist.AppTools.FileSystem
 {
     public static class FolderTools
     {
+        public static bool TryRenameIconFile(string customIconsFolderPath, string originalFilePath, string newBaseName, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(customIconsFolderPath))
+            {
+                errorMessage = "Custom icons folder path cannot be empty.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(originalFilePath))
+            {
+                errorMessage = "Original file path cannot be empty.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(newBaseName))
+            {
+                errorMessage = "New icon name cannot be empty.";
+                return false;
+            }
+
+            var trimmedNewBaseName = newBaseName.Trim();
+            if (trimmedNewBaseName.Length == 0)
+            {
+                errorMessage = "New icon name cannot be empty.";
+                return false;
+            }
+
+            if (trimmedNewBaseName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                errorMessage = "New icon name contains invalid characters.";
+                return false;
+            }
+
+            try
+            {
+                var folderFullPath = Path.GetFullPath(customIconsFolderPath);
+                var originalFullPath = Path.GetFullPath(originalFilePath);
+
+                if (!Directory.Exists(folderFullPath))
+                {
+                    errorMessage = "Custom icons folder does not exist.";
+                    return false;
+                }
+
+                if (!File.Exists(originalFullPath))
+                {
+                    errorMessage = "Original icon file does not exist.";
+                    return false;
+                }
+
+                if (!folderFullPath.EndsWith(Path.DirectorySeparatorChar))
+                {
+                    folderFullPath += Path.DirectorySeparatorChar;
+                }
+
+                if (!originalFullPath.StartsWith(folderFullPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    errorMessage = "Icon file is not in the custom icons folder.";
+                    return false;
+                }
+
+                var extension = Path.GetExtension(originalFullPath);
+                if (string.IsNullOrWhiteSpace(extension))
+                {
+                    extension = ".ico";
+                }
+
+                var destFullPath = Path.Combine(folderFullPath, trimmedNewBaseName + extension);
+                destFullPath = Path.GetFullPath(destFullPath);
+
+                if (!destFullPath.StartsWith(folderFullPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    errorMessage = "New icon name resolves outside the custom icons folder.";
+                    return false;
+                }
+
+                if (File.Exists(destFullPath))
+                {
+                    errorMessage = "A file with the new name already exists.";
+                    return false;
+                }
+
+                File.Move(originalFullPath, destFullPath);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                return false;
+            }
+        }
+
         public static int LoadDefaultIcons(string customIconsFolderPath, string? iconsFolderPath = null)
         {
             if (string.IsNullOrWhiteSpace(customIconsFolderPath))

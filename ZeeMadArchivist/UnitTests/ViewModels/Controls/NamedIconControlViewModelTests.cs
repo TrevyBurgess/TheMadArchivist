@@ -208,8 +208,8 @@ public sealed class NamedIconControlViewModelTests
             directoryExists: _ => true,
             enumerateFiles: _ =>
             [
-                "C:\\Icons\\b.png",
-                "C:\\Icons\\a.png",
+                "C:\\Icons\\b.ico",
+                "C:\\Icons\\a.ico",
             ],
             fileExists: _ => false)
         {
@@ -219,6 +219,32 @@ public sealed class NamedIconControlViewModelTests
         Assert.AreEqual(2, vm.IconList.Count);
         Assert.AreEqual("a", vm.IconList[0].Name);
         Assert.AreEqual("b", vm.IconList[1].Name);
+    }
+
+    [TestMethod]
+    public void IconList_WhenCustomIconsDirectoryExists_OnlyIncludesIcoFiles()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => true,
+            enumerateFiles: _ =>
+            [
+                "C:\\Icons\\a.ico",
+                "C:\\Icons\\b.png",
+                "C:\\Icons\\c.txt",
+                "C:\\Icons\\d.ICO",
+            ],
+            fileExists: _ => false)
+        {
+            CustomIconsFolderPath = "C:\\Icons"
+        };
+
+        Assert.AreEqual(2, vm.IconList.Count);
+        Assert.AreEqual("a", vm.IconList[0].Name);
+        Assert.AreEqual("d", vm.IconList[1].Name);
     }
 
     [TestMethod]
@@ -280,5 +306,34 @@ public sealed class NamedIconControlViewModelTests
         vm.RefreshIcons();
 
         Assert.AreEqual(2, created);
+    }
+
+    [TestMethod]
+    public void IconListItemViewModel_OriginalName_IsInitialFileName_AndCanRevert()
+    {
+        var item = new IconListItemViewModel("C:\\Icons\\TestIcon.ico");
+
+        Assert.AreEqual("TestIcon", item.OriginalName);
+        Assert.AreEqual("TestIcon", item.Name);
+
+        item.Name = "Changed";
+        Assert.AreEqual("Changed", item.Name);
+
+        item.Name = item.OriginalName;
+        Assert.AreEqual("TestIcon", item.Name);
+    }
+
+    [TestMethod]
+    public void IconListItemViewModel_IsDirty_IsFalseUntilNameChanges_AndFalseAfterRevert()
+    {
+        var item = new IconListItemViewModel("C:\\Icons\\TestIcon.ico");
+
+        Assert.IsFalse(item.IsDirty);
+
+        item.Name = "Changed";
+        Assert.IsTrue(item.IsDirty);
+
+        item.Name = item.OriginalName;
+        Assert.IsFalse(item.IsDirty);
     }
 }

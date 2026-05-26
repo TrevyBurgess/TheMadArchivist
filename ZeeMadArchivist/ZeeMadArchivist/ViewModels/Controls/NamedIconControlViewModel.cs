@@ -246,6 +246,7 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         foreach (var f in files
             .Where(f => !string.IsNullOrWhiteSpace(f))
             .Select(f => f.Trim())
+            .Where(f => string.Equals(Path.GetExtension(f), ".ico", StringComparison.OrdinalIgnoreCase))
             .OrderBy(f => Path.GetFileName(f), StringComparer.OrdinalIgnoreCase))
         {
             IconList.Add(new IconListItemViewModel(f));
@@ -483,14 +484,27 @@ public sealed class IconListItemViewModel : INotifyPropertyChanged
     public IconListItemViewModel(string filePath)
     {
         FilePath = filePath ?? string.Empty;
-        _name = string.IsNullOrWhiteSpace(FilePath)
+        var initialName = string.IsNullOrWhiteSpace(FilePath)
             ? string.Empty
             : Path.GetFileNameWithoutExtension(FilePath);
+
+        OriginalName = initialName;
+        _name = initialName;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public string FilePath { get; }
+
+    public string OriginalName { get; }
+
+    public bool IsDirty
+    {
+        get
+        {
+            return !string.Equals(Name, OriginalName, StringComparison.Ordinal);
+        }
+    }
 
     public string Name
     {
@@ -505,6 +519,7 @@ public sealed class IconListItemViewModel : INotifyPropertyChanged
 
             _name = next;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDirty)));
         }
     }
 

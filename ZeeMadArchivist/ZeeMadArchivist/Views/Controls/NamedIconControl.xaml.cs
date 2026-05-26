@@ -3,6 +3,7 @@ using CyberFeedForward.TheMadArchivist.AppTools.FileSystem;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using System.IO;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using WinRT.Interop;
@@ -82,5 +83,72 @@ public sealed partial class NamedIconControl : UserControl
         FolderTools.LoadDefaultIcons(ViewModel.CustomIconsFolderPath);
 
         ViewModel.RefreshIcons();
+    }
+
+    private async void IconListRowSaveButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
+        if (sender is not Button button)
+        {
+            return;
+        }
+
+        if (button.DataContext is not IconListItemViewModel row)
+        {
+            return;
+        }
+
+        var newBaseName = row.Name;
+        var originalFilePath = row.FilePath;
+
+        var oldBaseName = string.IsNullOrWhiteSpace(originalFilePath)
+            ? string.Empty
+            : Path.GetFileNameWithoutExtension(originalFilePath);
+
+        if (string.Equals(oldBaseName, newBaseName, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        var ok = FolderTools.TryRenameIconFile(
+            ViewModel.CustomIconsFolderPath,
+            originalFilePath,
+            newBaseName,
+            out var errorMessage);
+
+        if (ok)
+        {
+            ViewModel.RefreshIcons();
+            return;
+        }
+
+        var dialog = new ContentDialog
+        {
+            Title = "Rename Failed",
+            Content = string.IsNullOrWhiteSpace(errorMessage) ? "Unable to rename icon." : errorMessage,
+            CloseButtonText = "OK",
+            XamlRoot = XamlRoot,
+        };
+
+        await dialog.ShowAsync();
+    }
+
+    private void IconListRowRevertButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button)
+        {
+            return;
+        }
+
+        if (button.DataContext is not IconListItemViewModel row)
+        {
+            return;
+        }
+
+        row.Name = row.OriginalName;
     }
 }

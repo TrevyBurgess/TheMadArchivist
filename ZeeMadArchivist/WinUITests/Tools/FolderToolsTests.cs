@@ -151,4 +151,113 @@ public sealed class FolderToolsTests
         }
     }
 
+    [TestMethod]
+    public void TryRenameIconFile_WhenValid_RenamesFile()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var customIcons = Path.Combine(baseFolder, "CustomIcons");
+        Directory.CreateDirectory(customIcons);
+
+        var original = Path.Combine(customIcons, "Old.ico");
+        File.WriteAllBytes(original, [1, 2, 3]);
+
+        try
+        {
+            var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryRenameIconFile(customIcons, original, "New", out var error);
+            Assert.IsTrue(ok);
+            Assert.AreEqual(string.Empty, error);
+            Assert.IsFalse(File.Exists(original));
+            Assert.IsTrue(File.Exists(Path.Combine(customIcons, "New.ico")));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void TryRenameIconFile_WhenDuplicateName_ReturnsFalse()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var customIcons = Path.Combine(baseFolder, "CustomIcons");
+        Directory.CreateDirectory(customIcons);
+
+        var original = Path.Combine(customIcons, "Old.ico");
+        var existing = Path.Combine(customIcons, "New.ico");
+        File.WriteAllBytes(original, [1, 2, 3]);
+        File.WriteAllBytes(existing, [9, 9, 9]);
+
+        try
+        {
+            var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryRenameIconFile(customIcons, original, "New", out var error);
+            Assert.IsFalse(ok);
+            Assert.AreNotEqual(string.Empty, error);
+            Assert.IsTrue(File.Exists(original));
+            CollectionAssert.AreEqual(new byte[] { 9, 9, 9 }, File.ReadAllBytes(existing));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void TryRenameIconFile_WhenInvalidName_ReturnsFalse()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var customIcons = Path.Combine(baseFolder, "CustomIcons");
+        Directory.CreateDirectory(customIcons);
+
+        var original = Path.Combine(customIcons, "Old.ico");
+        File.WriteAllBytes(original, [1, 2, 3]);
+
+        try
+        {
+            var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryRenameIconFile(customIcons, original, "New<", out var error);
+            Assert.IsFalse(ok);
+            Assert.AreNotEqual(string.Empty, error);
+            Assert.IsTrue(File.Exists(original));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void TryRenameIconFile_WhenOriginalOutsideCustomIcons_ReturnsFalse()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var customIcons = Path.Combine(baseFolder, "CustomIcons");
+        var otherFolder = Path.Combine(baseFolder, "Other");
+        Directory.CreateDirectory(customIcons);
+        Directory.CreateDirectory(otherFolder);
+
+        var original = Path.Combine(otherFolder, "Old.ico");
+        File.WriteAllBytes(original, [1, 2, 3]);
+
+        try
+        {
+            var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryRenameIconFile(customIcons, original, "New", out var error);
+            Assert.IsFalse(ok);
+            Assert.AreNotEqual(string.Empty, error);
+            Assert.IsTrue(File.Exists(original));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
 }

@@ -13,8 +13,14 @@
 
         <Grid
             x:Name="CustomIconsPathGrid"
-            ColumnDefinitions="Auto,*,Auto,Auto"
             ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
             <TextBlock
                 x:Name="CustomIconsLabel"
                 Text="Custom Icons"
@@ -38,13 +44,7 @@
                 IsEnabled="{Binding ElementName=NamedIconSettings, Path=ViewModel.IsCustomIconsPathSaveEnabled}"
                 Click="CustomIconsSaveButton_OnClick" />
         </Grid>
-
-        <Button
-            x:Name="LoadDefaultIconsButton"
-            Content="Load Default Icons"
-            HorizontalAlignment="Left"
-            Click="LoadDefaultIconsButton_OnClick" />
-
+        
         <ListView
             x:Name="IconList"
             ItemsSource="{Binding ElementName=NamedIconSettings, Path=ViewModel.IconList}"
@@ -53,8 +53,14 @@
                 <DataTemplate>
                     <Grid
                         x:Name="IconListRowGrid"
-                        ColumnDefinitions="Auto,*"
                         ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
                         <Image
                             x:Name="IconListRowImage"
                             Width="20"
@@ -66,9 +72,34 @@
                             Grid.Column="1"
                             Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             VerticalAlignment="Center" />
+
+                        <Button
+                            x:Name="IconListRowSaveButton"
+                            Grid.Column="2"
+                            IsEnabled="{Binding IsDirty}"
+                            Click="IconListRowSaveButton_OnClick">
+                            <SymbolIcon Symbol="Accept" />
+                        </Button>
+
+                        <Button
+                            x:Name="IconListRowRevertButton"
+                            Grid.Column="3"
+                            IsEnabled="{Binding IsDirty}"
+                            Click="IconListRowRevertButton_OnClick">
+                            <SymbolIcon Symbol="Cancel" />
+                        </Button>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <StackPanel Orientation="Horizontal">
+            <Button
+            x:Name="LoadDefaultIconsButton"
+            Content="Load Default Icons"
+            HorizontalAlignment="Left"
+            Click="LoadDefaultIconsButton_OnClick" />
+            <TextBlock Margin="10,0,0,0" Text="Note: Might override existing icons" VerticalAlignment="Center" />
+        </StackPanel>
     </StackPanel>
 </UserControl>
