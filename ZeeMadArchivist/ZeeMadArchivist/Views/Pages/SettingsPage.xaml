@@ -16,54 +16,39 @@
         x:Name="SettingsRootGrid"
         Padding="16"
         DataContext="{StaticResource ViewModel}">
-        <StackPanel x:Name="SettingsStackPanel" >
-            <TextBlock
-                x:Name="SettingsTitleText"
-                Text="Settings"
-                Style="{ThemeResource TitleTextBlockStyle}" />
-            <TextBlock
-                Padding="0,12"
-                x:Name="SettingsDescriptionText"
-                Text="Configure application preferences."
-                Opacity="0.8" />
+        <ScrollViewer
+            x:Name="SettingsScrollViewer"
+            HorizontalScrollMode="Disabled">
+            <StackPanel x:Name="SettingsStackPanel" >
+                <TextBlock
+                    Visibility="Collapsed"
+                    x:Name="SettingsTitleText"
+                    Text="Settings"
+                    Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock
+                    Padding="0,12"
+                    x:Name="SettingsDescriptionText"
+                    Text="Tool for managing archives."
+                    Opacity="0.8" />
 
-            <TabView x:Name="SettingsGroups" Margin="-10,12" IsAddTabButtonVisible="False">
-                <TabViewItem x:Name="GeneralSettingsTab" Header="General" IsClosable="False">
-                    <ScrollViewer HorizontalScrollMode="Disabled" Padding="10,20">
-                        <StackPanel x:Name="GeneralSettingsPanel" Spacing="12">
-                            <ComboBox
-                                x:Name="ThemeModeComboBox"
-                                Header="Theme"
-                                SelectedIndex="{Binding ThemeModeIndex, Mode=TwoWay}">
-                                <ComboBoxItem x:Name="ThemeModeSystemDefaultItem" Content="System default" />
-                                <ComboBoxItem x:Name="ThemeModeLightItem" Content="Light" />
-                                <ComboBoxItem x:Name="ThemeModeDarkItem" Content="Dark" />
-                            </ComboBox>
+                <TabView x:Name="SettingsGroups" Margin="-10,12" IsAddTabButtonVisible="False">
+                    <TabViewItem x:Name="GeneralSettingsTab" Header="General" IsClosable="False">
+                        <controls:GeneralSettingsControl x:Name="GeneralSettingsControl" />
+                    </TabViewItem>
 
-                            <ToggleSwitch
-                                x:Name="CommandBarLeftToggleSwitch"
-                                Header="Command bar on left"
-                                IsOn="{Binding IsCommandBarOnLeft, Mode=TwoWay}" />
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabViewItem>
-
-                <TabViewItem x:Name="ArchivesSettingsTab" Header="Archives" IsClosable="False">
-                    <ScrollViewer HorizontalScrollMode="Disabled" Padding="10,20">
-                        <StackPanel x:Name="ArchivesSettingsPanel" Spacing="12">
+                    <TabViewItem x:Name="ArchivesSettingsTab" Header="Archives" IsClosable="False">
+                        <StackPanel x:Name="ArchivesSettingsPanel" Spacing="12" Padding="10,20">
                             <controls:ArchiveListControl x:Name="ArchiveListControl" />
                         </StackPanel>
-                    </ScrollViewer>
-                </TabViewItem>
+                    </TabViewItem>
 
-                <TabViewItem x:Name="IconsSettingsTab" Header="Icons" IsClosable="False">
-                    <ScrollViewer HorizontalScrollMode="Disabled" Padding="10,20">
-                        <StackPanel x:Name="IconsSettingsPanel" Spacing="12">
+                    <TabViewItem x:Name="IconsSettingsTab" Header="Icons" IsClosable="False">
+                        <StackPanel x:Name="IconsSettingsPanel" Spacing="12" Padding="10,20">
                             <controls:NamedIconControl x:Name="NamedIconControl" />
                         </StackPanel>
-                    </ScrollViewer>
-                </TabViewItem>
-            </TabView>
-        </StackPanel>
+                    </TabViewItem>
+                </TabView>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

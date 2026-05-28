@@ -1,0 +1,31 @@
+<UserControl
+    x:Name="GeneralSettings"
+    x:Class="CyberFeedForward.TheMadArchivist.Views.Controls.GeneralSettingsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel x:Name="GeneralSettingsPanel" Spacing="12" Padding="10,20">
+        <TextBlock
+            x:Name="GeneralTitleText"
+            Text="General"
+            Style="{ThemeResource SubtitleTextBlockStyle}"
+            Margin="0,12,0,0" />
+
+        <ComboBox
+            x:Name="ThemeModeComboBox"
+            Header="Theme"
+            SelectedIndex="{Binding ThemeModeIndex, Mode=TwoWay}">
+            <ComboBoxItem x:Name="ThemeModeSystemDefaultItem" Content="System default" />
+            <ComboBoxItem x:Name="ThemeModeLightItem" Content="Light" />
+            <ComboBoxItem x:Name="ThemeModeDarkItem" Content="Dark" />
+        </ComboBox>
+
+        <ToggleSwitch
+            x:Name="CommandBarLeftToggleSwitch"
+            Header="Command bar on left"
+            IsOn="{Binding IsCommandBarOnLeft, Mode=TwoWay}" />
+    </StackPanel>
+</UserControl>

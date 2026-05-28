@@ -51,12 +51,14 @@ public sealed class SettingsPageViewModel : INotifyPropertyChanged
             _themeMode = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsDarkModeEnabled));
+            OnPropertyChanged(nameof(ThemeModeIndex));
 
             _themeSettingsService.SetThemeMode(value);
 
-            if (_themeRootElement is not null)
+            var rootElement = _themeRootElement ?? (App.MainWindowInstance?.Content as FrameworkElement);
+            if (rootElement is not null)
             {
-                AppThemeManager.ApplyThemeMode(_themeRootElement, value);
+                AppThemeManager.ApplyThemeMode(rootElement, value);
             }
         }
     }

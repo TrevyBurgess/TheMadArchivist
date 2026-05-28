@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Drawing;
 using System.IO;
+using System.Diagnostics;
 
 namespace UnitTests.Tools;
 
@@ -62,6 +63,243 @@ public sealed class FolderToolsTests
 
                 File.SetAttributes(tempFolder, FileAttributes.Directory);
                 Directory.Delete(tempFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void LoadDefaultIcons_WhenSourceFolderMissing_ReturnsZero()
+    {
+        var destFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var sourceFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+
+        try
+        {
+            var copied = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.LoadDefaultIcons(destFolder, iconsFolderPath: sourceFolder);
+            Assert.AreEqual(0, copied);
+        }
+        finally
+        {
+            if (Directory.Exists(destFolder))
+            {
+                Directory.Delete(destFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void LoadDefaultIcons_WhenDestinationMissing_CreatesDestinationAndCopiesFiles()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var sourceFolder = Path.Combine(baseFolder, "Icons");
+        var destFolder = Path.Combine(baseFolder, "CustomIcons");
+        Directory.CreateDirectory(sourceFolder);
+
+        var file1 = Path.Combine(sourceFolder, "a.ico");
+        var file2 = Path.Combine(sourceFolder, "b.ico");
+        File.WriteAllBytes(file1, [1, 2, 3]);
+        File.WriteAllBytes(file2, [4, 5, 6]);
+
+        try
+        {
+            var copied = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.LoadDefaultIcons(destFolder, iconsFolderPath: sourceFolder);
+
+            Assert.AreEqual(2, copied);
+            Assert.IsTrue(Directory.Exists(destFolder));
+            Assert.IsTrue(File.Exists(Path.Combine(destFolder, "a.ico")));
+            Assert.IsTrue(File.Exists(Path.Combine(destFolder, "b.ico")));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void LoadDefaultIcons_WhenFileAlreadyExists_SkipsExistingFile()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var sourceFolder = Path.Combine(baseFolder, "Icons");
+        var destFolder = Path.Combine(baseFolder, "CustomIcons");
+        Directory.CreateDirectory(sourceFolder);
+        Directory.CreateDirectory(destFolder);
+
+        var sourceFile1 = Path.Combine(sourceFolder, "a.ico");
+        var sourceFile2 = Path.Combine(sourceFolder, "b.ico");
+        File.WriteAllBytes(sourceFile1, [1, 2, 3]);
+        File.WriteAllBytes(sourceFile2, [4, 5, 6]);
+
+        var existingDest = Path.Combine(destFolder, "a.ico");
+        File.WriteAllBytes(existingDest, [9, 9, 9]);
+
+        try
+        {
+            var copied = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.LoadDefaultIcons(destFolder, iconsFolderPath: sourceFolder);
+
+            Assert.AreEqual(1, copied);
+            CollectionAssert.AreEqual(new byte[] { 9, 9, 9 }, File.ReadAllBytes(existingDest));
+            Assert.IsTrue(File.Exists(Path.Combine(destFolder, "b.ico")));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void TryRenameIconFile_WhenValid_RenamesFile()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var customIcons = Path.Combine(baseFolder, "CustomIcons");
+        Directory.CreateDirectory(customIcons);
+
+        var original = Path.Combine(customIcons, "Old.ico");
+        File.WriteAllBytes(original, [1, 2, 3]);
+
+        try
+        {
+            var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryRenameIconFile(customIcons, original, "New", out var error);
+            Assert.IsTrue(ok);
+            Assert.AreEqual(string.Empty, error);
+            Assert.IsFalse(File.Exists(original));
+            Assert.IsTrue(File.Exists(Path.Combine(customIcons, "New.ico")));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void TryRenameIconFile_WhenDuplicateName_ReturnsFalse()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var customIcons = Path.Combine(baseFolder, "CustomIcons");
+        Directory.CreateDirectory(customIcons);
+
+        var original = Path.Combine(customIcons, "Old.ico");
+        var existing = Path.Combine(customIcons, "New.ico");
+        File.WriteAllBytes(original, [1, 2, 3]);
+        File.WriteAllBytes(existing, [9, 9, 9]);
+
+        try
+        {
+            var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryRenameIconFile(customIcons, original, "New", out var error);
+            Assert.IsFalse(ok);
+            Assert.AreNotEqual(string.Empty, error);
+            Assert.IsTrue(File.Exists(original));
+            CollectionAssert.AreEqual(new byte[] { 9, 9, 9 }, File.ReadAllBytes(existing));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void TryRenameIconFile_WhenInvalidName_ReturnsFalse()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var customIcons = Path.Combine(baseFolder, "CustomIcons");
+        Directory.CreateDirectory(customIcons);
+
+        var original = Path.Combine(customIcons, "Old.ico");
+        File.WriteAllBytes(original, [1, 2, 3]);
+
+        try
+        {
+            var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryRenameIconFile(customIcons, original, "New<", out var error);
+            Assert.IsFalse(ok);
+            Assert.AreNotEqual(string.Empty, error);
+            Assert.IsTrue(File.Exists(original));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void TryRenameIconFile_WhenOriginalOutsideCustomIcons_ReturnsFalse()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        var customIcons = Path.Combine(baseFolder, "CustomIcons");
+        var otherFolder = Path.Combine(baseFolder, "Other");
+        Directory.CreateDirectory(customIcons);
+        Directory.CreateDirectory(otherFolder);
+
+        var original = Path.Combine(otherFolder, "Old.ico");
+        File.WriteAllBytes(original, [1, 2, 3]);
+
+        try
+        {
+            var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryRenameIconFile(customIcons, original, "New", out var error);
+            Assert.IsFalse(ok);
+            Assert.AreNotEqual(string.Empty, error);
+            Assert.IsTrue(File.Exists(original));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void TryOpenFolderInExplorer_WhenPathIsEmpty_ReturnsFalse()
+    {
+        var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryOpenFolderInExplorer(string.Empty, out var error);
+        Assert.IsFalse(ok);
+        Assert.AreNotEqual(string.Empty, error);
+    }
+
+    [TestMethod]
+    public void TryOpenFolderInExplorer_WhenValid_InvokesExplorerWithFolderPath()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(baseFolder);
+
+        ProcessStartInfo? started = null;
+
+        try
+        {
+            var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryOpenFolderInExplorer(
+                baseFolder,
+                out var error,
+                processStart: psi =>
+                {
+                    started = psi;
+                    return Process.GetCurrentProcess();
+                });
+
+            Assert.IsTrue(ok);
+            Assert.AreEqual(string.Empty, error);
+            Assert.IsNotNull(started);
+            Assert.AreEqual("explorer.exe", started!.FileName);
+            Assert.IsTrue(started.Arguments.Contains(baseFolder, StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
             }
         }
     }

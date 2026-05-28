@@ -59,11 +59,10 @@ Here are some the vibe code commands I used.
 - Add save button to CustomIconsPathGrid, to the right of CustomIconsBrowseButton. Enable this button when the entered folder path differs from the saved path.
 - Create a sub-folder in ProgramData to store windows icons. Add an icon called Default.ico. 
 - Add a default row of data to ItemsTable. For the icon, add a default file path with a default Image.ico file. 
-
 - Add a table to NamedIconControl named IconList. For each file in CustomIcons folder, add the image of the icon, followed by the name.
-
-
-
+- Only show *.ico files in NamedIconSettings
+- Add a button to NamedIconSettings with a Open File image. When clicked, open a new file explorer window, opened to the CustomIcons folder.
+- Refresh NamedIconSettings when contents of CustomIcons changes
 
 
 
@@ -122,11 +121,21 @@ Here are some the vibe code commands I used.
 - Remove the 'Add new tabs' button and 'Close Tab' buttons from SettingsGroups
 - Add NamedIconControl to IconsSettingsTab
 
+## Page - Settings - Icons
+
+- Create a method in FolderTools in AppTools called LoadDefaultIcons. This will copy all icons in the Icons folder to CustomIconsFolderPath
+- Add a button in NamedIconSettings control called LoadDefaultIcons. When clicked, copy call LoadDefaultIcons method
+
 ## Page - Home Page
 
 - Place a divider between FolderContentsPanel and HomeStackPanel. make it movable. 
 - Show a left-right cursor icon when the cursor is over FolderContentsDivider
-- 
+- There are *.ico files in AppTools.Icons folder. However, no icons are being copied when LoadDefaultIcons is called
+- Make IconListRowName editable.
+- Add a save button to each row in IconList with a check mark. When clicked rename file with original name to new name in the CustomIcons folder. Show error in a popup if operation fails.
+- Add revert button to each row in IconList with an X mark. When clicked, will revert text in IconListRowName.
+- Enable IconListRowSaveButton and IconListRowRevertButton when text in IconListRowName changes
+- Add content of SettingsPage into a scroll panel
 
 ## Page - About
 

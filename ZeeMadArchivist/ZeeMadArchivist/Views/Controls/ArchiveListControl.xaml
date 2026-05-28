@@ -25,6 +25,15 @@
                 LostFocus="NewArchivePathTextBox_OnLostFocus"
                 Text="{Binding ElementName=ControlRoot, Path=ViewModel.NewArchivePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <Button
+                x:Name="BrowseArchiveButton"
+                Grid.Column="2"
+                ToolTipService.ToolTip="Open Folder Selector"
+                Click="BrowseArchiveButton_OnClick">
+                <StackPanel Orientation="Horizontal" Spacing="6">                    
+                    <SymbolIcon Symbol="Folder" />
+                </StackPanel>
+            </Button>            
+            <Button
                 x:Name="AddArchiveButton"
                 Grid.Column="1"
                 ToolTipService.ToolTip="Add Folder Path"
@@ -32,15 +41,6 @@
                 Click="AddArchiveButton_OnClick">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                      <SymbolIcon Symbol="Add" />
-                </StackPanel>
-            </Button>
-            <Button
-                x:Name="BrowseArchiveButton"
-                Grid.Column="2"
-                ToolTipService.ToolTip="Open Folder Selector"
-                Click="BrowseArchiveButton_OnClick">
-                <StackPanel Orientation="Horizontal" Spacing="6">                    
-                    <SymbolIcon Symbol="Folder" />
                 </StackPanel>
             </Button>
         </Grid>

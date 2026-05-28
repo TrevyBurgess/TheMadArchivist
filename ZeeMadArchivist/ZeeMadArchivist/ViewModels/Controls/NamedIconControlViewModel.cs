@@ -161,6 +161,11 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         }
     }
 
+    public void RefreshIcons()
+    {
+        RefreshIconList();
+    }
+
     public void LoadFromProgramData(string? folderName = null, string? fileName = null)
     {
         LoadCustomIconsFolderFromSettings();
@@ -214,6 +219,8 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
             return;
         }
 
+        EnsureCustomIconsFolderExists(folder);
+
         try
         {
             if (!_directoryExists(folder))
@@ -239,6 +246,7 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         foreach (var f in files
             .Where(f => !string.IsNullOrWhiteSpace(f))
             .Select(f => f.Trim())
+            .Where(f => string.Equals(Path.GetExtension(f), ".ico", StringComparison.OrdinalIgnoreCase))
             .OrderBy(f => Path.GetFileName(f), StringComparer.OrdinalIgnoreCase))
         {
             IconList.Add(new IconListItemViewModel(f));
@@ -469,19 +477,51 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
     }
 }
 
-public sealed class IconListItemViewModel
+public sealed class IconListItemViewModel : INotifyPropertyChanged
 {
+    private string _name = string.Empty;
+
     public IconListItemViewModel(string filePath)
     {
         FilePath = filePath ?? string.Empty;
-        Name = string.IsNullOrWhiteSpace(FilePath)
+        var initialName = string.IsNullOrWhiteSpace(FilePath)
             ? string.Empty
             : Path.GetFileNameWithoutExtension(FilePath);
+
+        OriginalName = initialName;
+        _name = initialName;
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public string FilePath { get; }
 
-    public string Name { get; }
+    public string OriginalName { get; }
+
+    public bool IsDirty
+    {
+        get
+        {
+            return !string.Equals(Name, OriginalName, StringComparison.Ordinal);
+        }
+    }
+
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            var next = value ?? string.Empty;
+            if (string.Equals(_name, next, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _name = next;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDirty)));
+        }
+    }
 
     public BitmapImage? IconImage
     {
