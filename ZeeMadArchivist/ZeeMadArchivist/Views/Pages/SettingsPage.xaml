@@ -21,32 +21,19 @@
             HorizontalScrollMode="Disabled">
             <StackPanel x:Name="SettingsStackPanel" >
                 <TextBlock
+                    Visibility="Collapsed"
                     x:Name="SettingsTitleText"
                     Text="Settings"
                     Style="{ThemeResource TitleTextBlockStyle}" />
                 <TextBlock
                     Padding="0,12"
                     x:Name="SettingsDescriptionText"
-                    Text="Configure application preferences."
+                    Text="Tool for managing archives."
                     Opacity="0.8" />
 
                 <TabView x:Name="SettingsGroups" Margin="-10,12" IsAddTabButtonVisible="False">
                     <TabViewItem x:Name="GeneralSettingsTab" Header="General" IsClosable="False">
-                        <StackPanel x:Name="GeneralSettingsPanel" Spacing="12" Padding="10,20">
-                            <ComboBox
-                                x:Name="ThemeModeComboBox"
-                                Header="Theme"
-                                SelectedIndex="{Binding ThemeModeIndex, Mode=TwoWay}">
-                                <ComboBoxItem x:Name="ThemeModeSystemDefaultItem" Content="System default" />
-                                <ComboBoxItem x:Name="ThemeModeLightItem" Content="Light" />
-                                <ComboBoxItem x:Name="ThemeModeDarkItem" Content="Dark" />
-                            </ComboBox>
-
-                            <ToggleSwitch
-                                x:Name="CommandBarLeftToggleSwitch"
-                                Header="Command bar on left"
-                                IsOn="{Binding IsCommandBarOnLeft, Mode=TwoWay}" />
-                        </StackPanel>
+                        <controls:GeneralSettingsControl x:Name="GeneralSettingsControl" />
                     </TabViewItem>
 
                     <TabViewItem x:Name="ArchivesSettingsTab" Header="Archives" IsClosable="False">

@@ -59,11 +59,10 @@ Here are some the vibe code commands I used.
 - Add save button to CustomIconsPathGrid, to the right of CustomIconsBrowseButton. Enable this button when the entered folder path differs from the saved path.
 - Create a sub-folder in ProgramData to store windows icons. Add an icon called Default.ico. 
 - Add a default row of data to ItemsTable. For the icon, add a default file path with a default Image.ico file. 
-
 - Add a table to NamedIconControl named IconList. For each file in CustomIcons folder, add the image of the icon, followed by the name.
-
-
-
+- Only show *.ico files in NamedIconSettings
+- Add a button to NamedIconSettings with a Open File image. When clicked, open a new file explorer window, opened to the CustomIcons folder.
+- Refresh NamedIconSettings when contents of CustomIcons changes
 
 
 

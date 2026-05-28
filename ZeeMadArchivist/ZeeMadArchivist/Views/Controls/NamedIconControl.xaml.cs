@@ -85,6 +85,30 @@ public sealed partial class NamedIconControl : UserControl
         ViewModel.RefreshIcons();
     }
 
+    private async void CustomIconsOpenFolderButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
+        var ok = FolderTools.TryOpenFolderInExplorer(ViewModel.CustomIconsFolderPath, out var errorMessage);
+        if (ok)
+        {
+            return;
+        }
+
+        var dialog = new ContentDialog
+        {
+            Title = "Open Folder Failed",
+            Content = string.IsNullOrWhiteSpace(errorMessage) ? "Unable to open folder." : errorMessage,
+            CloseButtonText = "OK",
+            XamlRoot = XamlRoot,
+        };
+
+        await dialog.ShowAsync();
+    }
+
     private async void IconListRowSaveButton_OnClick(object sender, RoutedEventArgs e)
     {
         if (ViewModel is null)

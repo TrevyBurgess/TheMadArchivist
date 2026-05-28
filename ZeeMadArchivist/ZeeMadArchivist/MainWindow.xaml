@@ -13,9 +13,20 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid x:Name="RootLayoutGrid" RowDefinitions="Auto,Auto,*,Auto" Background="{ThemeResource AppWindowBackgroundBrush}">
+    <Grid x:Name="RootLayoutGrid"  Background="{ThemeResource AppWindowBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-        <Grid x:Name="TopBarGrid" Grid.Row="0" ColumnDefinitions="*,Auto">
+        <Grid x:Name="TopBarGrid" Grid.Row="0" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
             <MenuBar x:Name="TopMenuBar" Grid.Column="0">
                 <MenuBarItem x:Name="FileMenuBarItem" Title="File">
                     <MenuFlyoutItem x:Name="FileNewMenuItem" Text="New" />
@@ -49,7 +60,13 @@
                 ToolTipService.ToolTip="Settings" />
         </Grid>
 
-        <Grid x:Name="ContentGrid" Grid.Row="1" ColumnDefinitions="Auto,*,Auto">
+        <Grid x:Name="ContentGrid" Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
             <CommandBar x:Name="MainCommandBar" Grid.Column="0" DefaultLabelPosition="Right">
                 <AppBarButton x:Name="BackCommandButton" Icon="Back" Label="Back" IsEnabled="False" Click="BackCommandButton_OnClick" />
                 <AppBarButton x:Name="ForwardCommandButton" Icon="Forward" Label="Forward" IsEnabled="False" Click="ForwardCommandButton_OnClick" />
@@ -58,6 +75,9 @@
                 <AppBarButton x:Name="OpenCommandButton" Icon="OpenFile" Label="Open" />
                 <AppBarSeparator x:Name="CommandSeparator1" />
                 <AppBarButton x:Name="RefreshCommandButton" Icon="Refresh" Label="Refresh" />
+
+
+
                 <CommandBar.SecondaryCommands>
                     <AppBarButton x:Name="SettingsCommandButton" Icon="Setting" Label="Settings" Click="SettingsCommandButton_OnClick" />
                     <AppBarButton x:Name="AboutCommandButton" Icon="Help" Label="About" />

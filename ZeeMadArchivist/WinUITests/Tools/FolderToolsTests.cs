@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Drawing;
 using System.IO;
+using System.Diagnostics;
 
 namespace UnitTests.Tools;
 
@@ -251,6 +252,48 @@ public sealed class FolderToolsTests
             Assert.IsFalse(ok);
             Assert.AreNotEqual(string.Empty, error);
             Assert.IsTrue(File.Exists(original));
+        }
+        finally
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void TryOpenFolderInExplorer_WhenPathIsEmpty_ReturnsFalse()
+    {
+        var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryOpenFolderInExplorer(string.Empty, out var error);
+        Assert.IsFalse(ok);
+        Assert.AreNotEqual(string.Empty, error);
+    }
+
+    [TestMethod]
+    public void TryOpenFolderInExplorer_WhenValid_InvokesExplorerWithFolderPath()
+    {
+        var baseFolder = Path.Combine(Path.GetTempPath(), $"TheMadArchivist_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(baseFolder);
+
+        ProcessStartInfo? started = null;
+
+        try
+        {
+            var ok = global::CyberFeedForward.TheMadArchivist.AppTools.FileSystem.FolderTools.TryOpenFolderInExplorer(
+                baseFolder,
+                out var error,
+                processStart: psi =>
+                {
+                    started = psi;
+                    return Process.GetCurrentProcess();
+                });
+
+            Assert.IsTrue(ok);
+            Assert.AreEqual(string.Empty, error);
+            Assert.IsNotNull(started);
+            Assert.AreEqual("explorer.exe", started!.FileName);
+            Assert.IsTrue(started.Arguments.Contains(baseFolder, StringComparison.OrdinalIgnoreCase));
         }
         finally
         {

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -12,6 +13,59 @@ namespace CyberFeedForward.TheMadArchivist.AppTools.FileSystem
 {
     public static class FolderTools
     {
+        public static bool TryOpenFolderInExplorer(string folderPath, out string errorMessage, Func<ProcessStartInfo, Process?>? processStart = null)
+        {
+            errorMessage = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(folderPath))
+            {
+                errorMessage = "Folder path cannot be empty.";
+                return false;
+            }
+
+            string fullPath;
+            try
+            {
+                fullPath = Path.GetFullPath(folderPath);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                return false;
+            }
+
+            if (!Directory.Exists(fullPath))
+            {
+                errorMessage = "Folder does not exist.";
+                return false;
+            }
+
+            try
+            {
+                var start = processStart ?? (psi => Process.Start(psi));
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "explorer.exe",
+                    Arguments = string.Concat('"', fullPath, '"'),
+                    UseShellExecute = true,
+                };
+
+                var proc = start(psi);
+                if (proc is null)
+                {
+                    errorMessage = "Unable to launch File Explorer.";
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                return false;
+            }
+        }
+
         public static bool TryRenameIconFile(string customIconsFolderPath, string originalFilePath, string newBaseName, out string errorMessage)
         {
             errorMessage = string.Empty;

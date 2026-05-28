@@ -52,7 +52,7 @@ namespace CyberFeedForward.TheMadArchivist
             MainFrame.Navigated += MainFrame_OnNavigated;
             UpdateNavigationButtons();
 
-            MainFrame.NavigateIfNotCurrent(typeof(HomePage));
+            MainFrame.NavigateIfNotCurrent(typeof(SettingsPage));
         }
 
         private void RestoreWindowPlacement(WindowId windowId)
