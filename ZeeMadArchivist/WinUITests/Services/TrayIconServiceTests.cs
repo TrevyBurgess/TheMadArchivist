@@ -40,6 +40,11 @@ public sealed class TrayIconServiceTests
             return new IntPtr(77);
         }
 
+        public IntPtr LoadApplicationIcon()
+        {
+            return new IntPtr(88);
+        }
+
         public void DestroyIcon(IntPtr hIcon)
         {
         }
