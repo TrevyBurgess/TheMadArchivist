@@ -64,11 +64,6 @@ Here are some the vibe code commands I used.
 - Add a button to NamedIconSettings with a Open File image. When clicked, open a new file explorer window, opened to the CustomIcons folder.
 - Refresh NamedIconSettings when contents of CustomIcons changes
 
-
-
-
-
-
 ## Controls - Status Bar
 
 - Add a status bar at the bottom of the app

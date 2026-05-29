@@ -40,6 +40,8 @@ namespace CyberFeedForward.TheMadArchivist
             var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
             _appWindow = AppWindow.GetFromWindowId(windowId);
 
+            SetWindowIcon();
+
             if (Content is FrameworkElement rootElement)
             {
                 rootElement.DataContext = _viewModel;
@@ -53,6 +55,19 @@ namespace CyberFeedForward.TheMadArchivist
             UpdateNavigationButtons();
 
             MainFrame.NavigateIfNotCurrent(typeof(SettingsPage));
+        }
+
+        private void SetWindowIcon()
+        {
+            var baseDir = AppContext.BaseDirectory;
+            var iconPath = Path.Combine(baseDir, "Assets", "AppIcon.ico");
+
+            if (!File.Exists(iconPath))
+            {
+                throw new InvalidOperationException($"Expected app icon file was not found: '{iconPath}'.");
+            }
+
+            _appWindow.SetIcon(iconPath);
         }
 
         private void RestoreWindowPlacement(WindowId windowId)

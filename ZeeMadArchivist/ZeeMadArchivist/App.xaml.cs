@@ -29,6 +29,7 @@ namespace CyberFeedForward.TheMadArchivist
     public partial class App : Application
     {
         private Window? _window;
+        private TrayIconService? _trayIcon;
 
         public static Window? MainWindowInstance { get; private set; }
 
@@ -49,6 +50,9 @@ namespace CyberFeedForward.TheMadArchivist
         {
             _window = new MainWindow();
             MainWindowInstance = _window;
+
+            _trayIcon = new TrayIconService();
+            _trayIcon.Initialize();
 
             if (_window.Content is FrameworkElement rootElement)
             {

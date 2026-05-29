@@ -192,7 +192,7 @@ public sealed class NamedIconControlViewModelTests
 
         vm.SaveCustomIconsFolderPath();
 
-        Assert.AreEqual(1, created);
+        Assert.AreEqual(3, created);
         Assert.AreEqual("C:\\Temp\\CustomIcons", settings.GetCustomIconsFolderPath());
         Assert.IsFalse(vm.IsCustomIconsPathSaveEnabled);
     }
