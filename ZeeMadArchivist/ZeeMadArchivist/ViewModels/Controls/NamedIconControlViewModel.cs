@@ -1,13 +1,16 @@
 using CyberFeedForward.TheMadArchivist.Services;
+using CyberFeedForward.TheMadArchivist.AppTools.Graphics;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace CyberFeedForward.TheMadArchivist.ViewModels.Controls;
 
@@ -145,6 +148,89 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
     public ObservableCollection<NamedIconRowViewModel> Items { get; }
 
     public ObservableCollection<IconListItemViewModel> IconList { get; }
+
+    public enum IconOverwriteDecision
+    {
+        Overwrite = 0,
+        Skip = 1,
+        Cancel = 2,
+    }
+
+    public sealed class ImportIconsResult
+    {
+        public int ImportedCount { get; internal set; }
+
+        public int SkippedCount { get; internal set; }
+
+        public bool WasCancelled { get; internal set; }
+
+        public System.Collections.Generic.List<string> Errors { get; } = [];
+    }
+
+    public async Task<ImportIconsResult> ImportImagesAsIconsAsync(
+        System.Collections.Generic.IEnumerable<string> imagePaths,
+        Func<string, Task<IconOverwriteDecision>> decideOverwriteAsync,
+        Func<string, bool>? fileExists = null,
+        Func<string, Icon>? toIcon = null,
+        Action<Icon, string>? saveIcon = null)
+    {
+        ArgumentNullException.ThrowIfNull(imagePaths);
+        ArgumentNullException.ThrowIfNull(decideOverwriteAsync);
+
+        fileExists ??= File.Exists;
+        toIcon ??= ImageTools.ToIcon;
+        saveIcon ??= ImageTools.SaveIcon;
+
+        var result = new ImportIconsResult();
+
+        EnsureCustomIconsFolderExists(CustomIconsFolderPath);
+
+        foreach (var imagePath in imagePaths)
+        {
+            if (string.IsNullOrWhiteSpace(imagePath))
+            {
+                continue;
+            }
+
+            var baseName = Path.GetFileNameWithoutExtension(imagePath);
+            if (string.IsNullOrWhiteSpace(baseName))
+            {
+                continue;
+            }
+
+            var destIconPath = Path.Combine(CustomIconsFolderPath, baseName + ".ico");
+
+            if (fileExists(destIconPath))
+            {
+                var decision = await decideOverwriteAsync(destIconPath);
+                if (decision == IconOverwriteDecision.Skip)
+                {
+                    result.SkippedCount++;
+                    continue;
+                }
+
+                if (decision == IconOverwriteDecision.Cancel)
+                {
+                    result.WasCancelled = true;
+                    break;
+                }
+            }
+
+            try
+            {
+                using var icon = toIcon(imagePath);
+                saveIcon(icon, destIconPath);
+                result.ImportedCount++;
+            }
+            catch (Exception ex)
+            {
+                result.Errors.Add($"{Path.GetFileName(imagePath)}: {ex.Message}");
+            }
+        }
+
+        RefreshIconList();
+        return result;
+    }
 
     public bool IsSaveEnabled
     {

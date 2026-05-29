@@ -29,11 +29,20 @@
                     <TextBlock Text="Open Icon Folder" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            
-            
 
-
+            <Button
+                x:Name="ImportImagesButton"
+                Height="40"
+                Margin="12,0,0,0"
+                ToolTipService.ToolTip="Import images and convert them to .ico files"
+                Click="ImportImagesButton_OnClick">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
+                    <SymbolIcon Symbol="Add" />
+                    <TextBlock Text="Import Images" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
+        
         <Border
             x:Name="Divider1"
             Height="1"

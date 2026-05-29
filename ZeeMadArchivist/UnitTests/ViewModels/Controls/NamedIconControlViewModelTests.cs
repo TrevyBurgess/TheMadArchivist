@@ -2,8 +2,11 @@ using CyberFeedForward.TheMadArchivist.ViewModels.Controls;
 using CyberFeedForward.TheMadArchivist.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace UnitTests.ViewModels.Controls;
 
@@ -263,6 +266,128 @@ public sealed class NamedIconControlViewModelTests
         };
 
         Assert.AreEqual(0, vm.IconList.Count);
+    }
+
+    [TestMethod]
+    public async Task ImportImagesAsIconsAsync_WhenIconExists_AndDecisionIsSkip_Skips()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var savedPaths = new List<string>();
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => true,
+            createDirectory: _ => { })
+        {
+            CustomIconsFolderPath = "C:\\Icons"
+        };
+
+        var result = await vm.ImportImagesAsIconsAsync(
+            ["C:\\Images\\a.png"],
+            decideOverwriteAsync: _ => Task.FromResult(NamedIconControlViewModel.IconOverwriteDecision.Skip),
+            fileExists: _ => true,
+            toIcon: _ => new Icon(SystemIcons.Application, 16, 16),
+            saveIcon: (_, path) => savedPaths.Add(path));
+
+        Assert.AreEqual(0, result.ImportedCount);
+        Assert.AreEqual(1, result.SkippedCount);
+        Assert.IsFalse(result.WasCancelled);
+        Assert.AreEqual(0, savedPaths.Count);
+    }
+
+    [TestMethod]
+    public async Task ImportImagesAsIconsAsync_WhenIconExists_AndDecisionIsOverwrite_Overwrites()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var savedPaths = new List<string>();
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => true,
+            createDirectory: _ => { })
+        {
+            CustomIconsFolderPath = "C:\\Icons"
+        };
+
+        var result = await vm.ImportImagesAsIconsAsync(
+            ["C:\\Images\\a.png"],
+            decideOverwriteAsync: _ => Task.FromResult(NamedIconControlViewModel.IconOverwriteDecision.Overwrite),
+            fileExists: _ => true,
+            toIcon: _ => new Icon(SystemIcons.Application, 16, 16),
+            saveIcon: (_, path) => savedPaths.Add(path));
+
+        Assert.AreEqual(1, result.ImportedCount);
+        Assert.AreEqual(0, result.SkippedCount);
+        Assert.IsFalse(result.WasCancelled);
+        Assert.AreEqual(1, savedPaths.Count);
+        Assert.AreEqual("C:\\Icons\\a.ico", savedPaths[0]);
+    }
+
+    [TestMethod]
+    public async Task ImportImagesAsIconsAsync_WhenIconExists_AndDecisionIsCancel_Cancels()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var savedPaths = new List<string>();
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => true,
+            createDirectory: _ => { })
+        {
+            CustomIconsFolderPath = "C:\\Icons"
+        };
+
+        var result = await vm.ImportImagesAsIconsAsync(
+            ["C:\\Images\\a.png"],
+            decideOverwriteAsync: _ => Task.FromResult(NamedIconControlViewModel.IconOverwriteDecision.Cancel),
+            fileExists: _ => true,
+            toIcon: _ => new Icon(SystemIcons.Application, 16, 16),
+            saveIcon: (_, path) => savedPaths.Add(path));
+
+        Assert.AreEqual(0, result.ImportedCount);
+        Assert.AreEqual(0, result.SkippedCount);
+        Assert.IsTrue(result.WasCancelled);
+        Assert.AreEqual(0, savedPaths.Count);
+    }
+
+    [TestMethod]
+    public async Task ImportImagesAsIconsAsync_WhenToIconThrows_AddsErrorAndContinues()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var savedPaths = new List<string>();
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => true,
+            createDirectory: _ => { })
+        {
+            CustomIconsFolderPath = "C:\\Icons"
+        };
+
+        var result = await vm.ImportImagesAsIconsAsync(
+            ["C:\\Images\\a.png", "C:\\Images\\b.png"],
+            decideOverwriteAsync: _ => Task.FromResult(NamedIconControlViewModel.IconOverwriteDecision.Overwrite),
+            fileExists: _ => false,
+            toIcon: path =>
+            {
+                if (path.EndsWith("a.png", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException("bad image");
+                }
+
+                return new Icon(SystemIcons.Application, 16, 16);
+            },
+            saveIcon: (_, path) => savedPaths.Add(path));
+
+        Assert.AreEqual(1, result.ImportedCount);
+        Assert.AreEqual(0, result.SkippedCount);
+        Assert.IsFalse(result.WasCancelled);
+        Assert.AreEqual(1, savedPaths.Count);
+        Assert.AreEqual(1, result.Errors.Count);
     }
 
     [TestMethod]

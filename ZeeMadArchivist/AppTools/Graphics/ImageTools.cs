@@ -7,6 +7,17 @@ namespace CyberFeedForward.TheMadArchivist.AppTools.Graphics;
 
 public static class ImageTools
 {
+
+
+
+
+
+
+
+
+
+
+
     public static Icon ToIcon(string imagePath)
     {
         if (string.IsNullOrWhiteSpace(imagePath))

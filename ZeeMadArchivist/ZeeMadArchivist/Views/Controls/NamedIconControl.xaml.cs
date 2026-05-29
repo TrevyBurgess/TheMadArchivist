@@ -1,8 +1,10 @@
 using CyberFeedForward.TheMadArchivist.ViewModels.Controls;
 using CyberFeedForward.TheMadArchivist.AppTools.FileSystem;
+using CyberFeedForward.TheMadArchivist.AppTools.Graphics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -107,6 +109,95 @@ public sealed partial class NamedIconControl : UserControl
         };
 
         await dialog.ShowAsync();
+    }
+
+    private async void ImportImagesButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
+        if (App.MainWindowInstance is null)
+        {
+            return;
+        }
+
+        var picker = new FileOpenPicker();
+        picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+        picker.FileTypeFilter.Add(".png");
+        picker.FileTypeFilter.Add(".jpg");
+        picker.FileTypeFilter.Add(".jpeg");
+        picker.FileTypeFilter.Add(".bmp");
+        picker.FileTypeFilter.Add(".gif");
+        picker.FileTypeFilter.Add(".tiff");
+        picker.FileTypeFilter.Add(".tif");
+
+        var hwnd = WindowNative.GetWindowHandle(App.MainWindowInstance);
+        InitializeWithWindow.Initialize(picker, hwnd);
+
+        IReadOnlyList<StorageFile> files;
+        try
+        {
+            files = await picker.PickMultipleFilesAsync();
+        }
+        catch
+        {
+            return;
+        }
+
+        if (files is null || files.Count == 0)
+        {
+            return;
+        }
+
+        var imagePaths = new List<string>();
+        foreach (var f in files)
+        {
+            if (f is null || string.IsNullOrWhiteSpace(f.Path))
+            {
+                continue;
+            }
+
+            imagePaths.Add(f.Path);
+        }
+
+        var importResult = await ViewModel.ImportImagesAsIconsAsync(
+            imagePaths,
+            async destIconPath =>
+            {
+                var baseName = Path.GetFileNameWithoutExtension(destIconPath);
+                var overwriteDialog = new ContentDialog
+                {
+                    Title = "Icon Already Exists",
+                    Content = $"'{baseName}.ico' already exists in the CustomIcons folder. Overwrite it?",
+                    PrimaryButtonText = "Overwrite",
+                    SecondaryButtonText = "Skip",
+                    CloseButtonText = "Cancel",
+                    XamlRoot = XamlRoot,
+                };
+
+                var dialogResult = await overwriteDialog.ShowAsync();
+                return dialogResult switch
+                {
+                    ContentDialogResult.Primary => NamedIconControlViewModel.IconOverwriteDecision.Overwrite,
+                    ContentDialogResult.Secondary => NamedIconControlViewModel.IconOverwriteDecision.Skip,
+                    _ => NamedIconControlViewModel.IconOverwriteDecision.Cancel,
+                };
+            });
+
+        if (importResult.Errors.Count > 0)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "Import Completed With Errors",
+                Content = string.Join(Environment.NewLine, importResult.Errors),
+                CloseButtonText = "OK",
+                XamlRoot = XamlRoot,
+            };
+
+            await dialog.ShowAsync();
+        }
     }
 
     private async void IconListRowSaveButton_OnClick(object sender, RoutedEventArgs e)
