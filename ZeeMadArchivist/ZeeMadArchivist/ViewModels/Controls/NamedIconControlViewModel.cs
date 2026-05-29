@@ -5,11 +5,13 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CyberFeedForward.TheMadArchivist.ViewModels.Controls;
@@ -29,6 +31,11 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
     private readonly Func<string, System.Collections.Generic.IEnumerable<string>> _enumerateFiles;
     private readonly Func<string> _getDocumentsFolder;
     private readonly CustomIconsSettingsService _customIconsSettingsService;
+    private readonly Action<Action> _dispatchToUiThread;
+    private readonly Func<string, ICustomIconsFolderWatcher> _createCustomIconsFolderWatcher;
+    private readonly TimeSpan _customIconsWatcherDebounceDelay;
+    private ICustomIconsFolderWatcher? _customIconsFolderWatcher;
+    private CancellationTokenSource? _customIconsRefreshDebounceCts;
     private bool _isSaveEnabled;
     private bool _suppressDirtyTracking;
 
@@ -47,7 +54,10 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         Func<string, bool>? directoryExists = null,
         Func<string, System.Collections.Generic.IEnumerable<string>>? enumerateFiles = null,
         Func<string>? getDocumentsFolder = null,
-        CustomIconsSettingsService? customIconsSettingsService = null)
+        CustomIconsSettingsService? customIconsSettingsService = null,
+        Action<Action>? dispatchToUiThread = null,
+        Func<string, ICustomIconsFolderWatcher>? createCustomIconsFolderWatcher = null,
+        TimeSpan? customIconsWatcherDebounceDelay = null)
     {
         _getProgramDataFolder = getProgramDataFolder ?? (() => Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
         _fileExists = fileExists ?? File.Exists;
@@ -58,6 +68,26 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         _enumerateFiles = enumerateFiles ?? Directory.EnumerateFiles;
         _getDocumentsFolder = getDocumentsFolder ?? (() => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
         _customIconsSettingsService = customIconsSettingsService ?? CreateDefaultCustomIconsSettingsService();
+
+        var syncContext = SynchronizationContext.Current;
+        _dispatchToUiThread = dispatchToUiThread ?? (action =>
+        {
+            if (action is null)
+            {
+                return;
+            }
+
+            if (syncContext is null)
+            {
+                action();
+                return;
+            }
+
+            syncContext.Post(_ => action(), null);
+        });
+
+        _createCustomIconsFolderWatcher = createCustomIconsFolderWatcher ?? (folder => new FileSystemCustomIconsFolderWatcher(folder));
+        _customIconsWatcherDebounceDelay = customIconsWatcherDebounceDelay ?? TimeSpan.FromMilliseconds(250);
 
         Items = [];
         IconList = [];
@@ -131,6 +161,7 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsCustomIconsPathSaveEnabled));
             RefreshIconList();
+            ResetCustomIconsFolderWatcher();
         }
     }
 
@@ -277,6 +308,7 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         _customIconsFolderPath = normalized;
         EnsureCustomIconsFolderExists(_savedCustomIconsFolderPath);
         RefreshIconList();
+        ResetCustomIconsFolderWatcher();
         OnPropertyChanged(nameof(CustomIconsFolderPath));
         OnPropertyChanged(nameof(IsCustomIconsPathSaveEnabled));
     }
@@ -290,9 +322,196 @@ public sealed partial class NamedIconControlViewModel : INotifyPropertyChanged
         _customIconsSettingsService.SetCustomIconsFolderPath(_savedCustomIconsFolderPath);
         EnsureCustomIconsFolderExists(_savedCustomIconsFolderPath);
         RefreshIconList();
+        ResetCustomIconsFolderWatcher();
 
         OnPropertyChanged(nameof(CustomIconsFolderPath));
         OnPropertyChanged(nameof(IsCustomIconsPathSaveEnabled));
+    }
+
+    private void ResetCustomIconsFolderWatcher()
+    {
+        try
+        {
+            _customIconsFolderWatcher?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Trace.TraceError(ex.ToString());
+        }
+        finally
+        {
+            _customIconsFolderWatcher = null;
+        }
+
+        var folder = NormalizeCustomIconsFolderPath(CustomIconsFolderPath);
+        if (string.IsNullOrWhiteSpace(folder))
+        {
+            return;
+        }
+
+        try
+        {
+            if (!_directoryExists(folder))
+            {
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Trace.TraceError(ex.ToString());
+            return;
+        }
+
+        try
+        {
+            _customIconsFolderWatcher = _createCustomIconsFolderWatcher(folder);
+            _customIconsFolderWatcher.IconsChanged += (_, __) => ScheduleIconListRefresh();
+            _customIconsFolderWatcher.Start();
+        }
+        catch (Exception ex)
+        {
+            Trace.TraceError(ex.ToString());
+
+            try
+            {
+                _customIconsFolderWatcher?.Dispose();
+            }
+            catch (Exception disposeEx)
+            {
+                Trace.TraceError(disposeEx.ToString());
+            }
+            finally
+            {
+                _customIconsFolderWatcher = null;
+            }
+        }
+    }
+
+    private void ScheduleIconListRefresh()
+    {
+        try
+        {
+            _customIconsRefreshDebounceCts?.Cancel();
+            _customIconsRefreshDebounceCts?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Trace.TraceError(ex.ToString());
+        }
+
+        var cts = new CancellationTokenSource();
+        _customIconsRefreshDebounceCts = cts;
+
+        if (_customIconsWatcherDebounceDelay <= TimeSpan.Zero)
+        {
+            DispatchRefreshIconList(cts.Token);
+            return;
+        }
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(_customIconsWatcherDebounceDelay, cts.Token);
+                DispatchRefreshIconList(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError(ex.ToString());
+            }
+        });
+    }
+
+    private void DispatchRefreshIconList(CancellationToken token)
+    {
+        if (token.IsCancellationRequested)
+        {
+            return;
+        }
+
+        _dispatchToUiThread(() =>
+        {
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
+            RefreshIconList();
+        });
+    }
+
+    public interface ICustomIconsFolderWatcher : IDisposable
+    {
+        event EventHandler? IconsChanged;
+
+        void Start();
+    }
+
+    private sealed class FileSystemCustomIconsFolderWatcher : ICustomIconsFolderWatcher
+    {
+        private readonly FileSystemWatcher _watcher;
+
+        public FileSystemCustomIconsFolderWatcher(string folderPath)
+        {
+            if (string.IsNullOrWhiteSpace(folderPath))
+            {
+                throw new ArgumentException("Folder path cannot be empty.", nameof(folderPath));
+            }
+
+            _watcher = new FileSystemWatcher(folderPath, "*.ico")
+            {
+                IncludeSubdirectories = false,
+                NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size,
+                EnableRaisingEvents = false,
+            };
+
+            _watcher.Created += Watcher_OnChanged;
+            _watcher.Changed += Watcher_OnChanged;
+            _watcher.Deleted += Watcher_OnChanged;
+            _watcher.Renamed += Watcher_OnRenamed;
+            _watcher.Error += Watcher_OnError;
+        }
+
+        public event EventHandler? IconsChanged;
+
+        public void Start()
+        {
+            _watcher.EnableRaisingEvents = true;
+        }
+
+        public void Dispose()
+        {
+            _watcher.EnableRaisingEvents = false;
+            _watcher.Created -= Watcher_OnChanged;
+            _watcher.Changed -= Watcher_OnChanged;
+            _watcher.Deleted -= Watcher_OnChanged;
+            _watcher.Renamed -= Watcher_OnRenamed;
+            _watcher.Error -= Watcher_OnError;
+            _watcher.Dispose();
+        }
+
+        private void Watcher_OnChanged(object sender, FileSystemEventArgs e)
+        {
+            IconsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void Watcher_OnRenamed(object sender, RenamedEventArgs e)
+        {
+            IconsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void Watcher_OnError(object sender, ErrorEventArgs e)
+        {
+            if (e.GetException() is { } ex)
+            {
+                Trace.TraceError(ex.ToString());
+            }
+
+            IconsChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     private void RefreshIconList()

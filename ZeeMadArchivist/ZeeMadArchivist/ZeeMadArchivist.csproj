@@ -200,4 +200,10 @@
   <ItemGroup>
     <PRIResource Remove="Assets\Images\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Remove="..\AppTools\Icons\Downloads.ico" />
+    <Content Remove="..\AppTools\Icons\Folder.ico" />
+    <Content Remove="..\AppTools\Icons\Music.ico" />
+    <Content Remove="..\AppTools\Icons\Pictures.ico" />
+  </ItemGroup>
 </Project>

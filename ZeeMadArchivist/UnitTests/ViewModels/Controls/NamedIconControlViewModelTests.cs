@@ -434,6 +434,57 @@ public sealed class NamedIconControlViewModelTests
     }
 
     [TestMethod]
+    public void IconList_WhenCustomIconsFolderChangesOnDisk_Refreshes()
+    {
+        var store = new FakeAppSettingsStore();
+        var settings = new CustomIconsSettingsService(store);
+
+        var watcher = new FakeCustomIconsFolderWatcher();
+
+        string[] files = ["C:\\Icons\\a.ico"];
+
+        var vm = new NamedIconControlViewModel(
+            customIconsSettingsService: settings,
+            directoryExists: _ => true,
+            createDirectory: _ => { },
+            enumerateFiles: _ => files,
+            dispatchToUiThread: action => action(),
+            createCustomIconsFolderWatcher: _ => watcher,
+            customIconsWatcherDebounceDelay: TimeSpan.Zero)
+        {
+            CustomIconsFolderPath = "C:\\Icons"
+        };
+
+        Assert.AreEqual(1, vm.IconList.Count);
+        Assert.AreEqual("a", vm.IconList[0].Name);
+
+        files = ["C:\\Icons\\a.ico", "C:\\Icons\\b.ico"];
+        watcher.RaiseIconsChanged();
+
+        Assert.AreEqual(2, vm.IconList.Count);
+        Assert.AreEqual("a", vm.IconList[0].Name);
+        Assert.AreEqual("b", vm.IconList[1].Name);
+    }
+
+    private sealed class FakeCustomIconsFolderWatcher : NamedIconControlViewModel.ICustomIconsFolderWatcher
+    {
+        public event EventHandler? IconsChanged;
+
+        public void Start()
+        {
+        }
+
+        public void Dispose()
+        {
+        }
+
+        public void RaiseIconsChanged()
+        {
+            IconsChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    [TestMethod]
     public void IconListItemViewModel_OriginalName_IsInitialFileName_AndCanRevert()
     {
         var item = new IconListItemViewModel("C:\\Icons\\TestIcon.ico");
