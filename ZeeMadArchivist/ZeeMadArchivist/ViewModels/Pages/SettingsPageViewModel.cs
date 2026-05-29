@@ -1,6 +1,7 @@
 using CyberFeedForward.TheMadArchivist.Services;
 using CyberFeedForward.TheMadArchivist.Utilities;
 using Microsoft.UI.Xaml;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CyberFeedForward.TheMadArchivist;
@@ -11,14 +12,17 @@ public sealed class SettingsPageViewModel : INotifyPropertyChanged
 {
     private readonly ThemeSettingsService _themeSettingsService;
     private readonly CommandBarSettingsService _commandBarSettingsService;
+    private readonly StartupSettingsService _startupSettingsService;
     private readonly FrameworkElement? _themeRootElement;
     private AppThemeMode _themeMode;
     private bool _isCommandBarOnLeft;
+    private bool _setStartup;
 
     public SettingsPageViewModel()
         : this(
             new ThemeSettingsService(new LocalAppSettingsStore()),
             new CommandBarSettingsService(new LocalAppSettingsStore()),
+            new StartupSettingsService(),
             App.MainWindowInstance?.Content as FrameworkElement)
     {
     }
@@ -26,14 +30,30 @@ public sealed class SettingsPageViewModel : INotifyPropertyChanged
     public SettingsPageViewModel(
         ThemeSettingsService themeSettingsService,
         CommandBarSettingsService commandBarSettingsService,
+        StartupSettingsService startupSettingsService,
         FrameworkElement? themeRootElement)
     {
         _themeSettingsService = themeSettingsService;
         _commandBarSettingsService = commandBarSettingsService;
+        _startupSettingsService = startupSettingsService;
         _themeRootElement = themeRootElement;
 
         _themeMode = _themeSettingsService.GetThemeMode();
         _isCommandBarOnLeft = _commandBarSettingsService.IsCommandBarOnLeft();
+        _setStartup = _startupSettingsService.IsStartupEnabled();
+
+        if (!_setStartup)
+        {
+            try
+            {
+                _startupSettingsService.SetStartupEnabled(true);
+                _setStartup = _startupSettingsService.IsStartupEnabled();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+            }
+        }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -60,6 +80,38 @@ public sealed class SettingsPageViewModel : INotifyPropertyChanged
             {
                 AppThemeManager.ApplyThemeMode(rootElement, value);
             }
+        }
+    }
+
+    public bool SetStartup
+    {
+        get => _setStartup;
+        set
+        {
+            if (_setStartup == value)
+            {
+                return;
+            }
+
+            _setStartup = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool TrySetStartupEnabled(bool enabled, out string? errorMessage)
+    {
+        errorMessage = null;
+
+        try
+        {
+            _startupSettingsService.SetStartupEnabled(enabled);
+            SetStartup = _startupSettingsService.IsStartupEnabled();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            return false;
         }
     }
 

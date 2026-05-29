@@ -47,6 +47,10 @@
                             <controls:NamedIconControl x:Name="NamedIconControl" />
                         </StackPanel>
                     </TabViewItem>
+
+                    <TabViewItem x:Name="AboutSettingsTab" Header="About" IsClosable="False">
+                        <controls:AboutControl x:Name="AboutControl" />
+                    </TabViewItem>
                 </TabView>
             </StackPanel>
         </ScrollViewer>

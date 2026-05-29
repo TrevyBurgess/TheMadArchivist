@@ -116,10 +116,22 @@ Here are some the vibe code commands I used.
 - Remove the 'Add new tabs' button and 'Close Tab' buttons from SettingsGroups
 - Add NamedIconControl to IconsSettingsTab
 
+## Page - Settings - General
+
+- Add a toggle to GeneralSettingsControl called SetStartup. If input parameter is true, app will start on system reboot. Set default to true.
+
+
+
 ## Page - Settings - Icons
 
 - Create a method in FolderTools in AppTools called LoadDefaultIcons. This will copy all icons in the Icons folder to CustomIconsFolderPath
 - Add a button in NamedIconSettings control called LoadDefaultIcons. When clicked, copy call LoadDefaultIcons method
+- Update IconList when files CustomIcons folder changes
+
+## Page - Settings - About
+
+- Create a User Control called AboutControl.
+- Add a new tab to SettingsStackPanel to house AboutControl.
 
 ## Page - Home Page
 
