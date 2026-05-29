@@ -9,6 +9,7 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
 {
     private const uint CallbackMessage = WM_APP + 1;
     private const uint TrayIconId = 1;
+    private const uint OpenCommandId = 99;
     private const uint ExitCommandId = 100;
 
     private readonly Func<string?> _getIconFilePath = getIconFilePath ?? GetDefaultTrayIconPath;
@@ -96,7 +97,14 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
 
             if (eventId == WM_LBUTTONDBLCLK)
             {
-                App.MainWindowInstance?.Activate();
+                if (App.MainWindowInstance is CyberFeedForward.TheMadArchivist.MainWindow mainWindow)
+                {
+                    mainWindow.RestoreAndActivate();
+                }
+                else
+                {
+                    App.MainWindowInstance?.Activate();
+                }
 
                 return IntPtr.Zero;
             }
@@ -105,9 +113,28 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
         if (msg == WM_COMMAND)
         {
             var commandId = (uint)(wParam.ToInt64() & 0xFFFF);
+            if (commandId == OpenCommandId)
+            {
+                if (App.MainWindowInstance is CyberFeedForward.TheMadArchivist.MainWindow mainWindow)
+                {
+                    mainWindow.RestoreAndActivate();
+                }
+                else
+                {
+                    App.MainWindowInstance?.Activate();
+                }
+                return IntPtr.Zero;
+            }
             if (commandId == ExitCommandId)
             {
-                Application.Current.Exit();
+                if (App.MainWindowInstance is CyberFeedForward.TheMadArchivist.MainWindow mainWindow)
+                {
+                    mainWindow.ExitApplication();
+                }
+                else
+                {
+                    Application.Current.Exit();
+                }
                 return IntPtr.Zero;
             }
         }
@@ -123,6 +150,7 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
         }
 
         using var menu = _native.CreatePopupMenu();
+        menu.AppendItem(OpenCommandId, "Open");
         menu.AppendItem(ExitCommandId, "Exit");
 
         _native.SetForegroundWindow(hwnd);

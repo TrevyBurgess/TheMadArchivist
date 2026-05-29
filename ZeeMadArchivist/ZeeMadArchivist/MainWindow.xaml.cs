@@ -24,15 +24,20 @@ namespace CyberFeedForward.TheMadArchivist
     {
         private const string AppTitle = "The Mad Archivist";
         private readonly CommandBarSettingsService _commandBarSettings;
+        private readonly StartupSettingsService _startupSettingsService;
+        private readonly BackgroundCloseWarningService _backgroundCloseWarningService;
         private readonly MainWindowViewModel _viewModel;
         private readonly WindowPlacementSettingsService _windowPlacementSettings;
         private readonly AppWindow _appWindow;
+        private bool _isExiting;
 
         public MainWindow()
         {
             InitializeComponent();
 
             _commandBarSettings = new CommandBarSettingsService(new LocalAppSettingsStore());
+            _startupSettingsService = new StartupSettingsService();
+            _backgroundCloseWarningService = new BackgroundCloseWarningService(new LocalAppSettingsStore());
             _viewModel = new MainWindowViewModel(_commandBarSettings, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             _windowPlacementSettings = new WindowPlacementSettingsService(new LocalAppSettingsStore());
 
@@ -50,11 +55,101 @@ namespace CyberFeedForward.TheMadArchivist
 
             RestoreWindowPlacement(windowId);
             Closed += MainWindow_OnClosed;
+            AppWindow.Closing += AppWindow_OnClosing;
 
             MainFrame.Navigated += MainFrame_OnNavigated;
             UpdateNavigationButtons();
 
             MainFrame.NavigateIfNotCurrent(typeof(SettingsPage));
+        }
+
+        public void ExitApplication()
+        {
+            _isExiting = true;
+            Application.Current.Exit();
+        }
+
+        public void RestoreAndActivate()
+        {
+            try
+            {
+                _appWindow.Show();
+
+                if (_appWindow.Presenter is OverlappedPresenter presenter)
+                {
+                    if (presenter.State == OverlappedPresenterState.Minimized)
+                    {
+                        presenter.Restore();
+                    }
+                }
+
+                Activate();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                throw;
+            }
+        }
+
+        private async void AppWindow_OnClosing(AppWindow sender, AppWindowClosingEventArgs args)
+        {
+            if (_isExiting)
+            {
+                return;
+            }
+
+            var shouldRunInBackground = false;
+            try
+            {
+                shouldRunInBackground = _startupSettingsService.IsStartupEnabled();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                throw;
+            }
+
+            if (!shouldRunInBackground)
+            {
+                return;
+            }
+
+            args.Cancel = true;
+
+            try
+            {
+                _appWindow.Hide();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                throw;
+            }
+
+            try
+            {
+                if (!_backgroundCloseWarningService.ShouldShowWarning())
+                {
+                    return;
+                }
+
+                var dialog = new ContentDialog
+                {
+                    Title = "Running in the Background",
+                    Content = "ZeeMadArchivist is still running in the background. You can access it from the system tray icon. Use the tray icon menu to Exit completely.",
+                    CloseButtonText = "OK",
+                    XamlRoot = Content is FrameworkElement fe ? fe.XamlRoot : null,
+                };
+
+                await dialog.ShowAsync();
+                _backgroundCloseWarningService.MarkWarned();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                throw;
+            }
         }
 
         private void SetWindowIcon()

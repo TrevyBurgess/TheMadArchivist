@@ -119,6 +119,9 @@ Here are some the vibe code commands I used.
 ## Page - Settings - General
 
 - Add a toggle to GeneralSettingsControl called SetStartup. If input parameter is true, app will start on system reboot. Set default to true.
+- When a user tries to close the app, check if SetStartupToggleSwitch is set to true. If true, close window and let app run in the background. The first time, warn user app is running in the background. If false, close app
+- Add Open menu item to tray app menu. If app is closed, open it. If minimize, unminimize it
+
 
 
 
