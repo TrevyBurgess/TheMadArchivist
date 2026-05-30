@@ -1,6 +1,5 @@
 using Aspose.Imaging;
 using Aspose.Imaging.ImageOptions;
-using Microsoft.UI.Xaml.Shapes;
 using System;
 using System.Drawing;
 using System.IO;
@@ -8,14 +7,8 @@ using System.Runtime.InteropServices;
 
 namespace CyberFeedForward.TheMadArchivist.AppTools.Graphics;
 
-public static class ImageTools
+public static partial class ImageTools
 {
-
-
-
-
-
-
     public static Icon ToIcon(string imagePath)
     {
         if (string.IsNullOrWhiteSpace(imagePath))
@@ -51,7 +44,7 @@ public static class ImageTools
             throw new ArgumentException("File path cannot be empty.", nameof(filePath));
         }
 
-        var directory = Path.GetDirectoryName(filePath);
+        var directory = System.IO.Path.GetDirectoryName(filePath);
         if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);
@@ -61,6 +54,7 @@ public static class ImageTools
         icon.Save(fileStream);
     }
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool DestroyIcon(IntPtr hIcon);
+    [LibraryImport("user32.dll", SetLastError = true, EntryPoint = "DestroyIcon")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool DestroyIcon(IntPtr hIcon);
 }

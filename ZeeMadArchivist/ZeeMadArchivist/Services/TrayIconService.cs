@@ -490,8 +490,8 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
     [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern ushort RegisterClassEx([In] ref WNDCLASSEX lpwcx);
 
-    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern IntPtr CreateWindowEx(
+    [LibraryImport("user32.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf16, EntryPoint = "CreateWindowExW")]
+    private static partial IntPtr CreateWindowEx(
         uint dwExStyle,
         string lpClassName,
         string lpWindowName,
@@ -505,39 +505,46 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
         IntPtr hInstance,
         IntPtr lpParam);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool DestroyWindow(IntPtr hWnd);
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool DestroyWindow(IntPtr hWnd);
 
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    private static extern IntPtr DefWindowProcW(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+    [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16, EntryPoint = "DefWindowProcW")]
+    private static partial IntPtr DefWindowProcW(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
     [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
     private static extern bool Shell_NotifyIcon(uint dwMessage, [In] ref NOTIFYICONDATA lpData);
 
-    [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern IntPtr LoadImage(IntPtr hInst, string name, uint type, int cx, int cy, uint fuLoad);
+    [LibraryImport("user32.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf16, EntryPoint = "LoadImageW")]
+    private static partial IntPtr LoadImage(IntPtr hInst, string name, uint type, int cx, int cy, uint fuLoad);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool DestroyIconNative(IntPtr hIcon);
+    [LibraryImport("user32.dll", SetLastError = true, EntryPoint = "DestroyIcon")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool DestroyIconNative(IntPtr hIcon);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool GetCursorPos(out POINT lpPoint);
+    [LibraryImport("user32.dll", SetLastError = true, EntryPoint = "GetCursorPos")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetCursorPos(out POINT lpPoint);
 
-    [DllImport("user32.dll", SetLastError = true, EntryPoint = "CreatePopupMenu")]
-    private static extern IntPtr CreatePopupMenuNative();
+    [LibraryImport("user32.dll", SetLastError = true, EntryPoint = "CreatePopupMenu")]
+    private static partial IntPtr CreatePopupMenuNative();
 
-    [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern bool AppendMenu(IntPtr hMenu, uint uFlags, IntPtr uIDNewItem, string lpNewItem);
+    [LibraryImport("user32.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf16, EntryPoint = "AppendMenuW")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool AppendMenu(IntPtr hMenu, uint uFlags, IntPtr uIDNewItem, string lpNewItem);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool DestroyMenu(IntPtr hMenu);
+    [LibraryImport("user32.dll", SetLastError = true, EntryPoint = "DestroyMenu")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool DestroyMenu(IntPtr hMenu);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool TrackPopupMenuEx(IntPtr hmenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+    [LibraryImport("user32.dll", SetLastError = true, EntryPoint = "TrackPopupMenuEx")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool TrackPopupMenuEx(IntPtr hmenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
 
-    [DllImport("user32.dll", SetLastError = true, EntryPoint = "SetForegroundWindow")]
-    private static extern bool SetForegroundWindowNative(IntPtr hWnd);
+    [LibraryImport("user32.dll", SetLastError = true, EntryPoint = "SetForegroundWindow")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetForegroundWindowNative(IntPtr hWnd);
 
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern IntPtr GetModuleHandle(string? lpModuleName);
+    [LibraryImport("kernel32.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf16, EntryPoint = "GetModuleHandleW")]
+    private static partial IntPtr GetModuleHandle(string? lpModuleName);
 }

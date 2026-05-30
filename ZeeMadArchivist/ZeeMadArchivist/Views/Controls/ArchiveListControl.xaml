@@ -16,8 +16,14 @@
 
         <Grid
             x:Name="ArchivesInputGrid"
-            ColumnDefinitions="*,Auto,Auto"
             ColumnSpacing="8">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
             <TextBox
                 x:Name="NewArchivePathTextBox"
                 PlaceholderText="Add archive path..."
@@ -52,7 +58,12 @@
             MinHeight="120">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        
                         <TextBlock
                             x:Name="ArchivePathText"
                             Text="{Binding}"
