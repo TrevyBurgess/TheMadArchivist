@@ -1,3 +1,6 @@
+using Aspose.Imaging;
+using Aspose.Imaging.ImageOptions;
+using Microsoft.UI.Xaml.Shapes;
 using System;
 using System.Drawing;
 using System.IO;
@@ -7,11 +10,6 @@ namespace CyberFeedForward.TheMadArchivist.AppTools.Graphics;
 
 public static class ImageTools
 {
-
-
-
-
-
 
 
 

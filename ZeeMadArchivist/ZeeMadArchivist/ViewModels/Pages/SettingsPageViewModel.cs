@@ -10,20 +10,43 @@ namespace CyberFeedForward.TheMadArchivist.ViewModels.Pages;
 
 public sealed class SettingsPageViewModel : INotifyPropertyChanged
 {
+    private const string SetStartupPreferenceKey = "Settings.SetStartup";
+
     private readonly ThemeSettingsService _themeSettingsService;
     private readonly CommandBarSettingsService _commandBarSettingsService;
     private readonly StartupSettingsService _startupSettingsService;
+    private readonly IAppSettingsStore _settingsStore;
     private readonly FrameworkElement? _themeRootElement;
     private AppThemeMode _themeMode;
     private bool _isCommandBarOnLeft;
     private bool _setStartup;
 
     public SettingsPageViewModel()
+        : this(CreateDefaultSettingsStore())
+    {
+    }
+
+    private SettingsPageViewModel(IAppSettingsStore settingsStore)
         : this(
-            new ThemeSettingsService(new LocalAppSettingsStore()),
-            new CommandBarSettingsService(new LocalAppSettingsStore()),
+            new ThemeSettingsService(settingsStore),
+            new CommandBarSettingsService(settingsStore),
             new StartupSettingsService(),
-            App.MainWindowInstance?.Content as FrameworkElement)
+            App.MainWindowInstance?.Content as FrameworkElement,
+            settingsStore)
+    {
+    }
+
+    private static IAppSettingsStore CreateDefaultSettingsStore()
+    {
+        return new LocalAppSettingsStore();
+    }
+
+    public SettingsPageViewModel(
+        ThemeSettingsService themeSettingsService,
+        CommandBarSettingsService commandBarSettingsService,
+        FrameworkElement? themeRootElement,
+        IAppSettingsStore? settingsStore = null)
+        : this(themeSettingsService, commandBarSettingsService, new StartupSettingsService(), themeRootElement, settingsStore)
     {
     }
 
@@ -31,27 +54,42 @@ public sealed class SettingsPageViewModel : INotifyPropertyChanged
         ThemeSettingsService themeSettingsService,
         CommandBarSettingsService commandBarSettingsService,
         StartupSettingsService startupSettingsService,
-        FrameworkElement? themeRootElement)
+        FrameworkElement? themeRootElement,
+        IAppSettingsStore? settingsStore = null)
     {
         _themeSettingsService = themeSettingsService;
         _commandBarSettingsService = commandBarSettingsService;
         _startupSettingsService = startupSettingsService;
         _themeRootElement = themeRootElement;
+        _settingsStore = settingsStore ?? new LocalAppSettingsStore();
 
         _themeMode = _themeSettingsService.GetThemeMode();
         _isCommandBarOnLeft = _commandBarSettingsService.IsCommandBarOnLeft();
-        _setStartup = _startupSettingsService.IsStartupEnabled();
 
-        if (!_setStartup)
+        var hasPreference = _settingsStore.TryGetBool(SetStartupPreferenceKey, out var preferredStartupEnabled);
+        if (!hasPreference)
         {
+            preferredStartupEnabled = true;
+            _settingsStore.SetBool(SetStartupPreferenceKey, preferredStartupEnabled);
+        }
+
+        try
+        {
+            _startupSettingsService.SetStartupEnabled(preferredStartupEnabled);
+            _setStartup = _startupSettingsService.IsStartupEnabled();
+            _settingsStore.SetBool(SetStartupPreferenceKey, _setStartup);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Trace.TraceError(ex.ToString());
             try
             {
-                _startupSettingsService.SetStartupEnabled(true);
                 _setStartup = _startupSettingsService.IsStartupEnabled();
+                _settingsStore.SetBool(SetStartupPreferenceKey, _setStartup);
             }
-            catch (Exception ex)
+            catch (Exception ex2)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString());
+                System.Diagnostics.Trace.TraceError(ex2.ToString());
             }
         }
     }
@@ -106,6 +144,7 @@ public sealed class SettingsPageViewModel : INotifyPropertyChanged
         {
             _startupSettingsService.SetStartupEnabled(enabled);
             SetStartup = _startupSettingsService.IsStartupEnabled();
+            _settingsStore.SetBool(SetStartupPreferenceKey, SetStartup);
             return true;
         }
         catch (Exception ex)

@@ -151,6 +151,9 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
 
         using var menu = _native.CreatePopupMenu();
         menu.AppendItem(OpenCommandId, "Open");
+
+        menu.AppendSeparator();
+
         menu.AppendItem(ExitCommandId, "Exit");
 
         _native.SetForegroundWindow(hwnd);
@@ -188,6 +191,7 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
     {
         IntPtr Handle { get; }
         void AppendItem(uint commandId, string text);
+        void AppendSeparator();
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -206,6 +210,14 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
             if (!AppendMenu(Handle, MF_STRING, (IntPtr)commandId, text))
             {
                 throw new InvalidOperationException("Failed to append menu item.");
+            }
+        }
+
+        public void AppendSeparator()
+        {
+            if (!AppendMenu(Handle, MF_SEPARATOR, IntPtr.Zero, string.Empty))
+            {
+                throw new InvalidOperationException("Failed to append menu separator.");
             }
         }
 
@@ -473,6 +485,7 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
     private const uint TPM_RIGHTBUTTON = 0x0002;
 
     private const uint MF_STRING = 0x00000000;
+    private const uint MF_SEPARATOR = 0x00000800;
 
     [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern ushort RegisterClassEx([In] ref WNDCLASSEX lpwcx);

@@ -16,6 +16,18 @@
             Text="Icons"
             Style="{ThemeResource SubtitleTextBlockStyle}"
             Margin="0,12,0,0" />
+        
+        <TextBlock
+            Text="Just drop your favorite Icon (*.ico) files into the Icon Folder"
+            Style="{ThemeResource BodyTextBlockStyle}"
+            Margin="0,0,0,0" />
+        
+        <TextBlock
+            Text="Any folder with that name will automatically get a custom icon listed below."
+            Style="{ThemeResource BodyTextBlockStyle}"
+            Margin="0,-10,0,12" />
+                
+        
 
         <StackPanel x:Name="CustomIconPanel" Orientation="Horizontal">
             <Button

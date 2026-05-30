@@ -20,6 +20,11 @@ public sealed class TrayIconServiceTests
             Items.Add((commandId, text));
         }
 
+        public void AppendSeparator()
+        {
+            Items.Add((0, "<separator>"));
+        }
+
         public void Dispose()
         {
         }
@@ -120,6 +125,13 @@ public sealed class TrayIconServiceTests
             var texts = native.LastMenu.Items.Select(i => i.text).ToArray();
             CollectionAssert.Contains(texts, "Open");
             CollectionAssert.Contains(texts, "Exit");
+
+            var openIndex = Array.IndexOf(texts, "Open");
+            var exitIndex = Array.IndexOf(texts, "Exit");
+            Assert.IsTrue(openIndex >= 0);
+            Assert.IsTrue(exitIndex > openIndex);
+            CollectionAssert.Contains(texts, "<separator>");
+            Assert.AreEqual("<separator>", texts[openIndex + 1]);
         }
         finally
         {

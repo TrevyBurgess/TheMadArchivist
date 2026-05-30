@@ -10,7 +10,9 @@ Commands for creating a Tray app control, allowing the app to run in the backgro
 - Add a button to CustomIconPanel. This will open a Open File dialog, allowing a user to select multiple image files. For each file selected, use ImageTools.ToIcon to convert image to an icon, and save the icon to the CustomIcons folder using ImageTools.SaveIcon. For each icon, warn if icon is being overwritten
 - Use Pictures folder as the default folder.
 
+## Monitoring
 
+- Create a class in AppTools called ArchiveManager. Within it, create a method called MonitorArchive. Given a folder path, and a dynamic list, it will monitor folder name changes. 
 
 
 

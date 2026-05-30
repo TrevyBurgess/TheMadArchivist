@@ -9,14 +9,16 @@ public sealed class SettingsPageViewModelTests
 {
     private sealed class FakeAppSettingsStore : IAppSettingsStore
     {
+        private readonly System.Collections.Generic.Dictionary<string, bool> _boolValues = [];
+
         public bool TryGetBool(string key, out bool value)
         {
-            value = false;
-            return false;
+            return _boolValues.TryGetValue(key, out value);
         }
 
         public void SetBool(string key, bool value)
         {
+            _boolValues[key] = value;
         }
 
         public bool TryGetInt(string key, out int value)
@@ -43,8 +45,9 @@ public sealed class SettingsPageViewModelTests
     [TestMethod]
     public void TrySetStartupEnabled_WhenServiceSucceeds_ReturnsTrueAndUpdatesSetStartup()
     {
-        var theme = new ThemeSettingsService(new FakeAppSettingsStore());
-        var cmd = new CommandBarSettingsService(new FakeAppSettingsStore());
+        var store = new FakeAppSettingsStore();
+        var theme = new ThemeSettingsService(store);
+        var cmd = new CommandBarSettingsService(store);
 
         var startup = new StartupSettingsService(
             getExecutablePath: () => "C:\\App\\ZeeMadArchivist.exe",
@@ -52,7 +55,7 @@ public sealed class SettingsPageViewModelTests
             writeRunValue: _ => { },
             deleteRunValue: () => { });
 
-        var vm = new SettingsPageViewModel(theme, cmd, startup, themeRootElement: null);
+        var vm = new SettingsPageViewModel(theme, cmd, startup, themeRootElement: null, settingsStore: store);
 
         var ok = vm.TrySetStartupEnabled(true, out var errorMessage);
 
@@ -63,8 +66,9 @@ public sealed class SettingsPageViewModelTests
     [TestMethod]
     public void TrySetStartupEnabled_WhenServiceThrows_ReturnsFalseAndProvidesMessage()
     {
-        var theme = new ThemeSettingsService(new FakeAppSettingsStore());
-        var cmd = new CommandBarSettingsService(new FakeAppSettingsStore());
+        var store = new FakeAppSettingsStore();
+        var theme = new ThemeSettingsService(store);
+        var cmd = new CommandBarSettingsService(store);
 
         var startup = new StartupSettingsService(
             getExecutablePath: () => "C:\\App\\ZeeMadArchivist.exe",
@@ -72,11 +76,38 @@ public sealed class SettingsPageViewModelTests
             writeRunValue: _ => throw new System.InvalidOperationException("no access"),
             deleteRunValue: () => { });
 
-        var vm = new SettingsPageViewModel(theme, cmd, startup, themeRootElement: null);
+        var vm = new SettingsPageViewModel(theme, cmd, startup, themeRootElement: null, settingsStore: store);
 
         var ok = vm.TrySetStartupEnabled(true, out var errorMessage);
 
         Assert.IsFalse(ok);
         Assert.IsTrue(errorMessage?.Length > 0);
+    }
+
+    [TestMethod]
+    public void SetStartup_WhenUserDisables_IsRememberedAcrossViewModelRecreation()
+    {
+        var store = new FakeAppSettingsStore();
+        var theme = new ThemeSettingsService(store);
+        var cmd = new CommandBarSettingsService(store);
+
+        var startupEnabled = true;
+        var startup = new StartupSettingsService(
+            getExecutablePath: () => "C:\\App\\ZeeMadArchivist.exe",
+            tryReadRunValue: () => (startupEnabled ? "C:\\App\\ZeeMadArchivist.exe" : null, startupEnabled),
+            writeRunValue: _ => startupEnabled = true,
+            deleteRunValue: () => startupEnabled = false);
+
+        var first = new SettingsPageViewModel(theme, cmd, startup, themeRootElement: null, settingsStore: store);
+
+        var ok = first.TrySetStartupEnabled(false, out var errorMessage);
+
+        Assert.IsTrue(ok);
+        Assert.IsTrue(string.IsNullOrWhiteSpace(errorMessage));
+        Assert.IsFalse(first.SetStartup);
+
+        var second = new SettingsPageViewModel(theme, cmd, startup, themeRootElement: null, settingsStore: store);
+
+        Assert.IsFalse(second.SetStartup);
     }
 }
