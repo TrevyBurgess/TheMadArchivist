@@ -150,7 +150,7 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
         }
 
         using var menu = _native.CreatePopupMenu();
-        menu.AppendItem(OpenCommandId, "Open");
+        menu.AppendItem(OpenCommandId, "Settings...");
 
         menu.AppendSeparator();
 
@@ -162,7 +162,32 @@ public sealed partial class TrayIconService(Func<string?>? getIconFilePath = nul
 
     private static string? GetDefaultTrayIconPath()
     {
-        return null;
+        try
+        {
+            var baseDir = AppContext.BaseDirectory;
+            if (string.IsNullOrWhiteSpace(baseDir))
+            {
+                return null;
+            }
+
+            var candidate1 = Path.Combine(baseDir, "Assets", "AppIcon.ico");
+            if (File.Exists(candidate1))
+            {
+                return candidate1;
+            }
+
+            var candidate2 = Path.Combine(baseDir, "AppX", "Assets", "AppIcon.ico");
+            if (File.Exists(candidate2))
+            {
+                return candidate2;
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private delegate IntPtr WndProc(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);

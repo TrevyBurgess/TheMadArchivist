@@ -5,21 +5,16 @@ using System.Text.Json;
 
 namespace CyberFeedForward.TheMadArchivist.Services;
 
-public sealed class ArchivesSettingsService
+public sealed class ArchivesSettingsService(IAppSettingsStore store)
 {
     private const string ArchivesKey = "Archives.Paths";
-    private readonly IAppSettingsStore _store;
-
-    public ArchivesSettingsService(IAppSettingsStore store)
-    {
-        _store = store;
-    }
+    private readonly IAppSettingsStore _store = store;
 
     public IReadOnlyList<string> GetArchives()
     {
         if (!_store.TryGetString(ArchivesKey, out var json) || string.IsNullOrWhiteSpace(json))
         {
-            return Array.Empty<string>();
+            return [];
         }
 
         try
@@ -27,27 +22,23 @@ public sealed class ArchivesSettingsService
             var parsed = JsonSerializer.Deserialize<List<string>>(json);
             if (parsed is null)
             {
-                return Array.Empty<string>();
+                return [];
             }
 
-            return parsed
+            return [.. parsed
                 .Where(p => !string.IsNullOrWhiteSpace(p))
                 .Select(p => p.Trim())
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
+                .Distinct(StringComparer.OrdinalIgnoreCase)];
         }
         catch
         {
-            return Array.Empty<string>();
+            return [];
         }
     }
 
     public void SaveArchives(IEnumerable<string> archives)
     {
-        if (archives is null)
-        {
-            throw new ArgumentNullException(nameof(archives));
-        }
+        ArgumentNullException.ThrowIfNull(archives);
 
         var cleaned = archives
             .Where(p => !string.IsNullOrWhiteSpace(p))

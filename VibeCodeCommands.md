@@ -7,7 +7,37 @@ Here are some the vibe code commands I used.
 
 - Update the title to show app title and page in the form "App name - Page name"
 
-## Controls - ArchiveListControl
+# Layout
+
+- Add Home page
+- Add a MenuBar at the top of the app
+- Add a CommandBar at the top of the app, below the MenuBar
+- Move the CommandBar to the left. Add a toggle to the settings to allow the user to move between left and right.
+
+- Add back and forward Navigation buttons to the command bar, to navigate to visited pages
+- Remember the last position and size of the app when it closes
+
+# Pages
+
+## Page - Settings
+
+- Add a page called Settings. Navigate to this page when a user clicks on Settings button
+- Add a toggle to Settings. When on, this will activate dark mode
+- Add System Default as an option for the Dark mode setting
+- Create a viewmodel for SettingsPage
+- Highlight FolderContentsDivider whenever the cursor is over it
+- Create a Tab panel in SettingsPage called SettingsGroups. Create 3 panels named General, Archives, Icons.
+- Remove the 'Add new tabs' button and 'Close Tab' buttons from SettingsGroups
+- Add NamedIconControl to IconsSettingsTab
+
+### Page - Settings - General
+
+- Add a toggle to GeneralSettingsControl called SetStartup. If input parameter is true, app will start on system reboot. Set default to true.
+- When a user tries to close the app, check if SetStartupToggleSwitch is set to true. If true, close window and let app run in the background. The first time, warn user app is running in the background. If false, close app
+- Add Open menu item to tray app menu. If app is closed, open it. If minimize, unminimize it
+- Remember state of SetStartupToggleSwitch when app closes
+
+### Page - Settings - Archives (ArchiveListControl)
 
 - Add a list control in SettingsPage called ArchiveListControl. This control will display a list of file paths. This list will be remembered between sessions.
 - Create a User control called ArchiveListControl. Include viewmodel. Add it to the settings panel.
@@ -25,6 +55,32 @@ Here are some the vibe code commands I used.
 - Disable AddArchiveButton when folder path is empty
 - Do not show path in NewArchivePathTextBox when a folder is selected with the folder selector dialog
 
+### Page - Settings - Icons (NamedIconControl)
+
+- Create a user control called NamedIconControl. Include a viewmodel
+- Add a table to NamedIconControl. This will be populated from a JSON file. Each row will contain an image from an icon file, and a text box. Below the table will be a save button. The file will be saved to ProgramData
+- Add row to the top of NamedIconControl. This row will have a text box called CustomIcons and a save button. By default, CustomIcons will contain a folder path to a sub-folder in Documents called CustomIcons. If the folder doesn't exist, create it, then copy Folder.ico there. 
+- This is above the table, and separate from the table. It will contain a file path to a sub folder in Documents called CustomIcons. Store this path as a setting within the project. If the folder doesn't exist, create it.
+- Add a button to the right of CustomIconsTextBox. This button will return a folder path for CustomIconsTextBox.
+- Add save button to CustomIconsPathGrid, to the right of CustomIconsBrowseButton. Enable this button when the entered folder path differs from the saved path.
+- Create a sub-folder in ProgramData to store windows icons. Add an icon called Default.ico. 
+- Add a default row of data to ItemsTable. For the icon, add a default file path with a default Image.ico file. 
+- Add a table to NamedIconControl named IconList. For each file in CustomIcons folder, add the image of the icon, followed by the name.
+- Only show *.ico files in NamedIconSettings
+- Add a button to NamedIconSettings with a Open File image. When clicked, open a new file explorer window, opened to the CustomIcons folder.
+- Refresh NamedIconSettings when contents of CustomIcons changes
+
+- Create a method in FolderTools in AppTools called LoadDefaultIcons. This will copy all icons in the Icons folder to CustomIconsFolderPath
+- Add a button in NamedIconSettings control called LoadDefaultIcons. When clicked, copy call LoadDefaultIcons method
+- Update IconList when files CustomIcons folder changes
+
+## Page - Settings - About
+
+- Create a User Control called AboutControl.
+- Add a new tab to SettingsStackPanel to house AboutControl.
+
+---
+
 ## Controls - Breadcrumb, BreadcrumbBar
 
 - Create a user control called Breadcrumb. It will take a folder path and a list of strings. The string will display the folder name and an arrow icon to the right
@@ -41,28 +97,13 @@ Here are some the vibe code commands I used.
 - Create a user control called FolderContentsControl. It will display a list of files and folders, given a folder path place it in the appropriate location
 - Update BreadcrumbBar when clicks on a file in FolderContentsControl
 - Update FolderContentsControl to only show folders
-- Show message '<Empty>' when folder list in FolderContentsControl is empty
+- Show message '< Empty>' when folder list in FolderContentsControl is empty
 - Color the folder icons in FolderContentsControl folder yellow
 - Fill in the folder icons in FolderContentsControl folder yellow. Make icon border slightly darker
 
 ## Controls - FolderTreeViewControl (Not used yet)
 
 - Create a user control called FolderTreeViewControl. Given a folder path, it will display a tree view of child files and folders
-
-## Controls - NamedIconControl
-
-- Create a user control called NamedIconControl. Include a viewmodel
-- Add a table to NamedIconControl. This will be populated from a JSON file. Each row will contain an image from an icon file, and a text box. Below the table will be a save button. The file will be saved to ProgramData
-- Add row to the top of NamedIconControl. This row will have a text box called CustomIcons and a save button. By default, CustomIcons will contain a folder path to a sub-folder in Documents called CustomIcons. If the folder doesn't exist, create it, then copy Folder.ico there. 
-- This is above the table, and separate from the table. It will contain a file path to a sub folder in Documents called CustomIcons. Store this path as a setting within the project. If the folder doesn't exist, create it.
-- Add a button to the right of CustomIconsTextBox. This button will return a folder path for CustomIconsTextBox.
-- Add save button to CustomIconsPathGrid, to the right of CustomIconsBrowseButton. Enable this button when the entered folder path differs from the saved path.
-- Create a sub-folder in ProgramData to store windows icons. Add an icon called Default.ico. 
-- Add a default row of data to ItemsTable. For the icon, add a default file path with a default Image.ico file. 
-- Add a table to NamedIconControl named IconList. For each file in CustomIcons folder, add the image of the icon, followed by the name.
-- Only show *.ico files in NamedIconSettings
-- Add a button to NamedIconSettings with a Open File image. When clicked, open a new file explorer window, opened to the CustomIcons folder.
-- Refresh NamedIconSettings when contents of CustomIcons changes
 
 ## Controls - Status Bar
 
@@ -95,46 +136,9 @@ Here are some the vibe code commands I used.
 
 - Add a method in Tools.ImageTools.ca called ToIcon. Given the path to an image, create a windows icon. The method will return this icon
 
-## Layout
-
-- Add Home page
-- Add a MenuBar at the top of the app
-- Add a CommandBar at the top of the app, below the MenuBar
-- Move the CommandBar to the left. Add a toggle to the settings to allow the user to move between left and right.
-
-- Add back and forward Navigation buttons to the command bar, to navigate to visited pages
-- Remember the last position and size of the app when it closes
-
-## Page - Settings
-
-- Add a page called Settings. Navigate to this page when a user clicks on Settings button
-- Add a toggle to Settings. When on, this will activate dark mode
-- Add System Default as an option for the Dark mode setting
-- Create a viewmodel for SettingsPage
-- Highlight FolderContentsDivider whenever the cursor is over it
-- Create a Tab panel in SettingsPage called SettingsGroups. Create 3 panels named General, Archives, Icons.
-- Remove the 'Add new tabs' button and 'Close Tab' buttons from SettingsGroups
-- Add NamedIconControl to IconsSettingsTab
-
-## Page - Settings - General
-
-- Add a toggle to GeneralSettingsControl called SetStartup. If input parameter is true, app will start on system reboot. Set default to true.
-- When a user tries to close the app, check if SetStartupToggleSwitch is set to true. If true, close window and let app run in the background. The first time, warn user app is running in the background. If false, close app
-- Add Open menu item to tray app menu. If app is closed, open it. If minimize, unminimize it
-- Remember state of SetStartupToggleSwitch when app closes
-- add a separator between Open and Exit in the tray app menu
 
 
-## Page - Settings - Icons
 
-- Create a method in FolderTools in AppTools called LoadDefaultIcons. This will copy all icons in the Icons folder to CustomIconsFolderPath
-- Add a button in NamedIconSettings control called LoadDefaultIcons. When clicked, copy call LoadDefaultIcons method
-- Update IconList when files CustomIcons folder changes
-
-## Page - Settings - About
-
-- Create a User Control called AboutControl.
-- Add a new tab to SettingsStackPanel to house AboutControl.
 
 ## Page - Home Page
 

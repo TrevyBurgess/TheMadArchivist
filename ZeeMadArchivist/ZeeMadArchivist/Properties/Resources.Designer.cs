@@ -59,5 +59,14 @@ namespace CyberFeedForward.TheMadArchivist.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MyArchive.
+        /// </summary>
+        internal static string DefaultArchive {
+            get {
+                return ResourceManager.GetString("DefaultArchive", resourceCulture);
+            }
+        }
     }
 }

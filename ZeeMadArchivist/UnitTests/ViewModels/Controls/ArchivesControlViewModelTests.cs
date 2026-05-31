@@ -2,6 +2,7 @@ using CyberFeedForward.TheMadArchivist.Services;
 using CyberFeedForward.TheMadArchivist.ViewModels.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.IO;
 
 namespace UnitTests.ViewModels.Controls;
 
@@ -32,12 +33,13 @@ public sealed class ArchiveListControlViewModelTests
     {
         var store = new InMemorySettingsStore();
         var service = new ArchivesSettingsService(store);
-        var vm = new ArchiveListControlViewModel(service, _ => true);
-
-        vm.NewArchivePath = "C:\\Temp\\Archive1.zip";
+        var vm = new ArchiveListControlViewModel(service, _ => true)
+        {
+            NewArchivePath = "C:\\Temp\\Archive1.zip"
+        };
         vm.AddArchive();
 
-        Assert.AreEqual(2, vm.Archives.Count);
+        Assert.HasCount(2, vm.Archives);
         Assert.IsTrue(store.TryGetString("Archives.Paths", out var stored));
         Assert.IsFalse(string.IsNullOrWhiteSpace(stored));
     }
@@ -47,15 +49,16 @@ public sealed class ArchiveListControlViewModelTests
     {
         var store = new InMemorySettingsStore();
         var service = new ArchivesSettingsService(store);
-        var vm = new ArchiveListControlViewModel(service, _ => true);
-
-        vm.NewArchivePath = "C:\\Temp\\Archive1.zip";
+        var vm = new ArchiveListControlViewModel(service, _ => true)
+        {
+            NewArchivePath = "C:\\Temp\\Archive1.zip"
+        };
         vm.AddArchive();
 
         vm.NewArchivePath = "c:\\temp\\archive1.zip";
         vm.AddArchive();
 
-        Assert.AreEqual(2, vm.Archives.Count);
+        Assert.HasCount(2, vm.Archives);
     }
 
     [TestMethod]
@@ -73,9 +76,10 @@ public sealed class ArchiveListControlViewModelTests
     {
         var store = new InMemorySettingsStore();
         var service = new ArchivesSettingsService(store);
-        var vm = new ArchiveListControlViewModel(service, _ => true);
-
-        vm.NewArchivePath = "C:\\Temp\\Archive1";
+        var vm = new ArchiveListControlViewModel(service, _ => true)
+        {
+            NewArchivePath = "C:\\Temp\\Archive1"
+        };
         vm.AddArchive();
 
         Assert.IsTrue(vm.IsExistingArchive("  c:\\temp\\archive1  "));
@@ -86,9 +90,10 @@ public sealed class ArchiveListControlViewModelTests
     {
         var store = new InMemorySettingsStore();
         var service = new ArchivesSettingsService(store);
-        var vm = new ArchiveListControlViewModel(service, _ => true);
-
-        vm.NewArchivePath = "";
+        var vm = new ArchiveListControlViewModel(service, _ => true)
+        {
+            NewArchivePath = ""
+        };
         Assert.IsFalse(vm.IsAddEnabled);
 
         vm.NewArchivePath = "C:\\Temp\\SomeFolder";
@@ -100,9 +105,10 @@ public sealed class ArchiveListControlViewModelTests
     {
         var store = new InMemorySettingsStore();
         var service = new ArchivesSettingsService(store);
-        var vm = new ArchiveListControlViewModel(service, _ => true);
-
-        vm.NewArchivePath = "C:\\Temp\\UserTyped";
+        var vm = new ArchiveListControlViewModel(service, _ => true)
+        {
+            NewArchivePath = "C:\\Temp\\UserTyped"
+        };
 
         var result = vm.TryAddFolderPath("C:\\Temp\\PickedFolder", clearNewArchivePathOnSuccess: false);
 
@@ -116,9 +122,10 @@ public sealed class ArchiveListControlViewModelTests
     {
         var store = new InMemorySettingsStore();
         var service = new ArchivesSettingsService(store);
-        var vm = new ArchiveListControlViewModel(service, _ => true);
-
-        vm.NewArchivePath = "C:\\Temp\\Archive1";
+        var vm = new ArchiveListControlViewModel(service, _ => true)
+        {
+            NewArchivePath = "C:\\Temp\\Archive1"
+        };
         vm.AddArchive();
         vm.NewArchivePath = "C:\\Temp\\Archive2";
         vm.AddArchive();
@@ -126,9 +133,13 @@ public sealed class ArchiveListControlViewModelTests
         var removed = vm.RemoveArchive("C:\\Temp\\Archive1");
 
         Assert.IsTrue(removed);
-        Assert.AreEqual(2, vm.Archives.Count);
+        Assert.HasCount(2, vm.Archives);
         CollectionAssert.DoesNotContain(vm.Archives, "C:\\Temp\\Archive1");
         CollectionAssert.Contains(vm.Archives, "C:\\Temp\\Archive2");
+
+        var rootPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+        var defaultArchivePath = Path.Combine(rootPath, "MyArchive");
+        CollectionAssert.Contains(vm.Archives, defaultArchivePath);
     }
 
     [TestMethod]
@@ -137,10 +148,11 @@ public sealed class ArchiveListControlViewModelTests
         var store = new InMemorySettingsStore();
         var service = new ArchivesSettingsService(store);
 
-        var expected = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+        var rootPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+        var expected = Path.Combine(rootPath, "MyArchive");
         var vm = new ArchiveListControlViewModel(service, p => string.Equals(p, expected, System.StringComparison.OrdinalIgnoreCase));
 
-        Assert.AreEqual(1, vm.Archives.Count);
+        Assert.HasCount(1, vm.Archives);
         Assert.AreEqual(expected, vm.Archives[0]);
     }
 }

@@ -67,7 +67,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <CommandBar x:Name="MainCommandBar" Grid.Column="0" DefaultLabelPosition="Right">
+            <CommandBar x:Name="MainCommandBar" Grid.Column="0" DefaultLabelPosition="Right" Visibility="Collapsed">
                 <AppBarButton x:Name="BackCommandButton" Icon="Back" Label="Back" IsEnabled="False" Click="BackCommandButton_OnClick" />
                 <AppBarButton x:Name="ForwardCommandButton" Icon="Forward" Label="Forward" IsEnabled="False" Click="ForwardCommandButton_OnClick" />
                 <AppBarSeparator x:Name="CommandSeparator0" />
@@ -75,8 +75,6 @@
                 <AppBarButton x:Name="OpenCommandButton" Icon="OpenFile" Label="Open" />
                 <AppBarSeparator x:Name="CommandSeparator1" />
                 <AppBarButton x:Name="RefreshCommandButton" Icon="Refresh" Label="Refresh" />
-
-
 
                 <CommandBar.SecondaryCommands>
                     <AppBarButton x:Name="SettingsCommandButton" Icon="Setting" Label="Settings" Click="SettingsCommandButton_OnClick" />

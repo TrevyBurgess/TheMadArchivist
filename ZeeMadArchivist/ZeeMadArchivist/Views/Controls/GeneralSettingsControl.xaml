@@ -24,6 +24,7 @@
         </ComboBox>
 
         <ToggleSwitch
+            Visibility="Collapsed"
             x:Name="CommandBarLeftToggleSwitch"
             Header="Command bar on left"
             IsOn="{Binding IsCommandBarOnLeft, Mode=TwoWay}" />

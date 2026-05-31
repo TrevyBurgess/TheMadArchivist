@@ -1,3 +1,4 @@
+using CyberFeedForward.TheMadArchivist.Properties;
 using CyberFeedForward.TheMadArchivist.Services;
 using System;
 using System.Collections.ObjectModel;
@@ -35,11 +36,15 @@ public sealed partial class ArchiveListControlViewModel : INotifyPropertyChanged
 
         if (Archives.Count == 0)
         {
-            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            if (!string.IsNullOrWhiteSpace(documentsPath) && _directoryExists(documentsPath))
+            var rootPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var documentsPath = Path.Combine(rootPath, Resources.DefaultArchive);
+
+            if (!Directory.Exists(documentsPath))
             {
-                Archives.Add(documentsPath);
+                Directory.CreateDirectory(documentsPath);
             }
+
+            Archives.Add(documentsPath);
         }
     }
 
