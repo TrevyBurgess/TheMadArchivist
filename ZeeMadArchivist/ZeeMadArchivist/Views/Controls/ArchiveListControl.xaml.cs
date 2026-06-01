@@ -1,9 +1,13 @@
 using CyberFeedForward.TheMadArchivist.Services;
+using CyberFeedForward.TheMadArchivist.AppTools.FileSystem;
 using CyberFeedForward.TheMadArchivist.ViewModels.Controls;
+using CyberFeedForward.TheMadArchivist.Views.Dialogs;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using System;
+using System.IO;
+using System.Linq;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using WinRT.Interop;
@@ -16,6 +20,26 @@ public sealed partial class ArchiveListControl : UserControl
     {
         InitializeComponent();
         ViewModel = new ArchiveListControlViewModel(new ArchivesSettingsService(new LocalAppSettingsStore()));
+
+        Loaded += ArchiveListControl_OnLoaded;
+    }
+
+    private void ArchiveListControl_OnLoaded(object sender, RoutedEventArgs e)
+    {
+        UpdateNewArchiveButtonEnabled();
+    }
+
+    private void UpdateNewArchiveButtonEnabled()
+    {
+        try
+        {
+            NewArchiveButton.IsEnabled = NewArchiveDialog.GetUnusedDriveLetters().Any();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Trace.TraceError(ex.ToString());
+            NewArchiveButton.IsEnabled = false;
+        }
     }
 
     public ArchiveListControlViewModel ViewModel
@@ -185,6 +209,79 @@ public sealed partial class ArchiveListControl : UserControl
         if (App.MainWindowInstance is CyberFeedForward.TheMadArchivist.MainWindow mainWindow)
         {
             mainWindow.SetStatusText("Folder Deleted");
+        }
+    }
+
+    private async void NewArchiveButton_OnClick(object _, RoutedEventArgs e)
+    {
+        if (ViewModel is null)
+        {
+            return;
+        }
+
+        UpdateNewArchiveButtonEnabled();
+        if (!NewArchiveButton.IsEnabled)
+        {
+            return;
+        }
+
+        var dialog = new NewArchiveDialog
+        {
+            XamlRoot = XamlRoot,
+        };
+
+        var result = await dialog.ShowAsync();
+        if (result != ContentDialogResult.Primary)
+        {
+            return;
+        }
+
+        var folderPath = dialog.FolderPath;
+        var driveLetter = dialog.SelectedDriveLetter;
+        if (string.IsNullOrWhiteSpace(folderPath) || driveLetter is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var archiveName = new DirectoryInfo(folderPath).Name;
+            var mapResult = FolderTools.MapDrive(folderPath, driveLetter.Value, archiveName);
+            if (mapResult != 0)
+            {
+                throw new InvalidOperationException($"Failed to map drive. Win32 error: {mapResult}.");
+            }
+
+            var addResult = ViewModel.TryAddFolderPath(folderPath, clearNewArchivePathOnSuccess: false);
+            if (addResult != ArchiveListControlViewModel.ArchiveAddResult.Added)
+            {
+                if (App.MainWindowInstance is CyberFeedForward.TheMadArchivist.MainWindow mainWindow)
+                {
+                    mainWindow.SetStatusText($"Archive not added: {folderPath}");
+                }
+            }
+            else
+            {
+                if (App.MainWindowInstance is CyberFeedForward.TheMadArchivist.MainWindow mainWindow)
+                {
+                    mainWindow.SetStatusText("New Archive Created");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Trace.TraceError(ex.ToString());
+
+            var errorDialog = new ContentDialog
+            {
+                Title = "New Archive Error",
+                Content = ex.Message,
+                CloseButtonText = "OK",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = XamlRoot,
+            };
+
+            await errorDialog.ShowAsync();
         }
     }
 }

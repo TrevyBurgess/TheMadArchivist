@@ -55,6 +55,10 @@ Here are some the vibe code commands I used.
 - Disable AddArchiveButton when folder path is empty
 - Do not show path in NewArchivePathTextBox when a folder is selected with the folder selector dialog
 
+- Add a Button to ArchiveListControl called 'New Archive'. When clicked, will open a dialog called NewArchiveDialog. This dialog will contain a field for a folder path, a dropdown containing a list of unused drive letters, and a save and cancel button.
+- Enable NewArchiveButton only when there is at least 1 unused drive letters
+
+
 ### Page - Settings - Icons (NamedIconControl)
 
 - Create a user control called NamedIconControl. Include a viewmodel

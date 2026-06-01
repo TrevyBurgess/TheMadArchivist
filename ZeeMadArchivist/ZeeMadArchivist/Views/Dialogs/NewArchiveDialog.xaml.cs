@@ -1,0 +1,124 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace CyberFeedForward.TheMadArchivist.Views.Dialogs;
+
+public sealed partial class NewArchiveDialog : ContentDialog
+{
+    private readonly Func<IEnumerable<char>> _getUnusedDriveLetters;
+
+    public NewArchiveDialog(Func<IEnumerable<char>>? getUnusedDriveLetters = null)
+    {
+        InitializeComponent();
+        _getUnusedDriveLetters = getUnusedDriveLetters ?? GetUnusedDriveLetters;
+
+        var letters = _getUnusedDriveLetters().ToArray();
+        foreach (var letter in letters)
+        {
+            DriveLetterComboBox.Items.Add(letter + ":");
+        }
+
+        if (DriveLetterComboBox.Items.Count > 0)
+        {
+            DriveLetterComboBox.SelectedIndex = 0;
+        }
+
+        PrimaryButtonClick += NewArchiveDialog_OnPrimaryButtonClick;
+    }
+
+    public string FolderPath => FolderPathTextBox.Text?.Trim() ?? string.Empty;
+
+    public char? SelectedDriveLetter
+    {
+        get
+        {
+            if (DriveLetterComboBox.SelectedItem is not string s)
+            {
+                return null;
+            }
+
+            var trimmed = s.Trim();
+            if (trimmed.Length < 1)
+            {
+                return null;
+            }
+
+            return char.ToUpperInvariant(trimmed[0]);
+        }
+    }
+
+    private void NewArchiveDialog_OnPrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+    {
+        var folderPath = FolderPath;
+        if (string.IsNullOrWhiteSpace(folderPath))
+        {
+            ShowError("Folder path is required.");
+            args.Cancel = true;
+            return;
+        }
+
+        if (!Directory.Exists(folderPath))
+        {
+            ShowError("Folder path does not exist.");
+            args.Cancel = true;
+            return;
+        }
+
+        if (SelectedDriveLetter is null)
+        {
+            ShowError("Drive letter is required.");
+            args.Cancel = true;
+            return;
+        }
+
+        HideError();
+    }
+
+    private void ShowError(string message)
+    {
+        ErrorTextBlock.Text = message;
+        ErrorTextBlock.Visibility = Visibility.Visible;
+    }
+
+    private void HideError()
+    {
+        ErrorTextBlock.Text = string.Empty;
+        ErrorTextBlock.Visibility = Visibility.Collapsed;
+    }
+
+    public static IEnumerable<char> GetUnusedDriveLetters()
+    {
+        var used = DriveInfo.GetDrives()
+            .Select(d => char.ToUpperInvariant(d.Name[0]))
+            .Where(c => c is >= 'A' and <= 'Z');
+
+        return GetUnusedDriveLetters(used);
+    }
+
+    public static IEnumerable<char> GetUnusedDriveLetters(IEnumerable<char> usedDriveLetters, char startLetter = 'D')
+    {
+        ArgumentNullException.ThrowIfNull(usedDriveLetters);
+
+        var used = new HashSet<char>(usedDriveLetters
+            .Select(char.ToUpperInvariant)
+            .Where(c => c is >= 'A' and <= 'Z'));
+
+        var start = char.ToUpperInvariant(startLetter);
+        if (start is < 'A' or > 'Z')
+        {
+            throw new ArgumentOutOfRangeException(nameof(startLetter));
+        }
+
+        for (var c = start; c <= 'Z'; c++)
+        {
+            if (!used.Contains(c))
+            {
+                yield return c;
+            }
+        }
+    }
+}
